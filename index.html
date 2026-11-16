@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feu Vert</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#dfe4d8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1518" media="(prefers-color-scheme: dark)">
+<style>
+:root{
+  --ground:#dfe4d8; --glass:rgba(250,250,248,.74); --glass-line:rgba(255,255,255,.7);
+  --ink:#1c2024; --muted:#6c7378; --hair:rgba(20,30,40,.09); --row:rgba(255,255,255,.55);
+  --row-on:rgba(255,255,255,.95); --go:#1f9d61; --go-ink:#ffffff; --amber:#d99a16; --stop:#d9483b;
+  --shadow:0 18px 50px rgba(30,40,50,.18), 0 2px 6px rgba(30,40,50,.08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#0f1518; --glass:rgba(24,30,35,.7); --glass-line:rgba(255,255,255,.09);
+    --ink:#e9edf0; --muted:#8b969d; --hair:rgba(255,255,255,.08); --row:rgba(255,255,255,.045);
+    --row-on:rgba(255,255,255,.1); --go:#35c27e; --go-ink:#05140c; --amber:#f0b93a; --stop:#f06a5c;
+    --shadow:0 18px 50px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--ground);color:var(--ink);overflow:hidden;
+  font:13px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none}
+#cv{position:fixed;inset:0;width:100%;height:100%;display:block}
+button{font:inherit;color:inherit}
+.glass{background:var(--glass);border:1px solid var(--glass-line);box-shadow:var(--shadow);
+  -webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6)}
+
+#panel{position:fixed;top:14px;right:14px;bottom:14px;width:272px;display:flex;flex-direction:column;border-radius:22px;overflow:hidden}
+#scroll{flex:1;overflow-y:auto;padding:16px 14px 10px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--muted)}
+.brand i{width:9px;height:9px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px color-mix(in srgb,var(--go) 22%,transparent)}
+.brand span{margin-left:auto;font-weight:500;font-size:12px}
+.money{font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1.05;margin-top:10px;font-variant-numeric:tabular-nums}
+.money small{font-size:20px;font-weight:600;color:var(--muted);margin-left:4px}
+.rate{color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
+.flu{margin-top:14px}
+.line{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.line b{font-variant-numeric:tabular-nums}
+.bar{height:5px;border-radius:3px;background:var(--hair);margin-top:6px;overflow:hidden}
+.bar span{display:block;height:100%;width:100%;border-radius:3px;background:var(--go);transition:width .4s,background .4s}
+.card{background:var(--row);border:1px solid var(--hair);border-radius:13px;padding:9px 11px;margin-top:12px}
+.card .t{font-weight:600}
+.card .r{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+h2{font-size:12px;font-weight:600;color:var(--muted);margin:18px 2px 8px}
+.up{display:grid;grid-template-columns:1fr auto;gap:1px 10px;width:100%;text-align:left;
+  background:var(--row);border:1px solid var(--hair);border-radius:13px;padding:8px 11px;margin-bottom:6px;cursor:pointer;
+  transition:background .15s,transform .1s}
+.up .n{font-weight:600}
+.up .d{grid-column:1;color:var(--muted);font-size:12px}
+.up .c{grid-row:1/3;grid-column:2;align-self:center;font-weight:600;font-variant-numeric:tabular-nums;
+  padding:4px 9px;border-radius:999px;background:var(--hair);color:var(--muted);white-space:nowrap}
+.up.ok{background:var(--row-on)}
+.up.ok .c{background:var(--go);color:var(--go-ink)}
+.up.ok:hover{transform:translateY(-1px)}
+.up.ok:active{transform:scale(.985)}
+.up:not(.ok){cursor:default}
+.up.max .c{background:transparent}
+.up.sure .c{background:var(--amber);color:#2a1c00}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--go);outline-offset:2px}
+.note{color:var(--muted);font-size:12px;margin:0 2px}
+.note b{color:var(--ink);font-weight:600}
+details{margin-top:14px;border-top:1px solid var(--hair);padding-top:10px}
+summary{cursor:pointer;font-weight:600;font-size:12px;color:var(--muted);list-style:none;display:flex;justify-content:space-between;padding:0 2px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-weight:500}
+details[open] summary::after{content:"−"}
+.ach{display:grid;grid-template-columns:auto 1fr;gap:1px 8px;margin:8px 2px 0;font-size:12px;color:var(--muted)}
+.ach i{grid-row:1/3;width:8px;height:8px;border-radius:50%;margin-top:4px;background:var(--hair)}
+.ach b{color:var(--muted);font-weight:600}
+.ach.on i{background:var(--go)}
+.ach.on b{color:var(--ink)}
+#spark{display:block;width:100%;height:46px;margin-top:10px}
+.stat{display:flex;justify-content:space-between;margin:5px 2px 0;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stat b{color:var(--ink);font-weight:600}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.btns button{background:var(--row);border:1px solid var(--hair);border-radius:10px;padding:7px 8px;cursor:pointer;font-weight:600;font-size:12px;text-align:center}
+.btns button:hover{background:var(--row-on)}
+.btns button.wide{grid-column:1/3}
+.btns button.go{background:var(--go);color:var(--go-ink);border-color:transparent}
+#sv-text{display:block;width:100%;margin-top:8px;border:1px solid var(--hair);border-radius:10px;background:var(--row-on);color:var(--ink);
+  font:11px/1.4 ui-monospace,Menlo,monospace;padding:8px;resize:vertical;user-select:text;-webkit-user-select:text;word-break:break-all}
+#sv-text[hidden],#sv-confirm[hidden]{display:none}
+#sv-confirm .btns{margin-top:8px}
+#foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 16px 11px;border-top:1px solid var(--hair);color:var(--muted);font-size:12px}
+#foot button{background:none;border:0;padding:2px 0;cursor:pointer;color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+#foot button.sure{color:var(--stop);font-weight:600}
+#foot button.on{color:var(--go);text-decoration:none;font-weight:600}
+
+#hud{position:fixed;top:14px;left:14px;display:flex;align-items:center;gap:10px;border-radius:999px;padding:6px 6px 6px 14px;white-space:nowrap}
+#clock{font-weight:700;font-variant-numeric:tabular-nums}
+#phase{color:var(--muted)}
+#hud button{border:0;border-radius:999px;padding:5px 11px;background:var(--hair);cursor:pointer;font-weight:600;font-variant-numeric:tabular-nums}
+#hud button.on{background:var(--go);color:var(--go-ink)}
+
+#banner{position:fixed;top:60px;left:14px;transform:translateY(-8px);opacity:0;pointer-events:none;
+  border-radius:999px;padding:8px 15px 8px 12px;font-weight:600;display:flex;align-items:center;gap:9px;white-space:nowrap;
+  transition:opacity .25s,transform .25s}
+#banner.on{opacity:1;transform:none}
+#banner i{width:9px;height:9px;border-radius:50%;background:var(--amber)}
+#banner.alert i{background:var(--stop);animation:blink .7s infinite}
+#banner span{color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+@keyframes blink{50%{opacity:.25}}
+#toasts{position:fixed;left:14px;bottom:14px;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(420px,calc(100% - 320px))}
+.toast{border-radius:14px;padding:9px 13px;font-weight:500;animation:rise .3s both}
+.toast b{font-weight:700}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+#paused{position:fixed;left:calc((100% - 286px)/2);top:50%;transform:translate(-50%,-50%);border-radius:18px;padding:14px 22px;
+  font-weight:700;font-size:16px;display:none;pointer-events:none}
+body.paused #paused{display:block}
+@media (prefers-reduced-motion: reduce){#banner.alert i{animation:none}.toast{animation:none}}
+@media (max-width:720px){
+  #panel{top:auto;left:10px;right:10px;bottom:10px;width:auto;height:44%}
+  #toasts{bottom:auto;top:104px;max-width:calc(100% - 28px)}
+  #paused{left:50%;top:28%}
+  #phase{display:none}
+}
+</style>
+</head>
+<body>
+<canvas id="cv" aria-label="Carte de la ville : clique sur un carrefour pour changer son feu"></canvas>
+
+<div id="hud" class="glass">
+  <span id="clock">09:00</span><span id="phase">Matinée</span>
+  <button id="b-pause" type="button" title="Espace">Pause</button>
+  <button id="b-speed" type="button" title="Touche V">×1</button>
+</div>
+<div id="banner" class="glass" role="status"><i></i><b id="bn-t"></b><span id="bn-s"></span></div>
+<div id="toasts"></div>
+<div id="paused" class="glass">En pause</div>
+
+<aside id="panel" class="glass">
+  <div id="scroll">
+    <div class="brand"><i></i>Feu Vert<span id="cityname"></span></div>
+    <div class="money"><span id="money">0</span><small>€</small></div>
+    <div class="rate" id="rate">0 € par minute</div>
+    <div class="flu">
+      <div class="line"><span>Fluidité du trafic</span><b id="fmul">×2,0</b></div>
+      <div class="bar"><span id="fbar"></span></div>
+    </div>
+    <div class="card" id="mission">
+      <div class="line"><span class="t" id="mi-t"></span><span class="r" id="mi-r"></span></div>
+      <div class="bar"><span id="mi-bar"></span></div>
+    </div>
+    <h2>Améliorations</h2>
+    <div id="ups"></div>
+    <h2>Équipements de la ville</h2>
+    <div id="eqs"></div>
+    <h2>Carrefours</h2>
+    <p class="note" id="intsum"></p>
+    <h2>Nouvelle ville</h2>
+    <div id="city"></div>
+    <details id="d-ach"><summary><span id="ach-sum">Succès</span></summary><div id="achs"></div></details>
+    <details id="d-stat"><summary><span>Statistiques</span></summary>
+      <canvas id="spark" width="480" height="92" aria-label="Revenu par minute sur les dix dernières minutes"></canvas>
+      <div id="stats"></div>
+    </details>
+    <details id="d-save"><summary><span id="save-sum">Sauvegarde</span></summary>
+      <p class="note" id="save-info" style="margin-top:8px"></p>
+      <div class="btns">
+        <button id="sv-now" type="button" class="wide" title="Cmd + S">Sauvegarder maintenant</button>
+        <button id="sv-exp" type="button">Exporter un fichier</button>
+        <button id="sv-imp" type="button">Importer un fichier</button>
+        <button id="sv-copy" type="button">Copier le code</button>
+        <button id="sv-load" type="button">Charger un code</button>
+        <button id="sv-back" type="button" class="wide" hidden></button>
+      </div>
+      <textarea id="sv-text" rows="4" hidden spellcheck="false" aria-label="Code de sauvegarde" placeholder="Colle ici un code de sauvegarde"></textarea>
+      <div id="sv-confirm" class="card" hidden>
+        <div id="sv-what"></div>
+        <div class="btns"><button id="sv-yes" type="button" class="go">Remplacer ma partie</button><button id="sv-no" type="button">Annuler</button></div>
+      </div>
+      <input type="file" id="sv-file" accept=".json,.txt,application/json,text/plain" hidden>
+    </details>
+    <p class="note" style="margin-top:14px">Touches 1 à 9 pour les carrefours, Espace pour la pause, V pour la vitesse.</p>
+  </div>
+  <div id="foot"><button id="notif" type="button">Activer les notifications</button><button id="reset" type="button">Recommencer</button></div>
+</aside>
+
+<script>
+(() => {
+'use strict';
+
+/* ───────── Constantes ───────── */
+const W = 1200, H = 780, GAP = 6, EXT = 280, CW = 11;
+const XS = [200, 600, 1000], YS = [130, 390, 650], RIV = [770, 830];
+const ROAD_ORDER = [['V', 0], ['H', 0], ['V', 2], ['H', 2]];
+const ROAD_COST = [250, 1500, 8000, 40000];
+const KEY = 'feu-vert-save-v2', OLD_KEY = 'feu-vert-save-v1';
+const PANEL_W = 286, DAY = 720;
+const MAPS = ['grid', 'round', 'avenue', 'pont'];
+const MAP_NAME = { grid: 'Quadrillage', round: 'Le Giratoire', avenue: 'La Grande Avenue', pont: 'Les Deux Rives' };
+const KIND = {
+  car:    { len: 20, sp: 1,    acc: 170, val: 1, turn: true },
+  bus:    { len: 34, sp: .82,  acc: 110, val: 5 },
+  truck:  { len: 46, sp: .75,  acc: 85,  val: 3 },
+  bike:   { len: 9,  sp: .72,  acc: 120, val: .5 },
+  tram:   { len: 76, sp: .9,   acc: 90,  val: 12 },
+  convoy: { len: 84, sp: .5,   acc: 50,  val: 0 },
+  amb:    { len: 24, sp: 1.25, acc: 220, val: 0 },
+  gold:   { len: 24, sp: 1,    acc: 170, val: 0 }
+};
+const UP = {
+  value:   { name: 'Valeur des trajets', base: 30, g: 1.6, max: 30 },
+  traffic: { name: 'Densité du trafic',  base: 50, g: 1.9, max: 8 },
+  speed:   { name: 'Limite de vitesse',  base: 80, g: 1.8, max: 8 }
+};
+const EQ = {
+  wave: { name: 'Onde verte', d: 'Les feux à capteurs voisins se synchronisent', cost: 3000 },
+  prio: { name: 'Priorité aux secours', d: 'Les feux automatisés s’ouvrent devant l’ambulance', cost: 1500 },
+  tow:  { name: 'Dépanneuse', d: 'Répare les pannes et dégage les accidents seule', cost: 2500 }
+};
+const ACH = [
+  ['first', 'Premier feu vert', 'Change un feu à la main'],
+  ['c100', 'Ça roule', '100 véhicules passés'],
+  ['c1k', 'Heure d’affluence', '1 000 véhicules passés'],
+  ['c10k', 'Périphérique', '10 000 véhicules passés'],
+  ['auto', 'Mains libres', 'Installe un feu automatique'],
+  ['round', 'Tourner en rond', 'Aménage un mini-giratoire'],
+  ['grid', 'Réseau complet', 'Ouvre les 9 carrefours'],
+  ['full', 'Ville intelligente', 'Équipe les 9 carrefours en capteurs ou giratoire'],
+  ['amb3', 'Voie royale', '3 ambulances d’affilée sans arrêt'],
+  ['gold5', 'Convoyeur', 'Intercepte 5 fourgons blindés'],
+  ['streak', 'Tapis vert', '500 véhicules d’affilée sans attente'],
+  ['safe', 'Journée sans accident', 'Une journée complète sans accrochage'],
+  ['convoy', 'Escorte', 'Fais traverser un convoi exceptionnel sans arrêt'],
+  ['million', 'Millionnaire', 'Gagne 1 M€ au total'],
+  ['city', 'Bâtisseur', 'Fonde une nouvelle ville']
+];
+
+/* ───────── Sauvegarde ───────── */
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  clear(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+function fresh() {
+  return { money: 0, total: 0, cars: 0, roads: 0, lv: { value: 0, traffic: 0, speed: 0 }, inter: {},
+           eq: { wave: 0, prio: 0, tow: 0 }, F: 1, rate: 0, seen: Date.now(), tuto: true, clock: 9, day: 1,
+           city: 0, ach: {}, streak: 0, mission: null, hist: [], notif: false,
+           st: { cars: 0, total: 0, play: 0, bestRate: 0, bestStreak: 0, acc: 0, accToday: 0, amb: 0, ambRow: 0, gold: 0, convoy: 0, repairs: 0 } };
+}
+function load() {
+  let s = store.get(KEY);
+  if (!s) {
+    const o = store.get(OLD_KEY); // reprise de la première version
+    if (o) s = { money: o.money, total: o.total, cars: o.cars, roads: o.roads, lv: o.lv, inter: o.inter, F: o.F, rate: o.rate, seen: o.seen, tuto: o.tuto,
+                 st: Object.assign(fresh().st, { cars: o.cars || 0, total: o.total || 0 }) };
+  }
+  return normalize(s);
+}
+// Remet n'importe quelle sauvegarde (ancienne, importée, abîmée) dans un état jouable.
+function normalize(s) {
+  const f = fresh(), obj = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+  const num = (v, d, lo = 0, hi = Infinity) => { v = +v; return isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
+  const r = Object.assign({}, f, JSON.parse(JSON.stringify(obj(s))));
+  r.lv = Object.assign(f.lv, obj(r.lv)); r.eq = Object.assign(f.eq, obj(r.eq)); r.st = Object.assign(f.st, obj(r.st));
+  r.inter = obj(r.inter); r.ach = obj(r.ach);
+  for (const k of ['money', 'total', 'cars', 'rate', 'streak']) r[k] = num(r[k], 0);
+  r.F = num(r.F, 1, 0, 1); r.clock = num(r.clock, 9, 0, 23.999); r.day = Math.floor(num(r.day, 1, 1));
+  r.roads = Math.floor(num(r.roads, 0, 0, ROAD_ORDER.length)); r.city = Math.floor(num(r.city, 0));
+  for (const k in UP) r.lv[k] = Math.floor(num(r.lv[k], 0, 0, UP[k].max));
+  for (const k in EQ) r.eq[k] = r.eq[k] ? 1 : 0;
+  for (const k in r.inter) { if (/^[0-2]-[0-2]$/.test(k)) r.inter[k] = Math.floor(num(r.inter[k], 0, 0, 3)); else delete r.inter[k]; }
+  for (const k in f.st) r.st[k] = num(r.st[k], 0);
+  r.hist = (Array.isArray(r.hist) ? r.hist : []).map(Number).filter(isFinite).slice(-60);
+  r.seen = num(r.seen, Date.now(), 0, Date.now());
+  r.tuto = !!r.tuto; r.notif = !!r.notif;
+  const m = r.mission;
+  r.mission = m && typeof m === 'object' && typeof m.id === 'string' ? { id: m.id, goal: num(m.goal, 1, 1), prog: num(m.prog, 0) } : null;
+  return r;
+}
+let S = load();
+
+/* ───────── Formules ───────── */
+const mapType = () => MAPS[S.city % MAPS.length];
+const hH = i => (mapType() === 'avenue' && i === 1) ? 44 : 22;
+const carValue = (l = S.lv.value) => Math.pow(1.25, l);
+const spawnRate = (l = S.lv.traffic) => 0.25 * (1 + 0.06 * l);
+const vMax = (l = S.lv.speed) => 90 * (1 + 0.06 * l);
+const fluMult = () => 0.5 + 1.5 * S.F;
+const cityMult = () => 1 + 0.5 * S.city;
+const achCount = () => ACH.filter(a => S.ach[a[0]]).length;
+const achMult = () => 1 + 0.02 * achCount();
+const upCost = k => Math.round(UP[k].base * Math.pow(UP[k].g, S.lv[k]));
+const tramOn = () => S.roads >= 2;
+function lightCost(n) {
+  if (n.level === 0) return Math.round(75 * Math.pow(1.45, inters.filter(m => m.level === 1 || m.level === 2).length));
+  if (n.level === 1) return Math.round(500 * Math.pow(1.5, inters.filter(m => m.level === 2).length));
+  return Infinity;
+}
+const roundCost = () => Math.round(450 * Math.pow(1.5, inters.filter(m => m.level === 3 && !m.fixed).length));
+const bonus = (sec, min) => Math.max(min * carValue() * cityMult(), S.rate * sec);
+function trafficF(h) {
+  if (h < 5.5 || h >= 22) return .5;
+  if (h < 7.5) return .5 + (h - 5.5) / 2 * .5;
+  if (h < 9) return 1.35;
+  if (h < 17.5) return 1;
+  if (h < 19) return 1.35;
+  return 1 - (h - 19) / 3 * .5;
+}
+const isPeak = h => (h >= 7.5 && h < 9) || (h >= 17.5 && h < 19);
+function darkness(h) {
+  if (h < 5.5 || h >= 21.5) return 1;
+  if (h < 7.5) return 1 - (h - 5.5) / 2;
+  if (h < 19.5) return 0;
+  return (h - 19.5) / 2;
+}
+function phaseName(h) {
+  return h < 5.5 ? 'Nuit' : h < 7.5 ? 'Petit matin' : h < 9 ? 'Pointe du matin' : h < 12 ? 'Matinée' : h < 14 ? 'Midi'
+       : h < 17.5 ? 'Après-midi' : h < 19 ? 'Pointe du soir' : h < 22 ? 'Soirée' : 'Nuit';
+}
+
+const nf1 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
+const nf0 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
+function fmt(n) {
+  if (!isFinite(n)) return '—';
+  if (n < 100) return nf1.format(Math.round(n * 10) / 10);
+  if (n < 1e4) return nf0.format(Math.round(n));
+  for (const [v, s] of [[1e12, ' Bn'], [1e9, ' Md'], [1e6, ' M'], [1e3, ' k']])
+    if (n >= v) return (n / v < 100 ? nf1 : nf0).format(n / v) + s;
+}
+const fmtMoney = n => n < 1e4 ? nf0.format(Math.floor(n)) : fmt(n);
+const rand = a => a[(Math.random() * a.length) | 0];
+
+/* ───────── Réseau ───────── */
+let lanes = [], inters = [];
+const laneMap = new Map();
+const activeH = i => i === 1 || ROAD_ORDER.slice(0, S.roads).some(r => r[0] === 'H' && r[1] === i);
+const activeV = j => j === 1 || ROAD_ORDER.slice(0, S.roads).some(r => r[0] === 'V' && r[1] === j);
+const laneId = (axis, idx, dir, k) => axis + idx + (dir > 0 ? '+' : '-') + k;
+const laneOf = (axis, idx, dir, k) => laneMap.get(laneId(axis, idx, dir, k));
+
+function build() {
+  const old = new Map(inters.map(n => [n.id, n])), t = mapType();
+  inters = [];
+  for (let i = 0; i < 3; i++) if (activeH(i))
+    for (let j = 0; j < 3; j++) if (activeV(j)) {
+      const id = i + '-' + j;
+      const n = old.get(id) || { id, i, j, x: XS[j], y: YS[i], green: Math.random() < .5 ? 'H' : 'V',
+                                 phase: 'go', t: 0, since: 0, think: 0, broken: false, fixT: 0, crash: 0, flash: 0, hint: null };
+      n.hx = 22; n.hy = hH(i); n.key = i * 3 + j + 1;
+      n.level = S.inter[id] || 0; n.fixed = false;
+      if (t === 'round' && id === '1-1') { n.level = 3; n.fixed = true; }
+      n.round = n.level === 3;
+      if (n.round) n.broken = false;
+      n.lanes = { H: [], V: [] };
+      inters.push(n);
+    }
+  const next = [];
+  const add = (axis, idx, dir, k, lpd) => {
+    const id = laneId(axis, idx, dir, k);
+    const L = laneMap.get(id) || { id, axis, idx, dir, k, len: axis === 'H' ? W : H, cars: [], spawnT: Math.random() * 2.5, pend: [] };
+    L.lpd = lpd;
+    const pos = axis === 'H' ? YS[idx] : XS[idx], off = CW + 22 * k;
+    L.coord = axis === 'H' ? pos + dir * off : pos - dir * off;
+    L.eBy = new Map();
+    L.inters = inters.filter(n => axis === 'H' ? n.i === idx : n.j === idx).map(n => {
+      const p = axis === 'H' ? n.x : n.y, c = dir > 0 ? p : L.len - p, hb = axis === 'H' ? n.hx : n.hy;
+      const e = { c, stop: c - hb - 12, end: c + hb, hb, n };
+      n.lanes[axis].push({ L, e }); L.eBy.set(n.id, e);
+      return e;
+    }).sort((a, b) => a.c - b.c);
+    laneMap.set(id, L); next.push(L);
+  };
+  for (let i = 0; i < 3; i++) if (activeH(i)) {
+    const lpd = hH(i) / 22;
+    for (let k = 0; k < lpd; k++) { add('H', i, 1, k, lpd); add('H', i, -1, k, lpd); }
+  }
+  for (let j = 0; j < 3; j++) if (activeV(j)) { add('V', j, 1, 0, 1); add('V', j, -1, 0, 1); }
+  lanes = next;
+  applyZones();
+}
+function lanePos(L, s) {
+  return L.axis === 'H' ? [L.dir > 0 ? s : W - s, L.coord] : [L.coord, L.dir > 0 ? s : H - s];
+}
+const laneAngle = L => L.axis === 'H' ? (L.dir > 0 ? 0 : Math.PI) : (L.dir > 0 ? Math.PI / 2 : -Math.PI / 2);
+
+/* ───────── Feux et giratoires ───────── */
+function sig(n, axis) {
+  if (n.crash > 0) return 'r';
+  if (n.phase === 'go') return n.green === axis ? 'g' : 'r';
+  if (n.phase === 'orange') return n.green === axis ? 'o' : 'r';
+  return 'r';
+}
+function toggle(n) {
+  if (n.phase !== 'go') return false;
+  n.phase = 'orange'; n.t = n.round ? 0.35 : 0.8; return true;
+}
+function queue(n, axis, range = 170) {
+  let q = 0;
+  for (const { L, e } of n.lanes[axis]) for (const c of L.cars) if (c.s <= e.stop + 1 && c.s > e.stop - range) q++;
+  return q;
+}
+function boxCount(n, axis) {
+  let q = 0;
+  for (const { L, e } of n.lanes[axis]) for (const c of L.cars) if (c.s > e.stop + .5 && c.s - KIND[c.kind].len < e.end) q++;
+  return q;
+}
+function priorityAxis(n) {
+  for (const axis of ['H', 'V']) for (const { L, e } of n.lanes[axis]) for (const c of L.cars)
+    if ((c.kind === 'tram' || (c.kind === 'amb' && S.eq.prio && n.level > 0)) && c.s > e.stop - 240 && c.s - KIND[c.kind].len < e.end) return axis;
+  return null;
+}
+function smart(n) {
+  if (n.hint) {
+    n.hint.t -= 0.35;
+    if (n.hint.t <= 0) { const a = n.hint.axis; n.hint = null; if (n.green !== a && n.since > 2) { toggle(n); return; } }
+  }
+  if (n.since < 1.4) return;
+  const qr = queue(n, n.green === 'H' ? 'V' : 'H', 300);
+  if (!qr) return;
+  const qg = queue(n, n.green, 300);
+  if (queue(n, n.green, 90) === 0 || (n.since > 7 && qr > qg * 1.5 + 2) || n.since > 15) toggle(n);
+}
+function neighbours(n, axis) {
+  return inters.filter(m => m !== n && (axis === 'H' ? m.i === n.i && Math.abs(m.j - n.j) === 1 : m.j === n.j && Math.abs(m.i - n.i) === 1));
+}
+function stepInter(n, dt) {
+  n.flash += dt;
+  if (n.ly) { n.ly.t -= dt; if (n.ly.t <= 0) n.ly = null; }
+  if (n.crash > 0) { n.crash -= dt; if (n.crash <= 0) { n.crash = 0; if (S.eq.tow) toast('La dépanneuse a dégagé l’accident.'); } }
+  if (n.broken && isFinite(n.fixT)) { n.fixT -= dt; if (n.fixT <= 0) { n.broken = false; toast('La dépanneuse a réparé le feu.'); } }
+  if (n.phase === 'orange') { n.t -= dt; if (n.t <= 0) { n.phase = 'allred'; n.t = n.round ? 0.1 : 0.5; } return; }
+  if (n.phase === 'allred') {
+    n.t -= dt;
+    if ((n.t <= 0 && boxCount(n, 'H') + boxCount(n, 'V') === 0) || n.t < -3) {
+      n.phase = 'go'; n.green = n.green === 'H' ? 'V' : 'H'; n.since = 0;
+      if (S.eq.wave && n.level === 2) for (const m of neighbours(n, n.green)) if (m.level === 2)
+        m.hint = { axis: n.green, t: Math.hypot(m.x - n.x, m.y - n.y) / vMax() * 0.75 };
+    }
+    return;
+  }
+  n.since += dt;
+  if (n.crash > 0) return;
+  if (n.round) {
+    const other = n.green === 'H' ? 'V' : 'H';
+    if (queue(n, other, 70) > 0 && (n.since > 3 || queue(n, n.green, 70) + boxCount(n, n.green) === 0)) toggle(n);
+    return;
+  }
+  const pr = priorityAxis(n);
+  if (pr) { if (pr !== n.green && n.since > 0.4) toggle(n); return; }
+  if (n.broken) { if (n.since >= 10) toggle(n); return; }
+  if (n.level === 1 && n.since >= 6) toggle(n);
+  else if (n.level === 2) { n.think -= dt; if (n.think <= 0) { n.think = 0.35; smart(n); } }
+}
+
+/* ───────── Véhicules ───────── */
+const CAR_COLORS = ['#e2574c', '#3d7fe0', '#f2b134', '#2fae7a', '#8d6be0', '#f08a4b', '#f1f1ec', '#39b8c9', '#5b6570', '#c9546f'];
+const BUS_COLORS = ['#2a9d8f', '#e08a2b', '#4a6fd8'];
+function newCar(kind) {
+  return { s: -EXT, v: vMax() * KIND[kind].sp * 0.8, wait: 0, kind, plan: 'S', planE: null, tgt: null,
+           color: kind === 'bus' ? rand(BUS_COLORS) : rand(CAR_COLORS) };
+}
+function randomKind() {
+  const r = Math.random();
+  if (S.roads >= 1) { if (r < .05) return 'bus'; if (r < .09) return 'truck'; }
+  if (r < .115) return 'bike';
+  return 'car';
+}
+function insertSorted(cars, c) {
+  let i = 0;
+  while (i < cars.length && cars[i].s >= c.s) i++;
+  cars.splice(i, 0, c);
+}
+function room(B, sF, len) {
+  for (const b of B.cars) if (b.s - KIND[b.kind].len < sF + GAP && b.s > sF - len - GAP) return false;
+  return true;
+}
+function oncoming(n, L, c) {
+  for (const { L: O, e: x } of n.lanes[L.axis]) {
+    if (O.dir === L.dir) continue;
+    const st = sig(n, O.axis);
+    for (const b of O.cars) { // du plus avancé au plus reculé
+      if (b.planE === x && b.plan === 'L') { // deux tourne-à-gauche se croisent sans gêne…
+        if (b.s > x.stop + .5 && b.v < 3) break; // …et celui qui attend retient toute sa file
+        continue;
+      }
+      const forcing = c.turnWait > 1.5; // au-delà, la file d'en face lui cède le passage
+      if (b.s > x.stop + .5) { if (b.s - KIND[b.kind].len < x.end && !(forcing && b.v < 3)) return true; }
+      else if (b.s > x.stop - 55 && b.v > 12 && st !== 'r' && !forcing) return true;
+    }
+  }
+  return false;
+}
+function planTurn(c, L, e) {
+  c.planE = e; c.plan = 'S'; c.tgt = null;
+  if (!KIND[c.kind].turn) return;
+  const r = Math.random();
+  let want = r < .12 ? 'R' : r < .17 ? 'L' : 'S';
+  if (want === 'R' && L.k !== L.lpd - 1) want = 'S';
+  if (want === 'L' && L.k !== 0) want = 'S';
+  if (want === 'S') return;
+  const n = e.n;
+  let B;
+  if (L.axis === 'H') {
+    const bd = want === 'R' ? L.dir : -L.dir;
+    B = laneOf('V', n.j, bd, 0);
+  } else {
+    const bd = want === 'R' ? -L.dir : L.dir, lpdB = n.hy / 22;
+    B = laneOf('H', n.i, bd, want === 'R' ? lpdB - 1 : 0);
+  }
+  if (!B) return;
+  let sA, sB;
+  if (L.axis === 'H') { sA = L.dir > 0 ? B.coord : W - B.coord; sB = B.dir > 0 ? L.coord : H - L.coord; }
+  else { sA = L.dir > 0 ? B.coord : H - B.coord; sB = B.dir > 0 ? L.coord : W - L.coord; }
+  c.plan = want; c.tgt = { B, sA, sB };
+}
+function runRed(c, L, e) {
+  const n = e.n, cross = L.axis === 'H' ? 'V' : 'H';
+  if (boxCount(n, cross) > 0 && !(n.crash > 0)) {
+    n.crash = S.eq.tow ? 8 : 20; c.crashed = n; c.v = 0;
+    S.F *= 0.8; S.st.acc++; S.st.accToday++; S.streak = 0;
+    notify('Accident au carrefour ' + n.key, 'Clique dessus pour dégager la voie.');
+  } else floatText(n.x, n.y, 'Feu grillé !', 'amber');
+}
+
+function stepLane(L, dt, tf) {
+  const cars = L.cars, rain = ev.rain > 0;
+  const base = vMax() * (rain ? .82 : 1), gapK = rain ? GAP * 1.9 : GAP, accK = rain ? .6 : 1;
+  for (let k = 0; k < cars.length; k++) {
+    const c = cars[k], K = KIND[c.kind], a = k ? cars[k - 1] : null;
+    if (c.anim) { c.anim.t += dt; if (c.anim.t >= .4) c.anim = null; }
+    if (c.crashed) { if (c.crashed.crash > 0) { c.v = 0; continue; } c.crashed = null; }
+    let obs = Infinity, vm = base * K.sp;
+    if (a) obs = a.s - KIND[a.kind].len - gapK;
+    if (L.br != null && c.s <= L.br + .5) obs = Math.min(obs, L.br);
+    if (L.wz && c.s > L.wz[0] - 4 && c.s - K.len < L.wz[1]) vm *= .3;
+    let e = null;
+    for (const x of L.inters) if (c.s <= x.stop + .5 || (c.planE === x && c.plan !== 'S')) { e = x; break; }
+    let doTurn = false;
+    if (e) {
+      if (c.planE !== e) planTurn(c, L, e);
+      const n = e.n, before = c.s <= e.stop + .5;
+      let block = false;
+      if (before) {
+        let st = c.runE === e ? 'g' : sig(n, L.axis);
+        if (st === 'g' && n.ly && n.ly.axis === L.axis && n.ly.dir !== L.dir && c.runE !== e) st = 'o'; // cède à un tourne-à-gauche
+        if (st === 'r') block = true;
+        else if (st === 'o') block = !(e.stop - c.s < 16 && c.v > 30);
+        else if (c.runE !== e) {
+          if (c.plan !== 'S' && !room(c.tgt.B, c.tgt.sB + K.len / 2, K.len)) {
+            c.blockT = (c.blockT || 0) + dt;
+            if (c.blockT > 4) { c.plan = 'S'; c.tgt = null; c.blockT = 0; } // voie d'arrivée saturée : il continue tout droit
+            else block = true;
+          }
+          if (c.plan === 'S') { // ne pas s'engager si la sortie du carrefour est bouchée
+            let m = 0;
+            for (let q = k - 1; q >= 0; q--) {
+              const b = cars[q], rear = b.s - KIND[b.kind].len;
+              if (rear > e.end + 170) break;
+              if (b.v < 8) { if (rear - e.end < m * 26 + K.len + GAP) block = true; break; }
+              m++;
+            }
+          }
+        }
+        if (block) {
+          obs = Math.min(obs, e.stop);
+          if (st === 'r' && !n.round && c.kind === 'car' && e.stop - c.s < 3 && !(n.crash > 0)) {
+            c.redWait = (c.redWait || 0) + dt;
+            if (c.redWait > 30) { c.runE = e; c.redWait = 0; c.plan = 'S'; c.tgt = null; }
+          } else c.redWait = 0; // seule une attente continue au rouge fait craquer
+        } else c.redWait = 0;
+      }
+      if (n.round && c.s > e.stop - 14) vm = Math.min(vm, 46); // on ralentit dans un giratoire
+      if (c.plan !== 'S' && !block) {
+        const tp = c.tgt.sA + K.len / 2;
+        let can = room(c.tgt.B, c.tgt.sB + K.len / 2, K.len);
+        if (can && c.plan === 'L') can = !oncoming(n, L, c);
+        if (c.plan === 'L' && c.turnWait > 1.5) n.ly = { axis: L.axis, dir: L.dir, t: 1 };
+        if (c.turnWait > 15) { c.plan = 'S'; c.tgt = null; c.turnWait = 0; can = false; } // renonce et continue tout droit
+        if (c.plan !== 'S') {
+          if (!can) obs = Math.min(obs, tp);
+          else if (c.s >= tp - 1.5) doTurn = true;
+          if (tp - c.s < 34) vm = Math.min(vm, 50);
+        }
+      }
+    }
+    const gap = obs - c.s;
+    const vt = gap <= .5 ? 0 : Math.min(vm, gap * 4);
+    c.v = vt < c.v ? vt : Math.min(vt, c.v + K.acc * accK * dt);
+    let ns = c.s + c.v * dt;
+    if (ns > obs) ns = Math.max(c.s, obs);
+    c.s = ns;
+    if (c.v < 8) { c.wait += dt; if (c.plan !== 'S' && e && c.s > e.stop) c.turnWait = (c.turnWait || 0) + dt; }
+    if (c.runE && c.s >= c.runE.c - 6) { const re = c.runE; c.runE = null; runRed(c, L, re); }
+    if (doTurn) {
+      const B = c.tgt.B, [px, py] = lanePos(L, c.s - K.len / 2);
+      c.anim = { x: px, y: py, a: laneAngle(L), t: 0 };
+      cars.splice(k, 1); k--;
+      c.s = c.tgt.sB + K.len / 2; c.plan = 'S'; c.planE = null; c.tgt = null; c.turnWait = 0; c.v = Math.min(c.v, 50);
+      insertSorted(B.cars, c);
+    }
+  }
+  while (cars.length && cars[0].s - KIND[cars[0].kind].len > L.len + EXT) exitCar(cars.shift(), L);
+
+  const stade = ev.stade && ev.stade.axis === L.axis && ev.stade.idx === L.idx;
+  L.spawnT -= dt * tf * (stade ? 4 : 1);
+  const last = cars[cars.length - 1];
+  const free = !last || last.s - KIND[last.kind].len > -EXT + GAP + 4;
+  if (free && L.pend.length) cars.push(newCar(L.pend.shift()));
+  else if (free && L.spawnT <= 0) {
+    cars.push(newCar(randomKind()));
+    L.spawnT = Math.max(0.35, -Math.log(1 - Math.random()) / spawnRate());
+  } else if (L.spawnT < 0) L.spawnT = 0;
+}
+
+function exitCar(c, L) {
+  const [x, y] = lanePos(L, L.len - 30);
+  if (c.kind === 'amb') {
+    ev.amb = false;
+    if (c.wait < 2) {
+      const b = bonus(30, 30); earn(b); S.st.amb++; S.st.ambRow++;
+      floatText(x, y, '+' + fmt(b) + ' €', 'go');
+      toast('Ambulance passée sans arrêt : <b>+' + fmt(b) + ' €</b>');
+      missionHit('amb', 1);
+    } else { S.st.ambRow = 0; toast('L’ambulance a été retardée, pas de prime cette fois.'); }
+    return;
+  }
+  if (c.kind === 'gold') { ev.gold = false; return; }
+  if (c.kind === 'convoy') {
+    ev.convoy = false;
+    if (c.wait < 5) {
+      const b = bonus(40, 40); earn(b); S.st.convoy++;
+      floatText(x, y, '+' + fmt(b) + ' €', 'go');
+      toast('Convoi exceptionnel escorté : <b>+' + fmt(b) + ' €</b>');
+    } else toast('Le convoi exceptionnel a trop attendu, pas de prime.');
+    return;
+  }
+  const score = Math.max(0, Math.min(1, 1 - c.wait / (6 + 6 * L.inters.length))); // attente tolérée selon le nombre de carrefours
+  S.F += (score - S.F) * 0.03;
+  S.cars++; S.st.cars++;
+  if (c.wait < 2) { S.streak++; if (S.streak > S.st.bestStreak) S.st.bestStreak = S.streak; missionHit('streak', 1); }
+  else { S.streak = 0; if (S.mission && S.mission.id === 'streak') S.mission.prog = 0; }
+  missionHit('cars', 1);
+  earn(KIND[c.kind].val * carValue() * fluMult() * (isPeak(S.clock) ? 1.5 : 1) * (ev.rain > 0 ? 1.25 : 1) * cityMult() * achMult());
+}
+let windowInc = 0;
+function earn(x) { S.money += x; S.total += x; S.st.total += x; windowInc += x; missionHit('earn', x); }
+
+/* ───────── Évènements ───────── */
+const ev = { next: 40 + Math.random() * 25, amb: false, gold: false, convoy: false, rain: 0, works: null, stade: null, bridge: null, tramT: 30, tramDir: 1, force: null };
+function resetEv() {
+  Object.assign(ev, { next: 40 + Math.random() * 25, amb: false, gold: false, convoy: false, rain: 0, works: null, stade: null, bridge: null, tramT: 30, force: null });
+}
+function applyZones() {
+  for (const L of lanes) {
+    L.wz = null; L.br = null;
+    const w = ev.works;
+    if (w && w.axis === L.axis && w.idx === L.idx) L.wz = L.dir > 0 ? [w.a, w.b] : [L.len - w.b, L.len - w.a];
+    if (ev.bridge && L.axis === 'H' && L.idx === ev.bridge.idx) L.br = L.dir > 0 ? RIV[0] - 10 : W - RIV[1] - 10;
+  }
+}
+function startWorks() {
+  const roads = [];
+  for (let i = 0; i < 3; i++) if (activeH(i)) roads.push(['H', i]);
+  for (let j = 0; j < 3; j++) if (activeV(j)) roads.push(['V', j]);
+  const [axis, idx] = rand(roads), len = axis === 'H' ? W : H;
+  const ps = inters.filter(n => axis === 'H' ? n.i === idx : n.j === idx).map(n => axis === 'H' ? n.x : n.y).sort((a, b) => a - b);
+  const cuts = [-50, ...ps, len + 50], segs = [];
+  for (let q = 0; q < cuts.length - 1; q++) { const a = Math.max(10, cuts[q] + 70), b = Math.min(len - 10, cuts[q + 1] - 70); if (b - a >= 120) segs.push([a, b]); }
+  if (!segs.length) return false;
+  const [a, b] = rand(segs), mid = (a + b) / 2;
+  ev.works = { axis, idx, a: mid - 55, b: mid + 55, t: 45 };
+  applyZones(); return true;
+}
+function stepEvents(dt) {
+  if (ev.rain > 0) ev.rain -= dt;
+  if (ev.works) { ev.works.t -= dt; if (ev.works.t <= 0) { ev.works = null; applyZones(); } }
+  if (ev.stade) { ev.stade.t -= dt; if (ev.stade.t <= 0) ev.stade = null; }
+  if (ev.bridge) { ev.bridge.t -= dt; if (ev.bridge.t <= 0) { ev.bridge = null; applyZones(); } }
+  if (tramOn()) {
+    ev.tramT -= dt;
+    if (ev.tramT <= 0) { ev.tramT = 75 + Math.random() * 40; ev.tramDir = -ev.tramDir; const L = laneOf('H', 1, ev.tramDir, 0); if (L) L.pend.push('tram'); }
+  }
+  ev.next -= dt;
+  if (ev.next > 0) return;
+  ev.next = 45 + Math.random() * 35;
+  const opts = [];
+  if (!ev.amb) opts.push('amb');
+  if (!ev.gold) opts.push('gold');
+  if (inters.some(n => (n.level === 1 || n.level === 2) && !n.broken)) opts.push('panne', 'panne');
+  if (ev.rain <= 0) opts.push('rain');
+  if (!ev.works) opts.push('works');
+  if (S.roads >= 1 && !ev.stade) opts.push('stade');
+  if (S.roads >= 2 && !ev.convoy) opts.push('convoy');
+  if (mapType() === 'pont' && !ev.bridge) opts.push('bridge', 'bridge');
+  let pick = rand(opts);
+  if (ev.force && opts.includes(ev.force)) { pick = ev.force; ev.force = null; }
+  if (pick === 'amb') { rand(lanes).pend.push('amb'); ev.amb = true; notify('Ambulance en approche', 'Ouvre-lui la voie pour toucher la prime.'); }
+  else if (pick === 'gold') { rand(lanes).pend.push('gold'); ev.gold = true; notify('Fourgon blindé en ville', 'Clique dessus avant qu’il ne sorte.'); }
+  else if (pick === 'panne') {
+    const n = rand(inters.filter(n => (n.level === 1 || n.level === 2) && !n.broken));
+    n.broken = true; n.fixT = S.eq.tow ? 12 : Infinity;
+    if (!S.eq.tow) notify('Feu en panne au carrefour ' + n.key, 'Clique dessus pour le réparer.');
+  }
+  else if (pick === 'rain') ev.rain = 40;
+  else if (pick === 'works') startWorks();
+  else if (pick === 'stade') { const L = rand(lanes); ev.stade = { axis: L.axis, idx: L.idx, t: 22 }; }
+  else if (pick === 'convoy') { rand(lanes.filter(L => L.k === 0)).pend.push('convoy'); ev.convoy = true; notify('Convoi exceptionnel', 'Prime s’il traverse sans attendre.'); }
+  else if (pick === 'bridge') { const hs = [0, 1, 2].filter(activeH); ev.bridge = { idx: rand(hs), t: 14 }; applyZones(); }
+}
+function bannerState() {
+  const crash = inters.filter(n => n.crash > 0).length, broken = inters.filter(n => n.broken).length;
+  if (crash) return { alert: true, t: crash > 1 ? crash + ' accidents' : 'Accident', s: S.eq.tow ? 'la dépanneuse arrive' : 'clique sur le carrefour pour dégager' };
+  if (broken) return { alert: true, t: broken > 1 ? broken + ' feux en panne' : 'Feu en panne', s: S.eq.tow ? 'la dépanneuse arrive' : 'clique dessus pour le réparer' };
+  if (ev.amb) return { alert: true, t: 'Ambulance en approche', s: 'ouvre-lui la voie pour toucher la prime' };
+  if (ev.gold) return { alert: true, t: 'Fourgon blindé en ville', s: 'clique dessus avant qu’il ne sorte' };
+  if (ev.convoy) return { alert: true, t: 'Convoi exceptionnel', s: 'prime s’il traverse sans attendre' };
+  if (ev.bridge) return { alert: false, t: 'Pont levé', s: 'un bateau passe, encore ' + Math.ceil(ev.bridge.t) + ' s' };
+  if (ev.works) return { alert: false, t: 'Travaux', s: 'clique sur le chantier pour l’accélérer, ' + Math.ceil(ev.works.t) + ' s' };
+  if (ev.stade) return { alert: false, t: 'Sortie de stade', s: 'afflux sur une route pendant ' + Math.ceil(ev.stade.t) + ' s' };
+  if (ev.rain > 0) return { alert: false, t: 'Averse', s: 'freinages plus longs, revenus ×1,25 pendant ' + Math.ceil(ev.rain) + ' s' };
+  if (isPeak(S.clock)) return { alert: false, t: 'Heure de pointe', s: 'trafic dense, revenus ×1,5' };
+  return null;
+}
+
+/* ───────── Missions et succès ───────── */
+const MISSIONS = {
+  cars:   { text: g => 'Fais passer ' + g + ' véhicules', goal: () => Math.round(50 + lanes.length * 10) },
+  earn:   { text: g => 'Gagne ' + fmt(g) + ' €', goal: () => Math.max(60, Math.round(S.rate * 75)) },
+  flu:    { text: g => 'Tiens ' + g + ' s au-dessus de 85 % de fluidité', goal: () => 60 },
+  amb:    { text: () => 'Laisse passer une ambulance sans arrêt', goal: () => 1 },
+  gold:   { text: () => 'Intercepte un fourgon blindé', goal: () => 1 },
+  streak: { text: g => 'Enchaîne ' + g + ' véhicules sans attente', goal: () => 30 + lanes.length * 4 }
+};
+function newMission() {
+  const ids = Object.keys(MISSIONS).filter(k => !S.mission || k !== S.mission.id);
+  const id = rand(ids);
+  S.mission = { id, goal: MISSIONS[id].goal(), prog: 0 };
+  if (id === 'amb' || id === 'gold') { ev.force = id; ev.next = Math.min(ev.next, 12); }
+}
+function missionHit(id, x) {
+  const m = S.mission;
+  if (!m || m.id !== id || m.done) return;
+  m.prog += x;
+  if (m.prog >= m.goal) {
+    m.done = true; // évite la récursion via earn()
+    const b = bonus(45, 45);
+    S.money += b; S.total += b; S.st.total += b; windowInc += b;
+    toast('Objectif atteint : <b>+' + fmt(b) + ' €</b>');
+    newMission();
+  }
+}
+function unlock(id) {
+  if (S.ach[id]) return;
+  S.ach[id] = 1;
+  const a = ACH.find(a => a[0] === id);
+  toast('Succès débloqué : <b>' + a[1] + '</b>, revenus +2 %', 6000);
+  renderAch();
+}
+let dayFull = false;
+function checkAch() {
+  const c = S.st.cars;
+  if (c >= 100) unlock('c100'); if (c >= 1000) unlock('c1k'); if (c >= 10000) unlock('c10k');
+  if (inters.some(n => n.level === 1 || n.level === 2)) unlock('auto');
+  if (inters.some(n => n.level === 3 && !n.fixed)) unlock('round');
+  if (inters.length === 9) unlock('grid');
+  if (cityReady()) unlock('full');
+  if (S.st.ambRow >= 3) unlock('amb3');
+  if (S.st.gold >= 5) unlock('gold5');
+  if (S.streak >= 500) unlock('streak');
+  if (S.st.convoy >= 1) unlock('convoy');
+  if (S.st.total >= 1e6) unlock('million');
+  if (S.city >= 1) unlock('city');
+}
+const cityReady = () => inters.length === 9 && inters.every(n => n.level >= 2);
+
+/* ───────── Textes flottants, toasts, notifications ───────── */
+const floats = [];
+function floatText(x, y, text, tone) { floats.push({ x, y, text, tone, t: 0 }); }
+const $ = id => document.getElementById(id);
+function toast(html, ms = 4200) {
+  const box = $('toasts');
+  while (box.children.length >= 4) box.firstChild.remove();
+  const el = document.createElement('div');
+  el.className = 'toast glass'; el.innerHTML = html;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), ms);
+}
+const canNotify = () => typeof Notification !== 'undefined';
+function notify(title, body) {
+  if (!S.notif || !canNotify() || Notification.permission !== 'granted') return;
+  if (!document.hidden && document.hasFocus()) return;
+  try { const n = new Notification(title, { body, tag: 'feu-vert', icon: 'icon-192.png' }); n.onclick = () => { window.focus(); n.close(); }; } catch (e) {}
+}
+
+/* ───────── Rendu ───────── */
+const cv = $('cv'), ctx = cv.getContext('2d');
+const bgDay = document.createElement('canvas'), bgNight = document.createElement('canvas');
+let cw = 0, ch = 0, dpr = 1, sc = 1, ox = 0, oy = 0, bgDirty = true;
+const mqNarrow = window.matchMedia('(max-width: 720px)');
+const PAL = {
+  light: { ground: '#dfe4d8', block: '#f0eee7', bld: ['#e4e0d5', '#dad5c8', '#eae7de', '#d3cec0'], roof: 'rgba(255,255,255,.5)',
+           park: '#c9dcba', tree: '#93c08a', road: '#474d56', deck: '#59606a', mark: 'rgba(255,255,255,.5)', zebra: 'rgba(255,255,255,.75)',
+           proj: 'rgba(60,75,65,.3)', glass: 'rgba(40,46,52,.82)', water: '#a9cfe3', rail: 'rgba(210,215,220,.55)',
+           go: '#2fc77d', amber: '#f5b62e', stop: '#ef5a4c', goBtn: '#1f9d61', goInk: '#ffffff' },
+  dark:  { ground: '#0f1518', block: '#171f24', bld: ['#202a30', '#1c252b', '#253138', '#192127'], roof: 'rgba(255,255,255,.045)',
+           park: '#15251d', tree: '#27503b', road: '#2b333a', deck: '#39434c', mark: 'rgba(255,255,255,.22)', zebra: 'rgba(255,255,255,.3)',
+           proj: 'rgba(150,175,185,.22)', glass: 'rgba(10,14,17,.82)', water: '#12303f', rail: 'rgba(160,175,185,.35)',
+           go: '#3ddc8c', amber: '#ffc13d', stop: '#ff6a5c', goBtn: '#35c27e', goInk: '#05140c' }
+};
+
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cw = window.innerWidth; ch = window.innerHeight;
+  for (const c of [cv, bgDay, bgNight]) { c.width = Math.round(cw * dpr); c.height = Math.round(ch * dpr); }
+  const narrow = mqNarrow.matches;
+  const vw = narrow ? cw : Math.max(200, cw - PANEL_W), vh = narrow ? ch * 0.56 : ch;
+  sc = Math.min(vw / (W + 40), vh / (H + 40));
+  ox = (vw - W * sc) / 2; oy = (vh - H * sc) / 2;
+  bgDirty = true;
+}
+function mulberry(a) {
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function rr(g, x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, w / 2, h / 2));
+  g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+  g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+}
+
+function drawStatic(canvas, p, night) {
+  const g = canvas.getContext('2d'), t = mapType(), far = 1600;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  g.fillStyle = p.ground; g.fillRect(0, 0, canvas.width, canvas.height);
+  g.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * ox, dpr * oy);
+
+  // Îlots : bâtiments et parcs
+  const bx = [-far], by = [-far];
+  for (let j = 0; j < 3; j++) bx.push(XS[j] - 22, XS[j] + 22);
+  for (let i = 0; i < 3; i++) by.push(YS[i] - hH(i), YS[i] + hH(i));
+  bx.push(W + far); by.push(H + far);
+  const rnd = mulberry(20261116 + S.city * 7919), rw = mulberry(4242 + S.city);
+  for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) {
+    const x0 = bx[b * 2] + 5, x1 = bx[b * 2 + 1] - 5, y0 = by[a * 2] + 5, y1 = by[a * 2 + 1] - 5;
+    g.fillStyle = p.block; rr(g, x0, y0, x1 - x0, y1 - y0, 9); g.fill();
+    const pad = 8;
+    let y = y0 + pad;
+    while (y < y1 - pad - 16) {
+      let h = 36 + rnd() * 42;
+      if (y1 - pad - (y + h) < 30) h = y1 - pad - y;
+      let x = x0 + pad;
+      while (x < x1 - pad - 16) {
+        let w = 34 + rnd() * 58;
+        if (x1 - pad - (x + w) < 30) w = x1 - pad - x;
+        const r = rnd(), tone = (rnd() * p.bld.length) | 0;
+        if (r < 0.17) {
+          g.fillStyle = p.park; rr(g, x, y, w, h, 7); g.fill();
+          g.fillStyle = p.tree;
+          const nt = 1 + ((w * h) / 900 | 0);
+          for (let q = 0; q < nt; q++) { g.beginPath(); g.arc(x + 8 + rnd() * (w - 16), y + 8 + rnd() * (h - 16), 4 + rnd() * 3.5, 0, 7); g.fill(); }
+        } else {
+          g.fillStyle = p.bld[tone]; rr(g, x, y, w, h, 4); g.fill();
+          g.fillStyle = p.roof; rr(g, x + 4, y + 4, w - 8, h - 8, 2.5); g.fill();
+          if (night) {
+            g.fillStyle = 'rgba(255,214,130,.5)';
+            const nw = (rw() * 4) | 0;
+            for (let q = 0; q < nw; q++) g.fillRect(x + 6 + rw() * Math.max(1, w - 16), y + 6 + rw() * Math.max(1, h - 16), 3.5, 3.5);
+          }
+        }
+        x += w + 6;
+      }
+      y += h + 6;
+    }
+  }
+
+  // Fleuve
+  if (t === 'pont') {
+    g.fillStyle = p.ground; g.fillRect(RIV[0] - 7, -far, RIV[1] - RIV[0] + 14, H + 2 * far);
+    g.fillStyle = p.water; g.fillRect(RIV[0], -far, RIV[1] - RIV[0], H + 2 * far);
+  }
+
+  // Routes en projet
+  g.strokeStyle = p.proj; g.lineWidth = 1.5; g.setLineDash([7, 7]);
+  for (let i = 0; i < 3; i++) if (!activeH(i)) for (const d of [-hH(i) + 4, hH(i) - 4]) {
+    g.beginPath(); g.moveTo(-far, YS[i] + d); g.lineTo(W + far, YS[i] + d); g.stroke();
+  }
+  for (let j = 0; j < 3; j++) if (!activeV(j)) for (const d of [-18, 18]) {
+    g.beginPath(); g.moveTo(XS[j] + d, -far); g.lineTo(XS[j] + d, H + far); g.stroke();
+  }
+  g.setLineDash([]);
+
+  // Chaussées
+  g.fillStyle = p.road;
+  for (let i = 0; i < 3; i++) if (activeH(i)) g.fillRect(-far, YS[i] - hH(i), W + 2 * far, hH(i) * 2);
+  for (let j = 0; j < 3; j++) if (activeV(j)) g.fillRect(XS[j] - 22, -far, 44, H + 2 * far);
+  if (t === 'pont') for (let i = 0; i < 3; i++) if (activeH(i)) {
+    g.fillStyle = p.deck; g.fillRect(RIV[0] - 8, YS[i] - 25, RIV[1] - RIV[0] + 16, 50);
+    g.fillStyle = p.road; g.fillRect(RIV[0] - 8, YS[i] - 21, RIV[1] - RIV[0] + 16, 42);
+  }
+  g.strokeStyle = p.mark; g.lineWidth = 1.6;
+  for (let i = 0; i < 3; i++) if (activeH(i)) {
+    const wide = hH(i) > 22;
+    g.setLineDash(wide ? [] : [12, 12]);
+    g.beginPath(); g.moveTo(-far, YS[i]); g.lineTo(W + far, YS[i]); g.stroke();
+    if (wide) { g.setLineDash([12, 12]); for (const d of [-22, 22]) { g.beginPath(); g.moveTo(-far, YS[i] + d); g.lineTo(W + far, YS[i] + d); g.stroke(); } }
+  }
+  g.setLineDash([12, 12]);
+  for (let j = 0; j < 3; j++) if (activeV(j)) { g.beginPath(); g.moveTo(XS[j], -far); g.lineTo(XS[j], H + far); g.stroke(); }
+  g.setLineDash([]);
+
+  // Rails du tram
+  if (tramOn()) {
+    g.strokeStyle = p.rail; g.lineWidth = 1;
+    for (const d of [CW - 3.2, CW + 3.2, -CW - 3.2, -CW + 3.2]) { g.beginPath(); g.moveTo(-far, YS[1] + d); g.lineTo(W + far, YS[1] + d); g.stroke(); }
+  }
+
+  // Carrefours, passages piétons, îlots de giratoire
+  for (const n of inters) {
+    g.fillStyle = p.road; g.fillRect(n.x - n.hx - 14, n.y - n.hy - 14, (n.hx + 14) * 2, (n.hy + 14) * 2);
+    g.fillStyle = p.zebra;
+    for (let k = -n.hy + 4; k <= n.hy - 8; k += 8) { g.fillRect(n.x - n.hx - 10, n.y + k, 8, 4); g.fillRect(n.x + n.hx + 2, n.y + k, 8, 4); }
+    for (let k = -n.hx + 4; k <= n.hx - 8; k += 8) { g.fillRect(n.x + k, n.y - n.hy - 10, 4, 8); g.fillRect(n.x + k, n.y + n.hy + 2, 4, 8); }
+    if (n.round) {
+      g.strokeStyle = p.mark; g.lineWidth = 1.4; g.setLineDash([5, 5]);
+      g.beginPath(); g.arc(n.x, n.y, 21, 0, 7); g.stroke(); g.setLineDash([]);
+      g.fillStyle = p.zebra; g.beginPath(); g.arc(n.x, n.y, 9.5, 0, 7); g.fill();
+      g.fillStyle = p.park; g.beginPath(); g.arc(n.x, n.y, 7.5, 0, 7); g.fill();
+      g.fillStyle = p.tree; g.beginPath(); g.arc(n.x, n.y, 3.6, 0, 7); g.fill();
+    }
+  }
+}
+
+const FONT = '-apple-system,system-ui,sans-serif';
+function drawVehicle(c, L, p, night, time) {
+  const K = KIND[c.kind], l = K.len, h = l / 2;
+  let [x, y] = lanePos(L, c.s - h), ang = laneAngle(L);
+  // contournement de l'îlot dans un giratoire
+  for (const e of L.inters) if (e.n.round) {
+    const u = (c.s - h - (e.c - e.hb)) / (2 * e.hb);
+    if (u > 0 && u < 1) { const b = 5 * Math.sin(Math.PI * u); x += -Math.sin(ang) * b; y += Math.cos(ang) * b; }
+  }
+  if (c.anim) {
+    const k = c.anim.t / .4, q = k * k * (3 - 2 * k);
+    let da = ang - c.anim.a; while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI;
+    x = c.anim.x + (x - c.anim.x) * q; y = c.anim.y + (y - c.anim.y) * q; ang = c.anim.a + da * q;
+  }
+  if (c.crashed) ang += 0.5;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+  if (night && c.kind !== 'bike') {
+    ctx.fillStyle = 'rgba(255,240,190,.11)';
+    ctx.beginPath(); ctx.moveTo(h - 1, -4); ctx.lineTo(h + 22, -9); ctx.lineTo(h + 22, 9); ctx.lineTo(h - 1, 4); ctx.fill();
+  }
+  const dark = 'rgba(15,25,35,.55)';
+  if (c.kind === 'amb') {
+    const on = Math.floor(time * 6) % 2;
+    ctx.fillStyle = on ? 'rgba(60,130,255,.28)' : 'rgba(255,70,60,.26)';
+    ctx.beginPath(); ctx.arc(0, 0, 20, 0, 7); ctx.fill();
+    ctx.fillStyle = '#fbfbf8'; rr(ctx, -h, -6, l, 12, 3); ctx.fill();
+    ctx.fillStyle = '#e23b30'; ctx.fillRect(-3.5, -1.3, 7, 2.6); ctx.fillRect(-1.3, -3.5, 2.6, 7);
+    ctx.fillStyle = on ? '#3c82ff' : '#ff463c'; ctx.fillRect(5.5, -5, 3, 10);
+  } else if (c.kind === 'gold') {
+    ctx.fillStyle = 'rgba(245,190,40,' + (0.22 + 0.12 * Math.sin(time * 6)) + ')';
+    ctx.beginPath(); ctx.arc(0, 0, 21, 0, 7); ctx.fill();
+    ctx.fillStyle = '#f2b824'; rr(ctx, -h, -6.5, l, 13, 3); ctx.fill();
+    ctx.fillStyle = '#8a6208'; rr(ctx, -8, -4, 12, 8, 1.5); ctx.fill();
+    ctx.fillStyle = '#fff3c4'; ctx.font = '700 7.5px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('€', -2, 0.5);
+  } else if (c.kind === 'bus') {
+    ctx.fillStyle = c.color; rr(ctx, -h, -5.5, l, 11, 3); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.3)'; rr(ctx, -h + 3, -3.6, l - 11, 7.2, 1.5); ctx.fill();
+    ctx.fillStyle = dark; rr(ctx, h - 6.5, -4.2, 3.5, 8.4, 1.2); ctx.fill();
+  } else if (c.kind === 'truck') {
+    ctx.fillStyle = '#d9d6cd'; rr(ctx, -h, -5.5, l - 12, 11, 1.5); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.fillRect(-h + 3, -5.5, 1, 11); ctx.fillRect(-h + (l - 12) / 2, -5.5, 1, 11);
+    ctx.fillStyle = c.color; rr(ctx, h - 10.5, -5, 10.5, 10, 2.5); ctx.fill();
+    ctx.fillStyle = dark; rr(ctx, h - 5, -3.8, 3, 7.6, 1); ctx.fill();
+  } else if (c.kind === 'bike') {
+    ctx.fillStyle = night ? '#c9d2d8' : '#2a3036'; rr(ctx, -h, -0.9, l, 1.8, .9); ctx.fill();
+    ctx.fillStyle = c.color; ctx.beginPath(); ctx.arc(0, 0, 2.5, 0, 7); ctx.fill();
+  } else if (c.kind === 'tram') {
+    ctx.fillStyle = '#f4f4ef'; rr(ctx, -h, -5.5, h - 1, 11, 3.5); ctx.fill(); rr(ctx, 1, -5.5, h - 1, 11, 3.5); ctx.fill();
+    ctx.fillStyle = '#7d8790'; ctx.fillRect(-1.5, -3, 3, 6);
+    ctx.fillStyle = '#1f9d61'; ctx.fillRect(-h + 3, -5.5, l - 6, 1.8); ctx.fillRect(-h + 3, 3.7, l - 6, 1.8);
+    ctx.fillStyle = dark; rr(ctx, -h + 4, -2.4, h - 9, 4.8, 1.5); ctx.fill(); rr(ctx, 5, -2.4, h - 9, 4.8, 1.5); ctx.fill();
+  } else if (c.kind === 'convoy') {
+    const on = Math.floor(time * 4) % 2;
+    ctx.fillStyle = 'rgba(255,180,40,' + (on ? .24 : .1) + ')'; rr(ctx, -h - 6, -13, l + 12, 26, 13); ctx.fill();
+    ctx.fillStyle = '#5a626b'; rr(ctx, -h, -5, l - 14, 10, 1.5); ctx.fill();
+    ctx.fillStyle = '#9fb7c9'; rr(ctx, -h + 5, -6.8, l - 26, 13.6, 6.8); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.35)'; rr(ctx, -h + 9, -4.6, l - 34, 2.4, 1.2); ctx.fill();
+    ctx.fillStyle = '#e9b21f'; rr(ctx, h - 12, -5.5, 12, 11, 2.5); ctx.fill();
+    ctx.fillStyle = dark; rr(ctx, h - 5.5, -4, 3, 8, 1); ctx.fill();
+    ctx.fillStyle = on ? '#ffb020' : '#7a5a10'; ctx.fillRect(h - 10, -1.5, 3, 3);
+  } else {
+    ctx.fillStyle = c.color; rr(ctx, -h, -5, l, 10, 3); ctx.fill();
+    ctx.fillStyle = dark; rr(ctx, 0, -3.8, 5, 7.6, 1.5); ctx.fill();
+    ctx.fillStyle = 'rgba(15,25,35,.3)'; rr(ctx, -7.5, -3.8, 3.5, 7.6, 1.2); ctx.fill();
+  }
+  if (c.v < 6 && c.kind !== 'bike') { ctx.fillStyle = '#ff4a3d'; ctx.fillRect(-h, -4.6, 1.6, 2.4); ctx.fillRect(-h, 2.2, 1.6, 2.4); }
+  ctx.restore();
+  if (c.crashed) {
+    ctx.fillStyle = p.amber; ctx.beginPath();
+    for (let q = 0; q < 10; q++) { const r = q % 2 ? 4 : 9, a = q * Math.PI / 5 + time * 2; ctx.lineTo(x + 9 + Math.cos(a) * r, y - 6 + Math.sin(a) * r); }
+    ctx.fill();
+  } else if (c.wait > 9 && (c.kind === 'car' || c.kind === 'bus' || c.kind === 'truck')) {
+    ctx.fillStyle = p.stop; ctx.beginPath(); ctx.arc(x + 7, y - 9, 4.2, 0, 7); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = '700 6.5px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('!', x + 7, y - 8.6);
+  }
+}
+
+function pill(label, x, y, mode, hot, p) {
+  ctx.font = '600 11.5px ' + FONT; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  const w = ctx.measureText(label).width + 18, h = 21;
+  ctx.fillStyle = mode === 'buy' ? (hot ? p.go : p.goBtn) : p.glass;
+  rr(ctx, x, y, w, h, 10.5); ctx.fill();
+  ctx.fillStyle = mode === 'buy' ? p.goInk : mode === 'done' ? p.go : 'rgba(255,255,255,.72)';
+  ctx.fillText(label, x + 9, y + h / 2 + 0.5);
+  return { x, y, w, h };
+}
+
+let hover = null, time = 0;
+function draw() {
+  if (bgDirty) { drawStatic(bgDay, PAL.light, false); drawStatic(bgNight, PAL.dark, true); bgDirty = false; }
+  const dk = darkness(S.clock), night = dk > 0.5, p = night ? PAL.dark : PAL.light;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (dk < 1) ctx.drawImage(bgDay, 0, 0);
+  if (dk > 0) { ctx.globalAlpha = dk; ctx.drawImage(bgNight, 0, 0); ctx.globalAlpha = 1; }
+  ctx.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * ox, dpr * oy);
+  const col = { g: p.go, o: p.amber, r: p.stop };
+
+  // Pont levé
+  if (ev.bridge) {
+    const y = YS[ev.bridge.idx], k = 1 - Math.abs(ev.bridge.t - 7) / 7;
+    ctx.fillStyle = p.water; ctx.fillRect(RIV[0] + 6, y - 26, RIV[1] - RIV[0] - 12, 52);
+    const by = y - 110 + 220 * (1 - ev.bridge.t / 14);
+    ctx.fillStyle = '#f3f1ea'; rr(ctx, (RIV[0] + RIV[1]) / 2 - 9, by - 24, 18, 48, 9); ctx.fill();
+    ctx.fillStyle = '#c96a4b'; rr(ctx, (RIV[0] + RIV[1]) / 2 - 5.5, by - 12, 11, 22, 3); ctx.fill();
+    ctx.fillStyle = p.stop; ctx.globalAlpha = .5 + .5 * k;
+    ctx.fillRect(RIV[0] - 12, y - 21, 3.5, 42); ctx.fillRect(RIV[1] + 8.5, y - 21, 3.5, 42); ctx.globalAlpha = 1;
+  }
+
+  // Travaux
+  if (ev.works) {
+    const w = ev.works, half = w.axis === 'H' ? hH(w.idx) : 22, pos = w.axis === 'H' ? YS[w.idx] : XS[w.idx];
+    for (let q = w.a; q < w.b; q += 11) for (const d of [-half + 1, half - 4]) {
+      ctx.fillStyle = ((q - w.a) / 11 | 0) % 2 ? '#f4f4ef' : '#f08a2b';
+      if (w.axis === 'H') ctx.fillRect(q, pos + d, 11, 3); else ctx.fillRect(pos + d, q, 3, 11);
+    }
+    ctx.fillStyle = '#f08a2b';
+    for (const q of [w.a + 12, (w.a + w.b) / 2, w.b - 12]) { ctx.beginPath(); if (w.axis === 'H') ctx.arc(q, pos, 2.6, 0, 7); else ctx.arc(pos, q, 2.6, 0, 7); ctx.fill(); }
+  }
+
+  // Lignes de feu
+  ctx.lineCap = 'round';
+  for (const L of lanes) for (const e of L.inters) {
+    const n = e.n, [x, y] = lanePos(L, e.stop + 3);
+    const dx = L.axis === 'H' ? 0 : 7.5, dy = L.axis === 'H' ? 7.5 : 0;
+    if (n.round && !(n.crash > 0)) {
+      ctx.strokeStyle = p.zebra; ctx.lineWidth = 2; ctx.setLineDash([3, 3.5]); ctx.lineCap = 'butt';
+      ctx.beginPath(); ctx.moveTo(x - dx, y - dy); ctx.lineTo(x + dx, y + dy); ctx.stroke(); ctx.setLineDash([]); ctx.lineCap = 'round';
+      continue;
+    }
+    const st = n.broken && Math.floor(n.flash * 2.5) % 2 ? 'o' : sig(n, L.axis);
+    ctx.strokeStyle = col[st]; ctx.globalAlpha = .28; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(x - dx, y - dy); ctx.lineTo(x + dx, y + dy); ctx.stroke();
+    ctx.globalAlpha = 1; ctx.lineWidth = 3.4;
+    ctx.beginPath(); ctx.moveTo(x - dx, y - dy); ctx.lineTo(x + dx, y + dy); ctx.stroke();
+  }
+
+  // Véhicules
+  for (const L of lanes) for (const c of L.cars) drawVehicle(c, L, p, night, time);
+
+  // Indicateurs de carrefour et pastilles
+  for (const n of inters) {
+    if (hover && hover.n === n && hover.type === 'inter') {
+      ctx.strokeStyle = night ? 'rgba(255,255,255,.5)' : 'rgba(255,255,255,.85)'; ctx.lineWidth = 2;
+      rr(ctx, n.x - n.hx - 15, n.y - n.hy - 15, (n.hx + 15) * 2, (n.hy + 15) * 2, 10); ctx.stroke();
+    }
+    const on = Math.floor(n.flash * 2.5) % 2;
+    if (n.crash > 0) {
+      ctx.fillStyle = on ? p.stop : 'rgba(0,0,0,.5)';
+      ctx.beginPath(); ctx.moveTo(n.x, n.y - 15); ctx.lineTo(n.x + 14, n.y + 10); ctx.lineTo(n.x - 14, n.y + 10); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '700 13px ' + FONT; ctx.fillText('!', n.x, n.y + 2);
+    } else if (n.broken) {
+      ctx.fillStyle = on ? p.amber : 'rgba(0,0,0,.45)';
+      ctx.beginPath(); ctx.arc(n.x, n.y, 12, 0, 7); ctx.fill();
+      ctx.fillStyle = on ? '#3a2a00' : p.amber; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '700 14px ' + FONT;
+      ctx.fillText('!', n.x, n.y + 0.5);
+    } else if (!n.round) {
+      const c = n.phase === 'go' ? p.go : n.phase === 'orange' ? p.amber : p.stop;
+      ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.beginPath(); ctx.arc(n.x, n.y, 12, 0, 7); ctx.fill();
+      ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = 2.6;
+      if (n.phase === 'allred') { ctx.beginPath(); ctx.arc(n.x, n.y, 3.2, 0, 7); ctx.fill(); }
+      else {
+        const hx = n.green === 'H' ? 1 : 0, hy = 1 - hx;
+        ctx.beginPath(); ctx.moveTo(n.x - hx * 5, n.y - hy * 5); ctx.lineTo(n.x + hx * 5, n.y + hy * 5); ctx.stroke();
+        for (const d of [-1, 1]) {
+          ctx.beginPath();
+          ctx.moveTo(n.x + d * hx * 8.5, n.y + d * hy * 8.5);
+          ctx.lineTo(n.x + d * hx * 4 + hy * 3.6, n.y + d * hy * 4 + hx * 3.6);
+          ctx.lineTo(n.x + d * hx * 4 - hy * 3.6, n.y + d * hy * 4 - hx * 3.6);
+          ctx.fill();
+        }
+      }
+    }
+    // numéro de touche
+    ctx.fillStyle = p.glass; rr(ctx, n.x - n.hx - 31, n.y - n.hy - 31, 15, 15, 5); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.font = '600 10px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(n.key, n.x - n.hx - 23.5, n.y - n.hy - 23);
+    // pastilles
+    const px = n.x + n.hx + 17, py = n.y + n.hy + 17;
+    n.pill = n.pillR = null;
+    if (n.level >= 2) pill(n.level === 3 ? 'Giratoire' : 'Capteurs', px, py, 'done', false, p);
+    else {
+      const cost = lightCost(n), can = S.money >= cost;
+      n.pill = pill((n.level === 0 ? 'Auto  ' : 'Capteurs  ') + fmt(cost) + ' €', px, py, can ? 'buy' : 'off', hover && hover.n === n && hover.type === 'pill', p);
+      if (n.hy === 22) {
+        const rc = roundCost(), canR = S.money >= rc;
+        n.pillR = pill('Giratoire  ' + fmt(rc) + ' €', px, py + 24, canR ? 'buy' : 'off', hover && hover.n === n && hover.type === 'pillR', p);
+      }
+    }
+  }
+
+  // Aide du premier clic
+  if (S.tuto && inters.length) {
+    const n = inters.find(m => !m.round) || inters[0], k = (time % 1.4) / 1.4;
+    ctx.strokeStyle = p.go; ctx.globalAlpha = 1 - k; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(n.x, n.y, 30 + k * 34, 0, 7); ctx.stroke(); ctx.globalAlpha = 1;
+    const label = 'Clique ici pour changer le feu';
+    ctx.font = '600 13px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(label).width + 24;
+    ctx.fillStyle = p.glass; rr(ctx, n.x - w / 2, n.y - n.hy - 70, w, 28, 14); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.fillText(label, n.x, n.y - n.hy - 55.5);
+  }
+
+  // Textes flottants
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '700 15px ' + FONT;
+  for (const f of floats) {
+    const a = Math.max(0, 1 - f.t / 1.6), yy = f.y - 18 - f.t * 26;
+    const w = ctx.measureText(f.text).width + 18;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = p.glass; rr(ctx, f.x - w / 2, yy - 12, w, 24, 12); ctx.fill();
+    ctx.fillStyle = f.tone === 'go' ? p.go : p.amber; ctx.fillText(f.text, f.x, yy + 0.5);
+    ctx.globalAlpha = 1;
+  }
+
+  // Pluie
+  if (ev.rain > 0) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = night ? 'rgba(20,40,60,.18)' : 'rgba(60,85,110,.16)'; ctx.fillRect(0, 0, cw, ch);
+    ctx.strokeStyle = night ? 'rgba(190,215,235,.3)' : 'rgba(255,255,255,.55)'; ctx.lineWidth = 1.1; ctx.beginPath();
+    for (let q = 0; q < 110; q++) {
+      const x = (q * 137.5 + time * 260) % (cw + 60) - 30, y = (q * 71.3 + time * 900) % (ch + 40) - 20;
+      ctx.moveTo(x, y); ctx.lineTo(x - 5, y + 16);
+    }
+    ctx.stroke();
+  }
+}
+
+/* ───────── Interactions sur la carte ───────── */
+function toWorld(e) {
+  const r = cv.getBoundingClientRect();
+  return [(e.clientX - r.left - ox) / sc, (e.clientY - r.top - oy) / sc];
+}
+const inRect = (q, x, y) => q && x >= q.x && x <= q.x + q.w && y >= q.y && y <= q.y + q.h;
+function pick(wx, wy) {
+  for (const L of lanes) for (const c of L.cars) if (c.kind === 'gold') {
+    const [x, y] = lanePos(L, c.s - 12);
+    if (Math.hypot(wx - x, wy - y) < 26) return { type: 'gold', c, x, y };
+  }
+  for (const n of inters) { if (inRect(n.pill, wx, wy)) return { type: 'pill', n }; if (inRect(n.pillR, wx, wy)) return { type: 'pillR', n }; }
+  for (const n of inters)
+    if (Math.abs(wx - n.x) <= n.hx + 15 && Math.abs(wy - n.y) <= n.hy + 15) return { type: 'inter', n };
+  const w = ev.works;
+  if (w) {
+    const half = (w.axis === 'H' ? hH(w.idx) : 22) + 4, pos = w.axis === 'H' ? YS[w.idx] : XS[w.idx];
+    const along = w.axis === 'H' ? wx : wy, across = w.axis === 'H' ? wy : wx;
+    if (along >= w.a - 4 && along <= w.b + 4 && Math.abs(across - pos) <= half) return { type: 'works', x: wx, y: wy };
+  }
+  return null;
+}
+function act(n) {
+  if (n.crash > 0) { n.crash = 0; floatText(n.x, n.y, 'Voie dégagée', 'go'); return; }
+  if (n.broken) {
+    n.broken = false; n.since = 0; S.st.repairs++;
+    const b = bonus(8, 8); earn(b);
+    floatText(n.x, n.y, 'Réparé  +' + fmt(b) + ' €', 'go'); return;
+  }
+  if (n.round) return;
+  if (toggle(n)) { S.tuto = false; unlock('first'); }
+}
+cv.addEventListener('mousemove', e => {
+  const [wx, wy] = toWorld(e);
+  hover = pick(wx, wy);
+  let active = !!hover;
+  if (hover && hover.type === 'pill') active = S.money >= lightCost(hover.n);
+  if (hover && hover.type === 'pillR') active = S.money >= roundCost();
+  if (hover && hover.type === 'inter' && hover.n.round && !(hover.n.crash > 0)) active = false;
+  cv.style.cursor = active ? 'pointer' : 'default';
+});
+cv.addEventListener('mouseleave', () => { hover = null; });
+cv.addEventListener('pointerdown', e => {
+  const [wx, wy] = toWorld(e), h = pick(wx, wy);
+  if (!h) return;
+  if (h.type === 'gold') {
+    const b = bonus(20, 20); earn(b); S.st.gold++;
+    h.c.kind = 'car'; ev.gold = false;
+    floatText(h.x, h.y, '+' + fmt(b) + ' €', 'amber'); missionHit('gold', 1);
+  } else if (h.type === 'pill') {
+    const n = h.n, cost = lightCost(n);
+    if (S.money < cost) return;
+    S.money -= cost; n.level++; S.inter[n.id] = n.level; n.since = 0;
+    floatText(n.x, n.y, n.level === 1 ? 'Feu automatique' : 'Feu à capteurs', 'go');
+    save(); refreshUI();
+  } else if (h.type === 'pillR') {
+    const n = h.n, cost = roundCost();
+    if (S.money < cost) return;
+    S.money -= cost; S.inter[n.id] = 3; n.phase = 'go'; n.since = 0;
+    build(); bgDirty = true;
+    floatText(n.x, n.y, 'Mini-giratoire', 'go');
+    save(); refreshUI();
+  } else if (h.type === 'works') {
+    ev.works.t -= 4; floatText(h.x, h.y, '−4 s', 'amber');
+  } else act(h.n);
+});
+
+/* ───────── Pause, vitesse, clavier ───────── */
+let paused = false, speed = 1;
+function setPaused(v) {
+  paused = v; document.body.classList.toggle('paused', v);
+  $('b-pause').textContent = v ? 'Reprendre' : 'Pause'; $('b-pause').classList.toggle('on', v);
+}
+function setSpeed(v) { speed = v; $('b-speed').textContent = '×' + v; $('b-speed').classList.toggle('on', v > 1); }
+$('b-pause').addEventListener('click', () => setPaused(!paused));
+$('b-speed').addEventListener('click', () => setSpeed(speed === 1 ? 2 : 1));
+window.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) { e.preventDefault(); saveNow(); return; }
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = document.activeElement && document.activeElement.tagName;
+  if (tag === 'TEXTAREA' || tag === 'INPUT') return;
+  if (e.code === 'Space') { if (tag === 'BUTTON' || tag === 'SUMMARY') return; e.preventDefault(); setPaused(!paused); return; }
+  if (e.key === 'v' || e.key === 'V') { setSpeed(speed === 1 ? 2 : 1); return; }
+  if (e.key >= '1' && e.key <= '9') { const n = inters.find(m => m.key === +e.key); if (n && !paused) act(n); }
+});
+
+/* ───────── Panneau ───────── */
+const rows = {};
+function mkRow(parent, k, fn) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'up';
+  b.innerHTML = '<span class="n"></span><span class="c"></span><span class="d"></span>';
+  b.addEventListener('click', () => fn(k));
+  $(parent).appendChild(b);
+  rows[k] = { b, n: b.children[0], c: b.children[1], d: b.children[2] };
+}
+['road', 'value', 'traffic', 'speed'].forEach(k => mkRow('ups', k, buy));
+Object.keys(EQ).forEach(k => mkRow('eqs', k, buy));
+mkRow('city', 'city', foundCity);
+
+function upInfo(k) {
+  if (k === 'road') {
+    const max = S.roads >= ROAD_ORDER.length;
+    if (max) return { n: 'Nouvelle route', d: 'Le réseau est complet : 9 carrefours', cost: Infinity, max };
+    const add = [1, 2, 2, 3][S.roads];
+    return { n: 'Nouvelle route', d: 'Ouvre ' + add + ' carrefour' + (add > 1 ? 's' : '') + ' de plus' + (S.roads === 1 ? ' et la ligne de tram' : ''), cost: ROAD_COST[S.roads], max };
+  }
+  if (EQ[k]) { const max = !!S.eq[k]; return { n: EQ[k].name, d: EQ[k].d, cost: max ? Infinity : EQ[k].cost * cityMult(), max, label: 'Installé' }; }
+  if (k === 'city') {
+    const ok = cityReady();
+    return { n: 'Fonder une nouvelle ville', d: ok ? 'Tu repars de zéro dans « ' + MAP_NAME[MAPS[(S.city + 1) % MAPS.length]] + ' » avec +50 % de revenus pour toujours'
+                                                 : 'Équipe les 9 carrefours en capteurs ou giratoire pour y avoir droit', cost: 0, max: false, locked: !ok, label: ok ? 'Partir' : 'Verrouillé' };
+  }
+  const l = S.lv[k], max = l >= UP[k].max;
+  const d = k === 'value' ? fmt(carValue()) + ' € par voiture' + (max ? '' : ', puis ' + fmt(carValue(l + 1)) + ' €')
+          : k === 'traffic' ? nf0.format(spawnRate() * 60 * lanes.length) + ' véhicules par minute en journée'
+          : nf0.format(vMax() * 0.56) + ' km/h en ville';
+  return { n: UP[k].name, d: 'Niveau ' + l + ' : ' + d, cost: max ? Infinity : upCost(k), max };
+}
+function buy(k) {
+  const i = upInfo(k);
+  if (i.max || S.money < i.cost) return;
+  S.money -= i.cost;
+  if (k === 'road') { S.roads++; build(); bgDirty = true; toast('Nouvelle route ouverte : <b>' + inters.length + ' carrefours</b> à gérer.'); }
+  else if (EQ[k]) { S.eq[k] = 1; if (k === 'tow') for (const n of inters) { if (n.broken) n.fixT = 12; if (n.crash > 8) n.crash = 8; } }
+  else S.lv[k]++;
+  save(); refreshUI();
+}
+let cityT = 0;
+function foundCity() {
+  if (!cityReady()) return;
+  const b = rows.city.b;
+  if (!b.classList.contains('sure')) {
+    b.classList.add('sure'); rows.city.c.textContent = 'Confirmer';
+    cityT = setTimeout(() => b.classList.remove('sure'), 3500); return;
+  }
+  clearTimeout(cityT); b.classList.remove('sure');
+  backup();
+  const keep = { city: S.city + 1, ach: S.ach, st: S.st, clock: S.clock, day: S.day, notif: S.notif, tuto: false };
+  S = Object.assign(fresh(), keep);
+  laneMap.clear(); inters = []; floats.length = 0; resetEv();
+  build(); bgDirty = true; newMission(); unlock('city');
+  toast('Bienvenue dans <b>' + MAP_NAME[mapType()] + '</b>. Revenus ×' + nf1.format(cityMult()) + ' pour toujours.', 7000);
+  save(); renderAch(); refreshUI();
+}
+function renderAch() {
+  $('achs').innerHTML = ACH.map(a => '<div class="ach' + (S.ach[a[0]] ? ' on' : '') + '"><i></i><b>' + a[1] + '</b><span>' + a[2] + '</span></div>').join('');
+  const c = achCount();
+  $('ach-sum').textContent = 'Succès : ' + c + ' sur ' + ACH.length + (c ? ', revenus +' + c * 2 + ' %' : '');
+}
+function fmtTime(s) { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + ' h ' + String(m).padStart(2, '0') : m + ' min'; }
+function renderStats() {
+  if (!$('d-stat').open) return;
+  const st = S.st, rowsS = [
+    ['Meilleur revenu', fmt(st.bestRate * 60) + ' € par minute'], ['Meilleure série sans attente', nf0.format(st.bestStreak) + ' véhicules'],
+    ['Série en cours', nf0.format(S.streak)], ['Véhicules passés', nf0.format(st.cars)], ['Gains cumulés', fmt(st.total) + ' €'],
+    ['Ambulances sans arrêt', nf0.format(st.amb)], ['Fourgons interceptés', nf0.format(st.gold)], ['Pannes réparées', nf0.format(st.repairs)],
+    ['Accidents', nf0.format(st.acc)], ['Villes fondées', nf0.format(S.city)], ['Temps de jeu', fmtTime(st.play)]];
+  $('stats').innerHTML = rowsS.map(r => '<div class="stat"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>').join('');
+  const c = $('spark'), g = c.getContext('2d'), cs = getComputedStyle(document.documentElement);
+  g.clearRect(0, 0, c.width, c.height);
+  const hst = S.hist;
+  if (hst.length < 2) return;
+  const max = Math.max(...hst) || 1, step = c.width / 59, x0 = c.width - (hst.length - 1) * step;
+  g.beginPath();
+  hst.forEach((v, i) => { const x = x0 + i * step, y = c.height - 6 - (v / max) * (c.height - 14); if (i) g.lineTo(x, y); else g.moveTo(x, y); });
+  g.strokeStyle = cs.getPropertyValue('--go'); g.lineWidth = 3; g.lineJoin = 'round'; g.stroke();
+  g.lineTo(c.width, c.height); g.lineTo(x0, c.height); g.closePath();
+  g.globalAlpha = .14; g.fillStyle = cs.getPropertyValue('--go'); g.fill(); g.globalAlpha = 1;
+}
+$('d-stat').addEventListener('toggle', renderStats);
+
+let lastTitle = '';
+function refreshUI() {
+  $('money').textContent = fmtMoney(S.money);
+  $('rate').textContent = fmt(S.rate * 60) + ' € par minute' + (cityMult() * achMult() > 1.001 ? ', bonus ×' + nf1.format(Math.round(cityMult() * achMult() * 100) / 100) : '');
+  $('cityname').textContent = MAP_NAME[mapType()];
+  $('fmul').textContent = '×' + fluMult().toFixed(1).replace('.', ',');
+  const fb = $('fbar');
+  fb.style.width = Math.round(S.F * 100) + '%';
+  fb.style.background = S.F > 0.66 ? 'var(--go)' : S.F > 0.4 ? 'var(--amber)' : 'var(--stop)';
+  const m = S.mission;
+  if (m) {
+    $('mi-t').textContent = MISSIONS[m.id].text(m.goal);
+    $('mi-r').textContent = m.id === 'earn' ? fmt(m.prog) + ' €' : m.goal > 1 ? Math.floor(m.prog) + ' sur ' + m.goal : '';
+    $('mi-bar').style.width = Math.min(100, m.prog / m.goal * 100) + '%';
+  }
+  for (const k in rows) {
+    const i = upInfo(k), r = rows[k], ok = !i.max && !i.locked && S.money >= i.cost;
+    r.n.textContent = i.n; r.d.textContent = i.d;
+    if (!(k === 'city' && r.b.classList.contains('sure')))
+      r.c.textContent = i.max ? (i.label || 'Max') : i.cost ? fmt(i.cost) + ' €' : i.label;
+    r.b.classList.toggle('ok', ok); r.b.classList.toggle('max', !!i.max);
+    r.b.setAttribute('aria-disabled', ok ? 'false' : 'true');
+  }
+  const cnt = l => inters.filter(n => n.level === l).length;
+  const pl = (n, a, b) => '<b>' + n + '</b> ' + (n > 1 ? b : a);
+  $('intsum').innerHTML = pl(cnt(0), 'manuel', 'manuels') + ', ' + pl(cnt(1), 'automatique', 'automatiques') + ', ' + '<b>' + cnt(2) + '</b> à capteurs, ' + pl(cnt(3), 'giratoire', 'giratoires');
+  const h = Math.floor(S.clock), mi = Math.floor((S.clock - h) * 60);
+  $('clock').textContent = String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
+  $('phase').textContent = phaseName(S.clock) + ', jour ' + S.day;
+  const b = bannerState(), bn = $('banner');
+  bn.classList.toggle('on', !!b);
+  if (b) { bn.classList.toggle('alert', b.alert); $('bn-t').textContent = b.t; $('bn-s').textContent = b.s; }
+  refreshTitle(b);
+  renderStats();
+  if ($('d-save').open || !saveOK) refreshSave(); else $('save-sum').textContent = 'Sauvegarde : ' + (saveOK ? 'automatique' : 'indisponible');
+}
+function refreshTitle(b = bannerState()) {
+  const title = (b && b.alert ? '● ' : '') + 'Feu Vert : ' + fmtMoney(S.money) + ' €';
+  if (title !== lastTitle) { document.title = title; lastTitle = title; }
+}
+
+const notifBtn = $('notif');
+function refreshNotif() {
+  const on = S.notif && canNotify() && Notification.permission === 'granted';
+  notifBtn.textContent = on ? 'Notifications activées' : 'Activer les notifications';
+  notifBtn.classList.toggle('on', on);
+}
+notifBtn.addEventListener('click', async () => {
+  if (!canNotify()) { toast('Ce navigateur ne propose pas les notifications pour cette page.'); return; }
+  if (S.notif && Notification.permission === 'granted') { S.notif = false; refreshNotif(); save(); return; }
+  let perm = Notification.permission;
+  if (perm !== 'granted') { try { perm = await Notification.requestPermission(); } catch (e) { perm = 'denied'; } }
+  if (perm === 'granted') { S.notif = true; toast('Tu seras prévenu des ambulances, pannes et accidents quand la fenêtre n’est pas au premier plan.'); }
+  else toast('Notifications refusées par le navigateur. Elles demandent en général la version installée ou hébergée du jeu.', 7000);
+  refreshNotif(); save();
+});
+
+const resetBtn = $('reset');
+let resetT = 0;
+resetBtn.addEventListener('click', () => {
+  if (!resetBtn.classList.contains('sure')) {
+    resetBtn.classList.add('sure'); resetBtn.textContent = 'Tout effacer ?';
+    resetT = setTimeout(() => { resetBtn.classList.remove('sure'); resetBtn.textContent = 'Recommencer'; }, 3000);
+    return;
+  }
+  clearTimeout(resetT);
+  resetBtn.classList.remove('sure'); resetBtn.textContent = 'Recommencer';
+  backup(); store.clear(OLD_KEY);
+  applyState(fresh());
+  toast('Nouvelle partie. L’ancienne reste récupérable dans Sauvegarde.', 6000);
+});
+
+/* ───────── Absence et sauvegarde ───────── */
+const BACKUP = KEY + '-backup';
+let saveOK = true, lastSave = 0, pending = null;
+function save() { S.seen = Date.now(); saveOK = store.set(KEY, S); if (saveOK) lastSave = Date.now(); return saveOK; }
+function saveNow() {
+  if (save()) toast('Partie sauvegardée.');
+  else toast('Ce navigateur refuse d’enregistrer la partie. Exporte un fichier pour ne rien perdre.', 7000);
+  refreshSave();
+}
+const pack = () => ({ app: 'feu-vert', v: 2, at: Date.now(), data: S });
+function backup() { S.seen = Date.now(); store.set(BACKUP, pack()); refreshSave(); }
+function encode(o) {
+  let bin = '';
+  new TextEncoder().encode(JSON.stringify(o)).forEach(b => { bin += String.fromCharCode(b); });
+  return 'FV2-' + btoa(bin);
+}
+function decode(text) {
+  text = String(text || '').trim();
+  let o;
+  if (text[0] === '{') o = JSON.parse(text);
+  else {
+    const bin = atob(text.replace(/^FV2-/, '').replace(/\s+/g, ''));
+    o = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+  }
+  if (!o || o.app !== 'feu-vert' || !o.data || typeof o.data !== 'object' || Array.isArray(o.data)) throw new Error('format');
+  return o;
+}
+const fmtDate = t => new Date(t).toLocaleString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+function describe(o) {
+  const d = normalize(o.data);
+  return 'ville n° ' + (d.city + 1) + ' (' + MAP_NAME[MAPS[d.city % MAPS.length]] + '), ' + fmtMoney(d.money) + ' €, '
+       + nf0.format(d.st.cars) + ' véhicules passés' + (isFinite(+o.at) && +o.at > 0 ? ', enregistrée le ' + fmtDate(+o.at) : '');
+}
+function applyState(next) {
+  S = next; S.seen = Date.now();
+  laneMap.clear(); inters = []; floats.length = 0; resetEv(); windowInc = 0;
+  build(); bgDirty = true;
+  if (!S.mission || !MISSIONS[S.mission.id]) newMission();
+  save(); renderAch(); refreshNotif(); refreshUI(); refreshSave();
+}
+function ask(o, source) { // toujours demander avant d'écraser la partie en cours
+  pending = o;
+  $('sv-what').innerHTML = '<b>' + source + '</b> : ' + describe(o) + '.';
+  $('sv-confirm').hidden = false; $('d-save').open = true;
+  $('sv-confirm').scrollIntoView({ block: 'nearest' });
+}
+function tryImport(text, source) {
+  try { ask(decode(text), source); }
+  catch (e) { toast('Impossible de lire cette sauvegarde : ce n’est pas un fichier ou un code Feu Vert valide.', 7000); }
+}
+$('sv-yes').addEventListener('click', () => {
+  if (!pending) return;
+  const o = pending, fromBackup = o === pending && o._backup;
+  pending = null; $('sv-confirm').hidden = true; $('sv-text').hidden = true; $('sv-text').value = ''; $('sv-load').textContent = 'Charger un code';
+  const current = pack(); S.seen = Date.now();
+  applyState(normalize(o.data));
+  store.set(BACKUP, current); // l'ancienne partie devient la copie de secours : l'opération reste annulable
+  refreshSave();
+  toast(fromBackup ? 'Copie de secours restaurée.' : 'Partie chargée. L’ancienne reste récupérable dans Sauvegarde.', 6000);
+});
+$('sv-no').addEventListener('click', () => { pending = null; $('sv-confirm').hidden = true; });
+$('sv-now').addEventListener('click', saveNow);
+$('sv-exp').addEventListener('click', () => {
+  save();
+  const d = new Date(), z = n => String(n).padStart(2, '0');
+  const name = 'feu-vert-' + d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()) + '-' + z(d.getHours()) + 'h' + z(d.getMinutes()) + '.json';
+  try {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(pack(), null, 1)], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast('Fichier <b>' + name + '</b> envoyé dans tes téléchargements.', 6000);
+  } catch (e) { toast('Le téléchargement a échoué. Utilise « Copier le code » à la place.', 7000); }
+});
+$('sv-imp').addEventListener('click', () => $('sv-file').click());
+$('sv-file').addEventListener('change', e => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  if (file.size > 2e6) { toast('Ce fichier est trop gros pour être une sauvegarde Feu Vert.'); return; }
+  const fr = new FileReader();
+  fr.onload = () => tryImport(fr.result, 'Fichier ' + file.name.replace(/[<>&]/g, ''));
+  fr.onerror = () => toast('Impossible de lire ce fichier.');
+  fr.readAsText(file);
+});
+$('sv-copy').addEventListener('click', async () => {
+  save();
+  const code = encode(pack()), ta = $('sv-text');
+  ta.hidden = false; ta.value = code; $('sv-load').textContent = 'Charger ce code';
+  let ok = false;
+  try { await navigator.clipboard.writeText(code); ok = true; }
+  catch (e) { ta.focus(); ta.select(); try { ok = document.execCommand('copy'); } catch (e2) {} }
+  toast(ok ? 'Code copié. Colle-le dans « Charger un code » sur l’autre version du jeu.' : 'Copie refusée par le navigateur : le code est affiché, copie-le à la main.', 7000);
+});
+$('sv-load').addEventListener('click', () => {
+  const ta = $('sv-text');
+  if (ta.hidden || !ta.value.trim()) { ta.hidden = false; ta.value = ''; ta.focus(); $('sv-load').textContent = 'Charger ce code'; return; }
+  tryImport(ta.value, 'Code collé');
+});
+$('sv-back').addEventListener('click', () => {
+  const b = store.get(BACKUP);
+  if (!b || !b.data) { refreshSave(); return; }
+  b._backup = true; ask(b, 'Copie de secours');
+});
+function refreshSave() {
+  const b = store.get(BACKUP), btn = $('sv-back');
+  btn.hidden = !(b && b.data);
+  if (b && b.data) btn.textContent = 'Restaurer la copie du ' + fmtDate(b.at || Date.now());
+  const ago = Math.max(0, Math.round((Date.now() - lastSave) / 1000));
+  $('save-sum').textContent = !saveOK ? 'Sauvegarde : indisponible' : 'Sauvegarde : ' + (ago < 2 ? 'à l’instant' : 'il y a ' + ago + ' s');
+  $('save-info').textContent = saveOK
+    ? 'La partie s’enregistre seule toutes les 5 secondes dans ce navigateur. Exporte un fichier ou un code pour la mettre à l’abri ou la passer sur une autre version du jeu.'
+    : 'Ce navigateur n’enregistre pas la partie. Exporte un fichier ou copie le code avant de fermer la fenêtre.';
+}
+function creditAway() {
+  const away = Math.min((Date.now() - (S.seen || Date.now())) / 1000, 3 * 3600);
+  S.seen = Date.now();
+  if (away < 20 || S.rate <= 0) return;
+  const gain = S.rate * away * 0.6;
+  S.money += gain; S.total += gain; S.st.total += gain;
+  const min = Math.round(away / 60);
+  toast('Pendant ton absence (' + (min < 1 ? 'moins d’une minute' : min + ' min') + ') : <b>+' + fmt(gain) + ' €</b>', 7000);
+}
+
+/* ───────── Boucle ───────── */
+let secT = 0, histT = 0;
+function step(dt) {
+  time += dt;
+  const prev = S.clock;
+  S.clock += dt * 24 / DAY;
+  if (S.clock >= 24) {
+    S.clock -= 24; S.day++;
+    if (dayFull && S.st.accToday === 0) unlock('safe');
+    dayFull = true; S.st.accToday = 0;
+  }
+  if (!isPeak(prev) && isPeak(S.clock)) toast('Heure de pointe : trafic dense, <b>revenus ×1,5</b>.');
+  const tf = trafficF(S.clock);
+  for (const n of inters) stepInter(n, dt);
+  for (const L of lanes) stepLane(L, dt, tf);
+  stepEvents(dt);
+  if (S.mission && S.mission.id === 'flu') { if (S.F > .85) missionHit('flu', dt); else S.mission.prog = 0; }
+  for (let i = floats.length - 1; i >= 0; i--) { floats[i].t += dt; if (floats[i].t > 1.6) floats.splice(i, 1); }
+  secT += dt;
+  if (secT >= 1) {
+    S.rate += (windowInc / secT - S.rate) * 0.06; windowInc = 0; secT = 0;
+    if (S.rate > S.st.bestRate) S.st.bestRate = S.rate;
+    checkAch();
+  }
+  histT += dt;
+  if (histT >= 10) { histT = 0; S.hist.push(Math.round(S.rate * 60 * 10) / 10); if (S.hist.length > 60) S.hist.shift(); }
+}
+let lastT = performance.now(), awayAcc = 0, awayT = 0, hiddenTimer = 0, uiClock = 0, saveClock = 0, backupClock = performance.now();
+function tick(now, hidden) {
+  const gap = Math.max(0, (now - lastT) / 1000); lastT = now;
+  if (paused) return;
+  S.st.play += Math.min(gap, 2);
+  const sim = Math.min(gap, hidden ? 2 : 0.25), extra = gap - sim;
+  if (extra > 1 && S.rate > 0) { const g = S.rate * extra * 0.6; S.money += g; S.total += g; S.st.total += g; awayAcc += g; awayT += extra; }
+  let dt = sim * speed;
+  while (dt > 1e-6) { const d = Math.min(dt, 1 / 30); step(d); dt -= d; }
+}
+function frame(now) {
+  tick(now, false);
+  draw();
+  if (now - uiClock > 200) { uiClock = now; refreshUI(); }
+  if (now - saveClock > 5000) { saveClock = now; save(); }
+  if (now - backupClock > 600000) { backupClock = now; backup(); } // copie de secours toutes les 10 minutes
+  requestAnimationFrame(frame);
+}
+document.addEventListener('visibilitychange', () => {
+  clearInterval(hiddenTimer);
+  if (document.hidden) {
+    save();
+    let n = 0;
+    hiddenTimer = setInterval(() => { tick(performance.now(), true); refreshTitle(); if (++n % 10 === 0) save(); }, 1000);
+  } else {
+    tick(performance.now(), true);
+    if (awayAcc > 0 && awayT > 20) {
+      const min = Math.round(awayT / 60);
+      toast('Pendant ton absence (' + (min < 1 ? 'moins d’une minute' : min + ' min') + ') : <b>+' + fmt(awayAcc) + ' €</b>', 7000);
+    }
+    awayAcc = 0; awayT = 0;
+  }
+});
+window.addEventListener('pagehide', save);
+window.addEventListener('resize', resize);
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderStats);
+
+build(); resize(); creditAway();
+if (!S.mission || !MISSIONS[S.mission.id]) newMission();
+save(); renderAch(); refreshNotif(); refreshUI(); refreshSave();
+if (!saveOK) toast('Ce navigateur n’enregistre pas la partie : pense à exporter un fichier depuis Sauvegarde.', 8000);
+requestAnimationFrame(frame);
+
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+// Accès pour les tests
+window.__feuVert = { get S() { return S; }, ev, KIND, room, oncoming, sig, get inters() { return inters; }, get lanes() { return lanes; }, step, build, refreshUI, act,
+                     redraw() { bgDirty = true; }, view: () => ({ sc, ox, oy }) };
+})();
+</script>
+</body>
+</html>
