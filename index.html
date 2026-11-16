@@ -52,14 +52,15 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 #brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:6px}
 #brand i{width:10px;height:10px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px var(--go-soft)}
 #brand span{font-weight:500;color:var(--muted)}
-.stat{display:flex;align-items:center;gap:7px;padding:0 11px;height:32px;border-radius:10px}
-.stat + .stat{border-left:1px solid var(--hair);border-radius:0}
+.stat{flex:none;display:flex;align-items:center;gap:7px;padding:0 11px;height:32px;border-radius:10px;cursor:pointer;transition:background .15s}
+.stat:hover{background:var(--hair)}
+.stat + .stat{margin-left:3px}
 .stat small{color:var(--muted);font-size:12px}
 .stat b{font-weight:700}
 #st-money{color:var(--go)} #st-money b{font-size:17px;color:var(--ink);letter-spacing:-.01em}
 #st-rate{color:var(--info)} #st-flu{color:var(--event)} #st-bld{color:var(--ach)}
 .stat b, .stat small{color:var(--ink)} .stat small{color:var(--muted)}
-#st-bld.bad{color:var(--alert)} #st-bld.bad b{color:var(--alert)}
+#st-bld.bad{color:var(--alert)} #st-bld.bad b{color:var(--alert)} #st-rate.bad b{color:var(--alert)}
 .mini{width:54px;height:5px;border-radius:3px;background:var(--hair);overflow:hidden}
 .mini span{display:block;height:100%;background:var(--go);border-radius:3px;transition:width .4s,background .4s}
 .sp{flex:1}
@@ -85,6 +86,9 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .t-ach{--c:var(--ach);--c-soft:var(--ach-soft)} .t-info{--c:var(--info);--c-soft:var(--info-soft)}
 .t-build{--c:var(--muted);--c-soft:var(--hair)}
 .chip.t-alert .bd{animation:pulse 1s infinite}
+button.chip{pointer-events:auto;text-align:left;cursor:pointer}
+button.chip:hover{filter:brightness(1.06)}
+button.chip b::after{content:" ›";color:var(--muted)}
 @keyframes pulse{50%{opacity:.45}}
 
 /* ── Améliorations, à droite ── */
@@ -107,10 +111,10 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .up.ok:active{transform:scale(.985)} .up:not(.ok){cursor:default} .up.max .c{background:transparent}
 
 /* ── Outils de construction, en bas ── */
-#bottom{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;pointer-events:none;max-width:calc(100% - 130px)}
+#bottom{position:fixed;bottom:12px;left:10px;right:250px;display:flex;flex-direction:column;align-items:center;gap:7px;pointer-events:none}
 #bottom > *{pointer-events:auto}
 #dock{border-radius:17px;padding:5px;display:flex;gap:3px;align-items:stretch;white-space:nowrap}
-.tool{border-radius:12px;padding:0 12px 0 10px;height:40px;display:flex;align-items:center;gap:7px;color:var(--muted)}
+.tool{border-radius:12px;padding:0 10px 0 8px;height:40px;display:flex;align-items:center;gap:7px;color:var(--muted)}
 .tool svg.ic{width:20px;height:20px}
 .tool b{font-weight:600;font-size:13px;color:var(--ink)}
 .tool small{font-size:12px;color:var(--muted)}
@@ -120,6 +124,10 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .tool.on{background:var(--ink);color:var(--ground)} .tool.on b{color:var(--ground)} .tool.on small,.tool.on kbd{color:var(--ground);opacity:.7}
 .tool.on.erase{background:var(--alert);color:#fff} .tool.on.erase b,.tool.on.erase small,.tool.on.erase kbd{color:#fff}
 #dock .sep{height:auto;margin:8px 2px}
+#layers{position:fixed;right:62px;bottom:12px;border-radius:14px;padding:4px;display:flex;gap:2px}
+#layers button{padding:0 11px;height:32px;border-radius:10px;font-weight:600;color:var(--muted)}
+#layers button:hover{background:var(--hair);color:var(--ink)}
+#layers button.on{background:var(--ink);color:var(--ground)}
 #zoom{position:fixed;right:10px;bottom:12px;border-radius:14px;padding:4px;display:flex;flex-direction:column;gap:2px}
 #hint{border-radius:999px;padding:5px 14px;color:var(--muted);font-size:12px;pointer-events:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 #hint:empty{display:none}
@@ -138,6 +146,7 @@ body.paused #paused{display:block}
 /* ── Fenêtres : ville, succès, statistiques, sauvegarde ── */
 #veil{position:fixed;inset:0;background:rgba(10,15,18,.32);display:grid;place-items:center;padding:20px}
 #veil[hidden]{display:none}
+#sheet.wide{width:min(720px,100%);max-height:min(760px,100%)}
 #sheet{width:min(560px,100%);max-height:min(640px,100%);border-radius:22px;display:flex;flex-direction:column;overflow:hidden}
 #sheet header{display:flex;align-items:center;gap:10px;padding:14px 14px 10px 18px}
 #sheet header .bd{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--c-soft);color:var(--c)}
@@ -162,6 +171,35 @@ body.paused #paused{display:block}
 .ach b{display:block;font-weight:600} .ach span{display:block;font-size:12px}
 .ach.on{background:var(--row-on)} .ach.on .bd{background:var(--ach);color:#fff} .ach.on b{color:var(--ink)}
 #spark{display:block;width:100%;height:70px;margin:4px 0 8px}
+.seg{display:flex;gap:4px;background:var(--hair);border-radius:12px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;padding:7px 6px;border-radius:9px;font-weight:600;color:var(--muted);white-space:nowrap}
+.seg button.on{background:var(--row-on);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.fin-head{display:flex;align-items:baseline;gap:10px;margin:0 2px 6px}
+.fin-head b{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.fin-head span{color:var(--muted)} .fin-head .pos{color:var(--go);font-weight:600} .fin-head .neg{color:var(--alert);font-weight:600}
+#fin-chart{display:block;width:100%;height:220px;cursor:crosshair}
+.fin-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin-top:14px}
+.fin-cols h3{font-size:12.5px;font-weight:650;margin:0 0 8px}
+.hb{display:grid;grid-template-columns:1fr auto;gap:2px 8px;margin-bottom:8px;font-size:12.5px}
+.hb span{color:var(--muted)} .hb b{font-weight:600}
+.hb i{grid-column:1/3;height:6px;border-radius:3px;background:var(--hair);overflow:hidden;display:block}
+.hb i u{display:block;height:100%;border-radius:3px}
+.mults{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.mults span{background:var(--row);border:1px solid var(--hair);border-radius:999px;padding:4px 10px;font-size:12.5px;color:var(--muted)}
+.mults span b{color:var(--ink);font-weight:650;margin-left:4px}
+.mults .tot{background:var(--go-soft);border-color:transparent;color:var(--go)} .mults .tot b{color:var(--go)}
+@media (max-width:620px){.fin-cols{grid-template-columns:1fr}.seg button{font-size:11.5px;padding:7px 2px}}
+.setrow{display:flex;align-items:center;gap:14px;padding:12px 2px;border-top:1px solid var(--hair)}
+.setrow:first-child{border-top:0;padding-top:4px}
+.setrow > div:first-child{flex:1} .setrow b{display:block;font-weight:600} .setrow span{display:block;color:var(--muted);font-size:12.5px;line-height:1.4}
+.sw{flex:none;width:44px;height:26px;border-radius:13px;background:var(--hair);position:relative;transition:background .15s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.sw[aria-checked="true"]{background:var(--go)} .sw[aria-checked="true"]::after{transform:translateX(18px)}
+.seg.small{margin:0;flex:none} .seg.small button{padding:6px 12px}
+.pill{flex:none;padding:8px 14px;border-radius:999px;background:var(--row);border:1px solid var(--hair);font-weight:600}
+.pill.go{background:var(--go);color:var(--go-ink);border-color:transparent}
+#god-box{background:var(--event-soft);border-radius:14px;padding:12px;margin-bottom:6px}
+.btns.three{grid-template-columns:1fr 1fr 1fr;margin-top:0} .btns.three button.on{background:var(--go);color:var(--go-ink)}
 .srow{display:flex;justify-content:space-between;padding:6px 2px;border-top:1px solid var(--hair);color:var(--muted)}
 .srow b{color:var(--ink);font-weight:600}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
@@ -177,9 +215,11 @@ body.paused #paused{display:block}
 @media (max-width:1560px){.tb .lb{display:none}}
 @media (max-width:1240px){#toasts{width:270px}}
 @media (max-width:1180px){#phase,#st-rate small,#st-flu small{display:none}}
-@media (max-width:1180px){.tool kbd{display:none}.tool{padding:0 10px 0 8px}}
-@media (max-width:980px){#st-rate,#brand span,.tool small{display:none}}
-@media (max-width:760px){#st-flu,#clockbox{display:none}#toasts{width:240px}.tool b{display:none}.tool{padding:0 9px}#bottom{max-width:calc(100% - 20px)}}
+@media (max-width:1680px){.tool kbd{display:none}}
+@media (max-width:1480px){.tool small{display:none}}
+@media (max-width:1180px){.tool b{font-size:12px}.tool{padding:0 7px 0 6px;gap:5px}#bottom{max-width:calc(100% - 20px);bottom:54px}#layers button{padding:0 8px}}
+@media (max-width:980px){#st-rate,#brand span{display:none}#bottom{right:10px}.tool b{display:none}}
+@media (max-width:760px){#st-flu,#clockbox{display:none}#toasts{width:240px}.tool b{display:none}.tool{padding:0 9px}}
 </style>
 </head>
 <body>
@@ -187,10 +227,10 @@ body.paused #paused{display:block}
 
 <header id="top" class="glass">
   <div id="brand"><i></i>Traffic<span id="cityname"></span></div>
-  <div class="stat" id="st-money" title="Argent disponible"><svg class="ic"><use href="#i-coin"/></svg><b class="num" id="money">0 €</b></div>
-  <div class="stat" id="st-rate" title="Revenu par minute"><svg class="ic"><use href="#i-trend"/></svg><b class="num" id="rate">0 €</b><small>par minute</small></div>
-  <div class="stat" id="st-flu" title="Fluidité : des trajets rapides et directs multiplient les revenus"><svg class="ic"><use href="#i-gauge"/></svg><small>Fluidité</small><b class="num" id="fmul">×2,0</b><div class="mini"><span id="fbar"></span></div></div>
-  <div class="stat" id="st-bld" title="Bâtiments reliés au réseau"><svg class="ic"><use href="#i-home"/></svg><b class="num" id="bld">0 sur 0</b><small id="bldl">reliés</small></div>
+  <button type="button" class="stat" id="st-money" data-fin="m" title="Argent disponible : ouvrir les finances"><svg class="ic"><use href="#i-coin"/></svg><b class="num" id="money">0 €</b></button>
+  <button type="button" class="stat" id="st-rate" data-fin="r" title="Revenu net par minute, entretien déduit : ouvrir les finances"><svg class="ic"><use href="#i-trend"/></svg><b class="num" id="rate">0 €</b><small>par minute</small></button>
+  <button type="button" class="stat" id="st-flu" data-fin="f" title="Fluidité : voir la courbe"><svg class="ic"><use href="#i-gauge"/></svg><small>Fluidité</small><b class="num" id="fmul">×2,0</b><div class="mini"><span id="fbar"></span></div></button>
+  <button type="button" class="stat" id="st-bld" data-fin="city" title="Bâtiments reliés : ouvrir la ville"><svg class="ic"><use href="#i-home"/></svg><b class="num" id="bld">0 sur 0</b><small id="bldl">reliés</small></button>
   <div class="sp"></div>
   <div id="clockbox"><svg class="ic"><use id="clock-ic" href="#i-sun"/></svg><span id="clock" class="num">09:00</span><span id="phase">Matinée</span></div>
   <button class="tb" id="b-pause" type="button" title="Pause (Espace)" aria-label="Pause"><svg class="ic"><use id="pause-ic" href="#i-pause"/></svg></button>
@@ -201,6 +241,7 @@ body.paused #paused{display:block}
   <button class="tb" data-open="stat" type="button" title="Statistiques"><svg class="ic"><use href="#i-chart"/></svg><span class="lb">Stats</span></button>
   <button class="tb" data-open="save" type="button" title="Sauvegarde" id="b-save"><svg class="ic"><use href="#i-save"/></svg><span class="lb">Sauvegarde</span></button>
   <button class="tb" id="notif" type="button" title="Notifications"><svg class="ic"><use href="#i-bell"/></svg></button>
+  <button class="tb" data-open="set" type="button" title="Réglages"><svg class="ic"><use href="#i-gear"/></svg></button>
 </header>
 
 <div id="strip"></div>
@@ -210,6 +251,7 @@ body.paused #paused{display:block}
   <div id="ups"></div>
 </aside>
 
+<div id="layers" class="glass" role="group" aria-label="Calques"><button type="button" data-l="normal" class="on" title="Carte (L)">Carte</button><button type="button" data-l="traffic" title="Trafic (L)">Trafic</button><button type="button" data-l="flow" title="Flux par lieu (L)">Flux</button></div>
 <div id="zoom" class="glass"><button class="tb" id="z-in" type="button" title="Zoomer (+)" aria-label="Zoomer"><svg class="ic"><use href="#i-plus"/></svg></button><button class="tb" id="z-out" type="button" title="Dézoomer (−)" aria-label="Dézoomer"><svg class="ic"><use href="#i-minus"/></svg></button><button class="tb" id="z-fit" type="button" title="Recentrer (0)" aria-label="Recentrer la carte"><svg class="ic"><use href="#i-fit"/></svg></button></div>
 <div id="bottom"><div id="hint" class="glass"></div><nav id="dock" class="glass" aria-label="Outils de construction"></nav></div>
 <div id="toasts"></div>
@@ -225,6 +267,30 @@ body.paused #paused{display:block}
         <p class="note" id="city-goal"></p>
         <div class="bar"><span id="city-bar"></span></div>
         <button class="big" id="city-go" type="button">Fonder une nouvelle ville</button>
+      </section>
+      <section class="sec" id="m-fin">
+        <div class="seg" id="fin-tabs" role="tablist"></div>
+        <div class="fin-head"><b class="num" id="fin-now"></b><span id="fin-delta"></span></div>
+        <canvas id="fin-chart" aria-label="Courbe d’évolution"></canvas>
+        <p class="note" id="fin-empty" style="margin-top:8px"></p>
+        <div class="fin-cols">
+          <div><h3>D’où vient l’argent</h3><div id="fin-in"></div></div>
+          <div><h3>Où il part</h3><div id="fin-out"></div></div>
+        </div>
+        <h3 style="font-size:12.5px;font-weight:650;margin:10px 0 6px">Ce qui multiplie chaque trajet en ce moment</h3>
+        <div class="mults" id="fin-mult"></div>
+      </section>
+      <section class="sec" id="m-set">
+        <div class="setrow"><div><b>Mode dieu</b><span>Constructions et améliorations gratuites, aucun entretien. Pour essayer des tracés sans compter.</span></div><button type="button" class="sw" id="set-god" role="switch" aria-label="Mode dieu"></button></div>
+        <div id="god-box" hidden>
+          <div class="btns three"><button type="button" data-god="cash">+10 000 €</button><button type="button" data-god="bld">Nouveau bâtiment</button><button type="button" data-god="time">Avancer de 6 h</button><button type="button" data-god="season">Saison suivante</button><button type="button" data-god="grow">Faire grossir les lieux</button><button type="button" data-god="x4">Vitesse ×4</button></div>
+          <p class="note" style="margin:10px 0 6px">Déclencher un évènement :</p>
+          <div class="btns three"><button type="button" data-ev="rain">Averse</button><button type="button" data-ev="snow">Neige</button><button type="button" data-ev="marathon">Marathon</button><button type="button" data-ev="flood">Crue</button><button type="button" data-ev="works">Chantier</button><button type="button" data-ev="gold">Fourgon</button><button type="button" data-ev="amb">Ambulance</button><button type="button" data-ev="fest">Jour de fête</button><button type="button" data-ev="quartier">Nouveau quartier</button></div>
+        </div>
+        <div class="setrow"><div><b>Toujours afficher de jour</b><span>La carte reste claire la nuit. Les heures de pointe continuent normalement.</span></div><button type="button" class="sw" id="set-day" role="switch" aria-label="Toujours afficher de jour"></button></div>
+        <div class="setrow"><div><b>Effets météo</b><span>Pluie, neige et ombres de nuages à l’écran.</span></div><button type="button" class="sw" id="set-fx" role="switch" aria-label="Effets météo"></button></div>
+        <div class="setrow"><div><b>Molette et glissement à deux doigts</b><span>Le pincement zoome toujours.</span></div><div class="seg small" id="set-scroll"><button type="button" data-v="zoom">Zoomer</button><button type="button" data-v="pan">Déplacer</button></div></div>
+        <div class="setrow"><div><b>Mise à jour</b><span id="upd-info"></span></div><button type="button" class="pill" id="upd-btn">Rechercher</button></div>
       </section>
       <section class="sec" id="m-ach"><p class="note" id="ach-note"></p><div class="achs" id="achs"></div></section>
       <section class="sec" id="m-stat">
@@ -284,6 +350,15 @@ body.paused #paused{display:block}
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13"/></symbol>
   <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5.5 12h13"/></symbol>
   <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4.500 9v-4.500H9M15 4.500h4.500V9M19.500 15v4.500H15M9 19.500H4.500V15"/><circle cx="12" cy="12" r="1.600"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.3M12 18.2v2.3M3.5 12h2.3M18.2 12h2.3M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6"/><circle cx="12" cy="12" r="6.3"/></symbol>
+  <symbol id="i-highway" viewBox="0 0 24 24"><path d="M4.500 20L8 4M19.500 20L16 4"/><path d="M12 4v16"/><path d="M9.200 9h1.200M13.600 9h1.200M8.700 14h1.400M13.900 14h1.400"/></symbol>
+  <symbol id="i-oneway" viewBox="0 0 24 24"><path d="M4 12h15M13.500 6.500L19 12l-5.500 5.500"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7L4.500 11.500 9 16"/><path d="M4.500 11.500H14a5 5 0 0 1 0 10h-2.500" transform="translate(0 -2.5)"/></symbol>
+  <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 3.500v17M4.600 7.750l14.800 8.500M4.600 16.250l14.800-8.500"/><path d="M9.800 5.200L12 7.400l2.200-2.200M9.800 18.800L12 16.600l2.200 2.200"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8.500 5-13.500 14.500-14 .5 9.500-4.500 14.500-13 14.500z"/><path d="M5 19L14 10"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 20.500V4M6 5h11.500l-2.500 4 2.500 4H6"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 9c2.200-2.500 4.300-2.500 6.500 0s4.300 2.500 6.500 0 4.300-2.500 5 0M3 15c2.200-2.500 4.300-2.500 6.500 0s4.300 2.500 6.500 0 4.300-2.500 5 0"/></symbol>
+  <symbol id="i-jam" viewBox="0 0 24 24"><path d="M4 16.500v-4l2-5h12l2 5v4zM4 12.500h16"/><circle cx="7.500" cy="16.500" r="1.600"/><circle cx="16.500" cy="16.500" r="1.600"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.500 6.500l11 11M17.500 6.500l-11 11"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9.500 6l6 6-6 6"/></symbol>
   <symbol id="i-amb" viewBox="0 0 24 24"><path d="M3.500 7.500h11v9h-11zM14.500 10.500H18l2.500 3v3h-6"/><circle cx="7.500" cy="17.500" r="1.700"/><circle cx="16.500" cy="17.500" r="1.700"/><path d="M9 9.800v4M7 11.800h4"/></symbol>
@@ -298,22 +373,29 @@ body.paused #paused{display:block}
 'use strict';
 
 /* ───────── Constantes ───────── */
-const COLS = 30, ROWS = 18, N = COLS * ROWS, C = 40, W = COLS * C, H = ROWS * C, GAP = 5;
+const APP_VERSION = '1.5.0';
+const C = 40, GAP = 5;
+let COLS = 30, ROWS = 18, N = COLS * ROWS, W = COLS * C, H = ROWS * C; // taille de la carte, propre à chaque partie
+const SIZES = [[38, 24], [40, 25], [42, 26], [44, 27], [46, 28], [48, 29]];
+const HX_MAX = 180; // 30 minutes de courbes, un point toutes les 10 secondes
 const KEY = 'feu-vert-save-v3', BACKUP = KEY + '-backup', DAY = 720;
 const DX = [1, 0, -1, 0], DY = [0, 1, 0, -1];
-const MAPS = ['plaine', 'rives', 'lac', 'foret'];
-const MAP_NAME = { plaine: 'La Plaine', rives: 'Les Deux Rives', lac: 'Le Grand Lac', foret: 'La Vallée boisée' };
+const MAPS = ['plaine', 'rives', 'lac', 'foret', 'collines', 'archipel'];
+const MAP_NAME = { plaine: 'La Plaine', rives: 'Les Deux Rives', lac: 'Le Grand Lac', foret: 'La Vallée boisée', collines: 'Les Collines', archipel: 'L’Archipel' };
 const KINDS = [
-  { name: 'Marché',  homes: 'voitures',            col: '#e0a11b', val: 1,    at: 0 },
-  { name: 'École',   homes: 'voitures et vélos',   col: '#df5548', val: 1.15, at: 7 },
-  { name: 'Bureaux', homes: 'voitures et bus',     col: '#3a7be0', val: 1.5,  at: 15 },
-  { name: 'Usine',   homes: 'voitures et camions', col: '#8a63d8', val: 2,    at: 24 }
+  { name: 'Marché',  homes: 'voitures',            col: '#e0a11b', val: 1,    at: 0,  lv: ['Marché', 'Halles', 'Centre commercial'] },
+  { name: 'École',   homes: 'voitures et vélos',   col: '#df5548', val: 1.15, at: 7,  lv: ['École', 'Collège', 'Université'] },
+  { name: 'Bureaux', homes: 'voitures et bus',     col: '#3a7be0', val: 1.5,  at: 15, lv: ['Bureaux', 'Tour de bureaux', 'Quartier d’affaires'] },
+  { name: 'Usine',   homes: 'voitures et camions', col: '#8a63d8', val: 2,    at: 24, lv: ['Usine', 'Zone industrielle', 'Technopôle'] }
 ];
+const LV_AT = [0, 120, 500]; // visites nécessaires pour qu'un lieu passe au niveau 2 puis 3
 const ROADS = [null,
-  { name: 'Chemin', sp: 45,  cost: 5,  w: 15, off: 4 },
-  { name: 'Route',  sp: 80,  cost: 20, w: 21, off: 5.2 },
-  { name: 'Avenue', sp: 125, cost: 60, w: 27, off: 6.8 }];
-const BRIDGE = 60, ROND = 150, FEU = 120, CAP = 40, CITY_GOAL = 30, MAX_CARS = 380;
+  { name: 'Chemin',      sp: 45,  cost: 5,   w: 15, off: 4,   up: .1 },
+  { name: 'Route',       sp: 80,  cost: 20,  w: 21, off: 5.2, up: .4 },
+  { name: 'Avenue',      sp: 125, cost: 60,  w: 27, off: 6.8, up: 1 },
+  { name: 'Voie rapide', sp: 190, cost: 150, w: 30, off: 7.6, up: 3 }];
+const BRIDGE = 60, TUNNEL = 80, CROSSING = 15, ROND = 150, FEU = 120, MAX_CARS = 520;
+const SEASONS = [{ name: 'printemps', ic: 'sprout' }, { name: 'été', ic: 'sun' }, { name: 'automne', ic: 'leaf' }, { name: 'hiver', ic: 'snow' }];
 const VEH = {
   car:   { len: 15, w: 8,   sp: 1,   val: 1 },
   bike:  { len: 8,  w: 3.4, sp: .72, val: .6 },
@@ -323,19 +405,21 @@ const VEH = {
   gold:  { len: 18, w: 9.5, sp: 1,   val: 0 }
 };
 const UP = {
-  value:    { name: 'Valeur',     ic: 'coin',   base: 60,  g: 1.6, max: 30 },
-  freq:     { name: 'Fréquence',  ic: 'clock',  base: 80,  g: 1.7, max: 8 },
-  attract:  { name: 'Attractivité',           ic: 'sprout', base: 100, g: 1.8, max: 6 },
+  value:    { name: 'Valeur',         ic: 'coin',   base: 60,  g: 1.6, max: 30 },
+  freq:     { name: 'Fréquence',      ic: 'clock',  base: 80,  g: 1.7, max: 8 },
+  attract:  { name: 'Attractivité',   ic: 'sprout', base: 100, g: 1.8, max: 6 },
   discount: { name: 'Remise travaux', ic: 'tag',    base: 150, g: 2,   max: 5 }
 };
 const TOOLS = [
-  { id: 'main',  name: 'Main',       ic: 'hand',   hint: 'Glisse pour déplacer la carte, molette pour zoomer. Clique sur un fourgon doré ou un chantier.' },
-  { id: 'r1',    name: 'Chemin',     ic: 'path',   hint: 'Clique et glisse pour tracer un chemin : lent, mais presque gratuit. Clic droit pour effacer, Maj + glisser pour déplacer la carte.' },
-  { id: 'r2',    name: 'Route',      ic: 'road',   hint: 'Clique et glisse pour tracer une route, ou repasse sur un chemin pour le goudronner.' },
-  { id: 'r3',    name: 'Avenue',     ic: 'avenue', hint: 'L’avenue est la plus rapide. Repasse sur une route existante pour l’élargir.' },
-  { id: 'rond',  name: 'Rond-point', ic: 'round',  hint: 'Clique sur un croisement cerclé : deux véhicules y passent en même temps, sans s’arrêter.' },
-  { id: 'feu',   name: 'Feu',        ic: 'light',  hint: 'Clique sur un croisement cerclé : le feu fait passer des files entières, idéal sur un grand axe.' },
-  { id: 'erase', name: 'Gomme',      ic: 'erase',  hint: 'Clique et glisse pour retirer des tronçons. La moitié du prix est remboursée.' }
+  { id: 'main',  name: 'Main',        ic: 'hand',    hint: 'Glisse pour déplacer la carte, molette pour zoomer. Survole un bâtiment pour voir ses trajets.' },
+  { id: 'r1',    name: 'Chemin',      ic: 'path',    hint: 'Glisse pour dessiner le tracé, relâche pour construire, Échap pour annuler. Lent, mais presque gratuit.' },
+  { id: 'r2',    name: 'Route',       ic: 'road',    hint: 'Glisse pour dessiner le tracé, relâche pour construire. Repasse sur un chemin pour le goudronner.' },
+  { id: 'r3',    name: 'Avenue',      ic: 'avenue',  hint: 'Rapide et large. Glisse pour dessiner, relâche pour construire, repasse sur une route pour l’élargir.' },
+  { id: 'r4',    name: 'Voie rapide', ic: 'highway', hint: 'La plus rapide, sans arrêt aux croisements et par-dessus les voies ferrées. Les bâtiments ne s’y raccordent pas : prévois des bretelles.' },
+  { id: 'ow',    name: 'Sens unique', ic: 'oneway',  hint: 'Glisse le long d’une route dans le sens voulu : +25 % de vitesse. Un clic sur une case rétablit le double sens.' },
+  { id: 'rond',  name: 'Rond-point',  ic: 'round',   hint: 'Clique sur un croisement cerclé : trois véhicules y passent en même temps, sans s’arrêter.' },
+  { id: 'feu',   name: 'Feu',         ic: 'light',   hint: 'Clique sur un croisement cerclé : le feu fait passer des files entières, idéal sur un grand axe.' },
+  { id: 'erase', name: 'Gomme',       ic: 'erase',   hint: 'Clique et glisse pour retirer des tronçons (la moitié du prix est rendue). Cmd + Z annule la dernière action.' }
 ];
 const ACH = [
   ['road', 'Premier tracé', 'Pose ton premier tronçon'],
@@ -344,13 +428,18 @@ const ACH = [
   ['t10k', 'Périphérique', '10 000 trajets terminés'],
   ['route', 'Goudron', 'Trace une route'],
   ['avenue', 'Grand boulevard', 'Trace une avenue'],
+  ['highway', 'Voie express', 'Trace une voie rapide'],
+  ['oneway', 'Sens interdit', 'Crée un sens unique'],
   ['bridge', 'D’une rive à l’autre', 'Construis un pont'],
+  ['tunnel', 'Sous la colline', 'Perce un tunnel'],
   ['round', 'Tourner en rond', 'Aménage un rond-point'],
   ['light', 'Feu vert', 'Installe un feu'],
   ['b10', 'Village', '10 bâtiments reliés'],
   ['b25', 'Bourg', '25 bâtiments reliés'],
   ['b40', 'Métropole', '40 bâtiments reliés'],
   ['kinds', 'Ville complète', 'Fais venir les quatre types de lieux'],
+  ['grow', 'Ça grossit', 'Fais passer un lieu au niveau 3'],
+  ['year', 'Quatre saisons', 'Traverse une année complète'],
   ['streak', 'Tapis vert', '300 trajets fluides d’affilée'],
   ['million', 'Millionnaire', 'Gagne 1 M€ au total'],
   ['city', 'Bâtisseur', 'Fonde une nouvelle ville']
@@ -364,6 +453,7 @@ const nf1 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
 const nf0 = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
 function fmt(n) {
   if (!isFinite(n)) return '—';
+  if (n < 0) return '−' + fmt(-n);
   if (n < 100) return nf1.format(Math.round(n * 10) / 10);
   if (n < 1e4) return nf0.format(Math.round(n));
   for (const [v, s] of [[1e12, ' Bn'], [1e9, ' Md'], [1e6, ' M'], [1e3, ' k']])
@@ -385,46 +475,72 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
   clear(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
-function fresh() {
+function fresh(city = 0) {
+  const [cols, rows] = SIZES[Math.min(city, SIZES.length - 1)];
   return { v: 3, money: 150, total: 0, trips: 0, lv: { value: 0, freq: 0, attract: 0, discount: 0 }, F: 1, rate: 0,
-           seen: Date.now(), clock: 9, day: 1, city: 0, seed: (Math.random() * 1e9) | 0, growT: 25, ach: {}, streak: 0,
-           mission: null, hist: [], notif: false, shop: true, terr: '', road: '', junc: '', blds: [],
-           st: { trips: 0, total: 0, play: 0, bestRate: 0, bestStreak: 0, tiles: 0, gold: 0, amb: 0 } };
+           seen: Date.now(), clock: 9, day: 1, city, seed: (Math.random() * 1e9) | 0, growT: 25, ach: {}, streak: 0,
+           mission: null, hist: [], hx: { m: [], r: [], f: [], t: [] }, notif: false, shop: true,
+           cols, rows, terr: '', road: '', junc: '', ow: '', blds: [],
+           set: { god: false, day: false, fx: true, scroll: 'zoom' },
+           st: { trips: 0, total: 0, play: 0, bestRate: 0, bestStreak: 0, tiles: 0, gold: 0, amb: 0, k0: 0, k1: 0, k2: 0, k3: 0, sRoad: 0, sJunc: 0, sUp: 0, sKeep: 0, lost: 0 } };
 }
 // Remet n'importe quelle sauvegarde (ancienne, importée, abîmée) dans un état jouable.
 function normalize(s) {
-  const f = fresh(), obj = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+  const obj = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
   const num = (v, d, lo = 0, hi = Infinity) => { v = +v; return isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
-  const r = Object.assign({}, f, JSON.parse(JSON.stringify(obj(s))));
-  r.v = 3;
+  const raw = JSON.parse(JSON.stringify(obj(s))), city = Math.floor(num(raw.city, 0, 0, 1e6)), f = fresh(city);
+  const r = Object.assign({}, f, raw);
+  r.v = 3; r.city = city;
   r.lv = Object.assign(f.lv, obj(r.lv)); r.st = Object.assign(f.st, obj(r.st)); r.ach = obj(r.ach);
   r.money = num(r.money, f.money);
   for (const k of ['total', 'trips', 'rate', 'streak']) r[k] = num(r[k], 0);
   r.F = num(r.F, 1, 0, 1); r.clock = num(r.clock, 9, 0, 23.999); r.day = Math.floor(num(r.day, 1, 1));
-  r.city = Math.floor(num(r.city, 0)); r.seed = Math.floor(num(r.seed, f.seed, 0, 2e9)); r.growT = num(r.growT, 25, 0, 600);
+  r.seed = Math.floor(num(r.seed, f.seed, 0, 2e9)); r.growT = num(r.growT, 25, 0, 600);
   for (const k in UP) r.lv[k] = Math.floor(num(r.lv[k], 0, 0, UP[k].max));
   for (const k in f.st) r.st[k] = num(r.st[k], 0);
   r.hist = (Array.isArray(r.hist) ? r.hist : []).map(Number).filter(isFinite).slice(-60);
+  const hx = obj(r.hx); r.hx = {};
+  for (const k of ['m', 'r', 'f', 't']) r.hx[k] = (Array.isArray(hx[k]) ? hx[k] : []).map(Number).filter(isFinite).slice(-HX_MAX);
+  const hn = Math.min(r.hx.m.length, r.hx.r.length, r.hx.f.length, r.hx.t.length); for (const k in r.hx) r.hx[k] = r.hx[k].slice(-hn || r.hx[k].length);
   r.seen = num(r.seen, Date.now(), 0, Date.now());
   r.notif = !!r.notif; r.shop = r.shop !== false;
+  const st = obj(r.set); r.set = { god: !!st.god, day: !!st.day, fx: st.fx !== false, scroll: st.scroll === 'pan' ? 'pan' : 'zoom' };
   const m = r.mission;
   r.mission = m && typeof m === 'object' && typeof m.id === 'string' ? { id: m.id, goal: num(m.goal, 1, 1), prog: num(m.prog, 0) } : null;
-  // La carte : trois chaînes de N chiffres et la liste des bâtiments. Au moindre défaut, on régénère.
-  const okStr = (v, max) => typeof v === 'string' && v.length === N && new RegExp('^[0-' + max + ']+$').test(v);
-  let okGrid = okStr(r.terr, 2) && okStr(r.road, 3) && okStr(r.junc, 2) && Array.isArray(r.blds) && r.blds.length >= 1 && r.blds.length <= CAP + 6;
+  // La carte : sa taille, quatre chaînes d'une lettre par case et la liste des bâtiments. Au moindre défaut, on régénère.
+  if (typeof raw.terr === 'string' && raw.terr.length === 540 && !raw.cols) { r.cols = 30; r.rows = 18; } // parties d'avant les grandes cartes
+  r.cols = Math.floor(num(r.cols, f.cols, 16, 64)); r.rows = Math.floor(num(r.rows, f.rows, 12, 48));
+  const n = r.cols * r.rows, okStr = (v, re) => typeof v === 'string' && v.length === n && re.test(v);
+  let okGrid = okStr(r.terr, /^[0-4]+$/) && okStr(r.road, /^[0-4]+$/) && okStr(r.junc, /^[0-2]+$/) && Array.isArray(r.blds) && r.blds.length >= 1 && r.blds.length <= 140;
+  if (!okStr(r.ow, /^[0-9a-f]+$/)) r.ow = '0'.repeat(n);
   if (okGrid) {
     const seen = new Set();
-    r.blds = r.blds.map(b => ({ h: b && b.h ? 1 : 0, k: Math.floor(num(b && b.k, -1, -1, 3)), c: Math.floor(num(b && b.c, -1, -1, N - 1)) }));
+    r.blds = r.blds.map(b => ({ h: b && b.h ? 1 : 0, k: Math.floor(num(b && b.k, -1, -1, 3)), c: Math.floor(num(b && b.c, -1, -1, n - 1)), s: Math.floor(num(b && b.s, 0, 0, 1e7)) }));
     for (const b of r.blds) { if (b.k < 0 || b.c < 0 || seen.has(b.c) || r.terr[b.c] === '1' || r.road[b.c] !== '0') okGrid = false; seen.add(b.c); }
   }
-  if (!okGrid) { r.terr = r.road = r.junc = ''; r.blds = []; r.money = Math.max(r.money, f.money); }
+  if (!okGrid) { r.cols = f.cols; r.rows = f.rows; r.terr = r.road = r.junc = r.ow = ''; r.blds = []; r.money = Math.max(r.money, f.money); }
   return r;
 }
 let S = normalize(store.get(KEY));
+const god = () => S.set.god;
 
 /* ───────── Carte ───────── */
-let T = new Uint8Array(N), R = new Uint8Array(N), J = new Uint8Array(N), BL = new Int16Array(N).fill(-1), B = [];
+let T, R, J, OW, BL, closed, railClosed, deg, jn, D, DEST, E, heat, slowN, jamT, flow, tmpD, hpD, hpI, hpN = 0;
+let B = [], rails = [];
+const live = new Set(), ND = new Map();
+function setSize(cols, rows) { // (ré)alloue tout ce qui dépend de la taille de la carte
+  COLS = cols; ROWS = rows; N = cols * rows; W = cols * C; H = rows * C;
+  T = new Uint8Array(N); R = new Uint8Array(N); J = new Uint8Array(N); OW = new Uint8Array(N); BL = new Int16Array(N).fill(-1);
+  closed = new Uint8Array(N); railClosed = new Uint8Array(N); deg = new Uint8Array(N); jn = new Uint8Array(N);
+  D = Array.from({ length: 9 }, () => new Float32Array(N).fill(Infinity)); DEST = Array.from({ length: 9 }, () => new Uint8Array(N));
+  tmpD = Array.from({ length: 4 }, () => new Float32Array(N));
+  E = new Array(N * 4); live.clear(); ND.clear();
+  heat = new Float32Array(N); slowN = new Uint8Array(N); jamT = new Float32Array(N); flow = new Float32Array(4 * N);
+  hpD = new Float32Array(5 * N + 64); hpI = new Int32Array(5 * N + 64);
+}
 const mapType = () => MAPS[S.city % MAPS.length];
+const cap = () => Math.min(Math.round(N / 13), 50 + 2 * S.city);
+const cityGoal = () => Math.round(cap() * .7);
 function blob(rng, start, size, val, only = 0) {
   const cells = [start]; T[start] = val;
   for (let n = 1, guard = 0; n < size && guard < size * 30; guard++) {
@@ -434,21 +550,28 @@ function blob(rng, start, size, val, only = 0) {
 }
 function genWorld() {
   const rng = mulberry(S.seed + S.city * 977), t = mapType();
-  T.fill(0); R.fill(0); J.fill(0); BL.fill(-1); B = [];
+  T.fill(0); R.fill(0); J.fill(0); OW.fill(0); BL.fill(-1); B = [];
   const rc = () => ((rng() * ROWS) | 0) * COLS + ((rng() * COLS) | 0);
+  const centre = ((ROWS / 2) | 0) * COLS + ((COLS / 2) | 0);
+  const blobs = (n, lo, hi, val) => { for (let q = 0; q < n; q++) { const s = rc(); if (T[s] === 0) blob(rng, s, lo + ((rng() * (hi - lo)) | 0), val); } };
+  const railH = () => { const y = 4 + ((rng() * (ROWS - 8)) | 0); for (let x = 0; x < COLS; x++) T[y * COLS + x] = 4; };
+  const railV = () => { const x = 5 + ((rng() * (COLS - 10)) | 0); for (let y = 0; y < ROWS; y++) T[y * COLS + x] = 4; };
   if (t === 'rives') {
     let x = Math.round(COLS * (.42 + rng() * .16));
-    for (let y = 0; y < ROWS; y++) {
-      if (y % 2 === 0) x = Math.max(8, Math.min(COLS - 9, x + ((rng() * 3) | 0) - 1));
-      T[y * COLS + x] = 1; T[y * COLS + x + 1] = 1;
-    }
-  } else if (t === 'lac') blob(rng, ((ROWS / 2) | 0) * COLS + ((COLS / 2) | 0), 46, 1);
+    for (let y = 0; y < ROWS; y++) { if (y % 2 === 0) x = Math.max(8, Math.min(COLS - 9, x + ((rng() * 3) | 0) - 1)); T[y * COLS + x] = 1; T[y * COLS + x + 1] = 1; }
+    blobs(5, 7, 15, 2); blobs(3, 4, 8, 3);
+  } else if (t === 'lac') { blob(rng, centre, Math.round(N / 11), 1); blobs(6, 7, 15, 2); blobs(2, 4, 7, 3); railV(); }
   else if (t === 'foret') {
     let y = Math.round(ROWS * (.4 + rng() * .2));
     for (let x = 0; x < COLS; x++) { if (x % 3 === 0) y = Math.max(4, Math.min(ROWS - 5, y + ((rng() * 3) | 0) - 1)); T[y * COLS + x] = 1; }
-  } else blob(rng, rc(), 7, 1);
-  const woods = t === 'foret' ? 11 : 4;
-  for (let q = 0; q < woods; q++) { const s = rc(); if (T[s] === 0) blob(rng, s, 7 + ((rng() * 9) | 0), 2); }
+    blobs(15, 8, 17, 2); blobs(4, 5, 9, 3);
+  } else if (t === 'collines') { blobs(9, 8, 16, 3); blobs(4, 6, 12, 2); blob(rng, rc(), 8, 1); railH(); }
+  else if (t === 'archipel') {
+    T.fill(1);
+    for (let q = 0; q < 5; q++) { const s = (3 + ((rng() * (ROWS - 6)) | 0)) * COLS + 3 + ((rng() * (COLS - 6)) | 0); T[s] = 1; blob(rng, s, Math.round(N / 8), 0, 1); T[s] = 0; }
+    blob(rng, centre, Math.round(N / 9), 0, 1);
+    blobs(7, 5, 10, 2); blobs(2, 4, 6, 3);
+  } else { blob(rng, rc(), 8, 1); blobs(6, 7, 15, 2); blobs(3, 4, 8, 3); railH(); }
   placeBuilding(0, 0); placeBuilding(1, 0); placeBuilding(1, 0);
 }
 function landDist(src) {
@@ -467,7 +590,7 @@ function freeSpot(i) {
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
     const j = (y + dy) * COLS + x + dx;
     if (BL[j] >= 0) return false; // jamais deux bâtiments collés : chacun garde ses accès
-    if ((dx === 0) !== (dy === 0) && T[j] !== 1) land++;
+    if ((dx === 0) !== (dy === 0) && (T[j] === 0 || T[j] === 2)) land++;
   }
   return land >= 2;
 }
@@ -486,23 +609,37 @@ function placeBuilding(h, k) {
   }
   if (!cand.length) for (let i = 0; i < N; i++) if (freeSpot(i)) cand.push(i);
   if (!cand.length) return null;
-  const b = { h, k, c: rand(cand), t: 2 + Math.random() * 6, conn: false, door: -1, born: time };
+  const b = { h, k, c: rand(cand), s: 0, t: 2 + Math.random() * 6, conn: false, door: -1, born: time, vis: [0, 0, 0, 0], rel: 0 };
   BL[b.c] = B.length; B.push(b); netDirty = true;
   return b;
 }
-function syncGrid() { S.terr = Array.from(T).join(''); S.road = Array.from(R).join(''); S.junc = Array.from(J).join(''); S.blds = B.map(b => ({ h: b.h, k: b.k, c: b.c })); }
+const lvOf = b => b.s >= LV_AT[2] ? 3 : b.s >= LV_AT[1] ? 2 : 1;
+const hex = '0123456789abcdef';
+function syncGrid() {
+  S.cols = COLS; S.rows = ROWS;
+  S.terr = Array.from(T).join(''); S.road = Array.from(R).join(''); S.junc = Array.from(J).join('');
+  let o = ''; for (let i = 0; i < N; i++) o += hex[OW[i] & 15]; S.ow = o;
+  S.blds = B.map(b => ({ h: b.h, k: b.k, c: b.c, s: b.s }));
+}
+function findRails() { // les voies ferrées se déduisent du terrain : une ligne ou une colonne entière de rails
+  rails = [];
+  for (let y = 0; y < ROWS; y++) { let n = 0; for (let x = 0; x < COLS; x++) if (T[y * COLS + x] === 4) n++; if (n >= COLS * .7) rails.push({ h: 1, idx: y, pos: 0, dir: 1, t: 25 + Math.random() * 30, on: false }); }
+  for (let x = 0; x < COLS; x++) { let n = 0; for (let y = 0; y < ROWS; y++) if (T[y * COLS + x] === 4) n++; if (n >= ROWS * .7) rails.push({ h: 0, idx: x, pos: 0, dir: 1, t: 25 + Math.random() * 30, on: false }); }
+}
 function loadGrid() {
+  setSize(S.cols, S.rows);
   genDecor();
-  if (!S.terr) { genWorld(); syncGrid(); return; }
-  for (let i = 0; i < N; i++) { T[i] = +S.terr[i]; R[i] = +S.road[i]; J[i] = +S.junc[i]; }
-  BL.fill(-1);
-  B = S.blds.map((b, q) => { BL[b.c] = q; return { h: b.h, k: b.k, c: b.c, t: Math.random() * 6, conn: false, door: -1, born: -9 }; });
+  if (!S.terr) { genWorld(); syncGrid(); findRails(); return; }
+  for (let i = 0; i < N; i++) { T[i] = +S.terr[i]; R[i] = +S.road[i]; J[i] = +S.junc[i]; OW[i] = parseInt(S.ow[i], 16) || 0; }
+  B = S.blds.map((b, q) => { BL[b.c] = q; return { h: b.h, k: b.k, c: b.c, s: b.s || 0, t: Math.random() * 6, conn: false, door: -1, born: -9, vis: [0, 0, 0, 0], rel: 0 }; });
+  findRails();
 }
 
 /* ───────── Formules ───────── */
-const carValue = (l = S.lv.value) => 1.2 * Math.pow(1.25, l);
-const tripEvery = (l = S.lv.freq) => 8 / (1 + 0.15 * l);
-const growEvery = (l = S.lv.attract) => 38 * Math.pow(0.86, l);
+const carValue = (l = S.lv.value) => 1.8 * Math.pow(1.25, l);
+const season = () => Math.floor((S.day - 1) / 2) % 4; // une saison dure deux journées
+const tripEvery = (l = S.lv.freq) => 18 / (1 + 0.15 * l) / (season() === 1 ? 1.15 : 1);
+const growEvery = (l = S.lv.attract) => 38 * Math.pow(0.86, l) * (season() === 0 ? .8 : 1);
 const discount = (l = S.lv.discount) => 1 - 0.08 * l;
 const fluMult = () => 0.5 + 1.5 * S.F;
 const cityMult = () => 1 + 0.5 * S.city;
@@ -511,13 +648,25 @@ const achMult = () => 1 + 0.02 * achCount();
 const upCost = k => Math.round(UP[k].base * Math.pow(UP[k].g, S.lv[k]));
 const price = n => Math.max(1, Math.round(n * discount()));
 const bonus = (sec, min) => Math.max(min * carValue() * cityMult(), S.rate * sec);
-function trafficF(h) {
-  if (h < 5.5 || h >= 22) return .5;
-  if (h < 7.5) return .5 + (h - 5.5) / 2 * .5;
-  if (h < 9) return 1.35;
-  if (h < 17.5) return 1;
-  if (h < 19) return 1.35;
-  return 1 - (h - 19) / 3 * .5;
+const canPay = c => god() || S.money >= c;
+let upkeepMin = 0, broke = false; // entretien du réseau, en euros par minute
+const upkeepScale = () => (1 + 0.35 * S.lv.value) * cityMult();
+const netPerMin = () => S.rate * 60 - (god() ? 0 : upkeepMin);
+function outF(h) { // départs des maisons : surtout le matin
+  if (h < 5.5 || h >= 22) return .3;
+  if (h < 7.5) return .3 + (h - 5.5) / 2 * 1.2;
+  if (h < 9) return 1.5;
+  if (h < 16) return .9;
+  if (h < 19) return .7;
+  return .7 - (h - 19) / 3 * .4;
+}
+function backF(h) { // retours depuis les lieux : surtout le soir
+  if (h < 5.5) return 1.2;
+  if (h < 11) return .6;
+  if (h < 14) return 1;
+  if (h < 16.5) return .9;
+  if (h < 19.5) return 1.7;
+  return 1.4;
 }
 const isPeak = h => (h >= 7.5 && h < 9) || (h >= 17.5 && h < 19);
 function darkness(h) { if (h < 5.5 || h >= 21.5) return 1; if (h < 7.5) return 1 - (h - 5.5) / 2; if (h < 19.5) return 0; return (h - 19.5) / 2; }
@@ -527,38 +676,53 @@ function phaseName(h) {
 }
 
 /* ───────── Réseau : degrés, plus courts chemins, raccordements ───────── */
-let netDirty = true, bgDirty = true, time = 0, nConn = 0, nUn = 0;
-const deg = new Uint8Array(N), jn = new Uint8Array(N), D = [0, 1, 2, 3, 4].map(() => new Float32Array(N).fill(Infinity));
-const E = new Array(N * 4), live = new Set(), ND = new Map();
-const heat = new Float32Array(N), slowN = new Uint8Array(N); // encombrement de chaque case, de 0 à 1
-let nCars = 0;
+// Cartes de distance : 0 à 3 vers les lieux de chaque type, 4 vers la cible de l'ambulance, 5 à 8 vers les maisons de chaque type.
+let netDirty = true, bgDirty = true, time = 0, nConn = 0, nUn = 0, nCars = 0;
 const speedAt = i => ROADS[R[i] || 1].sp * (ev.works && ev.works.cell === i ? .25 : 1);
-function dijkstra(dist, sources) {
-  dist.fill(Infinity);
-  const done = new Uint8Array(N);
-  for (const s of sources) dist[s] = 0;
-  for (;;) {
-    let u = -1, best = Infinity;
-    for (let i = 0; i < N; i++) if (!done[i] && dist[i] < best) { best = dist[i]; u = i; }
-    if (u < 0) break;
-    done[u] = 1;
-    for (let d = 0; d < 4; d++) {
-      const j = nb(u, d);
-      if (j < 0 || !R[j] || done[j]) continue;
-      const v = best + C * .5 / speedAt(j) + C * .5 / speedAt(u) + (jn[u] ? .5 : 0);
-      if (v < dist[j]) dist[j] = v;
+function hpPush(d, i) { let q = hpN++; while (q > 0) { const p = (q - 1) >> 1; if (hpD[p] <= d) break; hpD[q] = hpD[p]; hpI[q] = hpI[p]; q = p; } hpD[q] = d; hpI[q] = i; }
+function hpPop() {
+  const top = hpI[0], d = hpD[--hpN], i = hpI[hpN];
+  let q = 0;
+  for (;;) { let c = 2 * q + 1; if (c >= hpN) break; if (c + 1 < hpN && hpD[c + 1] < hpD[c]) c++; if (hpD[c] >= d) break; hpD[q] = hpD[c]; hpI[q] = hpI[c]; q = c; }
+  hpD[q] = d; hpI[q] = i;
+  return top;
+}
+function dijkstra(dist, src) { // src : [case, distance de départ, case, distance…] ; on remonte les routes à contresens
+  dist.fill(Infinity); hpN = 0;
+  for (let q = 0; q < src.length; q += 2) if (!closed[src[q]] && src[q + 1] < dist[src[q]]) { dist[src[q]] = src[q + 1]; hpPush(src[q + 1], src[q]); }
+  while (hpN) {
+    const d = hpD[0], u = hpPop();
+    if (d > dist[u]) continue;
+    for (let dd = 0; dd < 4; dd++) {
+      const j = nb(u, dd);
+      if (j < 0 || !R[j] || closed[j] || (OW[j] & (1 << ((dd + 2) & 3)))) continue; // j → u interdit par un sens unique
+      let w = C * .5 / speedAt(j) + C * .5 / speedAt(u);
+      if (OW[u] & (1 << dd)) w *= .8;
+      if (jn[u] && R[u] !== 4) w += .5;
+      const v = d + w;
+      if (v < dist[j] && hpN < hpD.length - 1) { dist[j] = v; hpPush(v, j); }
     }
   }
 }
-function doorsOf(b) { const out = []; for (let d = 0; d < 4; d++) { const j = nb(b.c, d); if (j >= 0 && R[j]) out.push(j); } return out; }
+function doorsOf(b) { const out = []; for (let d = 0; d < 4; d++) { const j = nb(b.c, d); if (j >= 0 && R[j] && R[j] < 4) out.push(j); } return out; }
+function sourcesFor(k) { // portes des lieux (0 à 3) ou des maisons (5 à 8) ; un lieu de haut niveau attire de plus loin
+  const src = [];
+  for (const b of B) if (k < 4 ? (!b.h && b.k === k) : (b.h && b.k === k - 5)) for (const j of doorsOf(b)) src.push(j, k < 4 ? (3 - lvOf(b)) * 3 : 0);
+  return src;
+}
 function rebuildNet() {
   netDirty = false; bgDirty = true;
   for (let i = 0; i < N; i++) { let n = 0; if (R[i]) for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) n++; } deg[i] = n; }
   // Un vrai croisement a au moins trois branches qui mènent quelque part : une allée d'une case vers une maison n'en fait pas un.
   for (let i = 0; i < N; i++) { let n = 0; if (R[i]) for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j] && deg[j] >= 2) n++; } jn[i] = n >= 3 ? 1 : 0; }
   for (const cell of [...ND.keys()]) if (!jn[cell]) ND.delete(cell);
-  for (let k = 0; k < 4; k++) { const src = []; for (const b of B) if (!b.h && b.k === k) src.push(...doorsOf(b)); dijkstra(D[k], src); }
-  if (ev.amb) dijkstra(D[4], doorsOf(ev.amb.target)); else D[4].fill(Infinity);
+  for (const k of [0, 1, 2, 3, 5, 6, 7, 8]) {
+    const src = sourcesFor(k); DEST[k].fill(0);
+    for (let q = 0; q < src.length; q += 2) if (!closed[src[q]]) DEST[k][src[q]] = 1;
+    dijkstra(D[k], src);
+  }
+  DEST[4].fill(0);
+  if (ev.amb) { const src = []; for (const j of doorsOf(ev.amb.target)) { src.push(j, 0); DEST[4][j] = 1; } dijkstra(D[4], src); } else D[4].fill(Infinity);
   nConn = 0; nUn = 0;
   for (const b of B) {
     const doors = doorsOf(b);
@@ -567,13 +731,16 @@ function rebuildNet() {
     else b.conn = doors.length > 0;
     if (b.conn) nConn++; else nUn++;
   }
+  let up = 0;
+  for (let i = 0; i < N; i++) if (R[i]) { up += ROADS[R[i]].up + (T[i] === 1 ? 2 : T[i] === 3 ? 3 : 0) + (jn[i] && J[i] ? 2 : 0); }
+  upkeepMin = up * upkeepScale();
   for (const key of live) for (const c of E[key]) { c.nn = undefined; if (!R[c.a] || !R[c.b]) kill(c); }
 }
 function chooseNext(cell, from, k) {
   let best = -1, bv = Infinity;
   for (let d = 0; d < 4; d++) {
     const j = nb(cell, d);
-    if (j < 0 || !R[j] || !(D[k][j] < Infinity)) continue;
+    if (j < 0 || !R[j] || closed[j] || (OW[cell] & (1 << d)) || !(D[k][j] < Infinity)) continue;
     const v = D[k][j] + (j === from ? 60 : 0);
     if (v < bv) { bv = v; best = j; }
   }
@@ -590,13 +757,13 @@ function putOnEdge(c) {
   L.splice(q, 0, c); live.add(key);
 }
 const fx = []; // véhicules qui se garent
-function launch(a, k, type, src, from) {
+function launch(a, k, type, src, from, k0 = -1) {
   const nn = chooseNext(a, -1, k);
   if (nn < 0) return null;
   const dir = dirOf(a, nn), L = E[a * 4 + dir], tail = L && L.length ? L[L.length - 1] : null, V = VEH[type];
   if (tail && tail.d - VEH[tail.type].len / 2 - V.len / 2 - GAP < 0) return null; // pas de place pour sortir
   const off = ROADS[R[a] || 1].off;
-  const c = { a, b: nn, dir, d: 0, v: 0, k, type, prev: -1, wait: 0, t0: time, src, lock: -1, lockT: 0, nodeWait: 0, nn: undefined, dead: false,
+  const c = { a, b: nn, dir, d: 0, v: 0, k, k0, type, prev: -1, wait: 0, t0: time, src, lock: -1, lockT: 0, nodeWait: 0, nn: undefined, dead: false, pay: 1,
               color: type === 'bus' ? rand(['#2a9d8f', '#e08a2b', '#4a6fd8']) : rand(CAR_COLORS),
               rx: from >= 0 ? cx(from) : cx(a) - DY[dir] * off, ry: from >= 0 ? cy(from) : cy(a) + DX[dir] * off, ra: from >= 0 ? Math.atan2(cy(a) - cy(from), cx(a) - cx(from)) : Math.atan2(DY[dir], DX[dir]) };
   putOnEdge(c); nCars++;
@@ -610,7 +777,8 @@ function typeFor(k) {
   return 'car';
 }
 function stepCars(dt) {
-  const rain = ev.rain > 0, rainK = rain ? .8 : 1, gapK = rain ? GAP * 1.7 : GAP;
+  const rain = ev.rain > 0, snow = ev.snow > 0;
+  const gK = (rain ? .8 : 1) * (season() === 3 ? .93 : 1) * (broke ? .75 : 1), gapK = rain || snow ? GAP * 1.7 : GAP;
   slowN.fill(0);
   for (const [cell, nd] of ND) { // feux
     if (J[cell] !== 2) continue;
@@ -623,40 +791,42 @@ function stepCars(dt) {
     for (let q = 0; q < L.length; q++) {
       const c = L[q], V = VEH[c.type];
       if (c.dead) { L.splice(q, 1); q--; continue; }
-      let vm = speedAt(c.d < C / 2 ? c.a : c.b) * V.sp * rainK, obs = Infinity, nn = -3;
-      if (c.ghost > 0) c.ghost -= dt;
+      const cell = c.d < C / 2 ? c.a : c.b;
+      let vm = speedAt(cell) * V.sp * gK, obs = Infinity, nn = -3;
+      if (snow) vm *= R[cell] >= 3 ? .9 : .7;
+      if (OW[c.b] & (1 << ((c.dir + 2) & 3))) vm *= 1.25; // tronçon à sens unique
       if (q > 0) { const a = L[q - 1]; obs = a.d - VEH[a.type].len / 2 - V.len / 2 - gapK; }
       else {
-        if (c.nn === undefined) c.nn = D[c.k][c.b] === 0 ? -2 : chooseNext(c.b, c.a, c.k);
+        if (c.nn === undefined) c.nn = DEST[c.k][c.b] ? -2 : chooseNext(c.b, c.a, c.k);
         nn = c.nn;
         if (nn >= 0) {
           const node = c.b, L2 = E[node * 4 + dirOf(node, nn)], tail = L2 && L2.length ? L2[L2.length - 1] : null;
           const beyond = tail ? C + tail.d - VEH[tail.type].len / 2 - V.len / 2 - gapK : Infinity;
-          if (!jn[node]) obs = beyond;
+          if (!jn[node] || R[node] === 4) obs = beyond; // sur une voie rapide, on s'insère sans s'arrêter
           else {
             const line = C - 11 - V.len / 2, jt = J[node], nd = getND(node);
             let pass = c.lock === node || c.d > line + 1;
             if (!pass && jt === 2) { const ax = c.dir & 1; nd.w[ax]++; if (nd.phase === 0 && nd.green === ax && beyond - C > 2) pass = true; }
-            else if (!pass && line - c.d < (jt === 1 ? 70 : 26)) {
+            else if (!pass && line - c.d < (jt === 1 ? 70 : 36)) {
               if (c.v < 6) c.nodeWait += dt;
               const pr = c.nodeWait + (c.type === 'amb' ? 100 : 0);
               if (pr > nd.reqW) { nd.req = c; nd.reqW = pr; }
             }
             obs = pass ? beyond : Math.min(beyond, line);
-            if (jt === 0 && !pass && line - c.d < 30) vm = Math.min(vm, 38); // on aborde un croisement simple au pas
+            if (jt === 0 && !pass && line - c.d < 30) vm = Math.min(vm, 50); // on aborde un croisement simple au pas
             if (jt === 1 && C - c.d < 22) vm = Math.min(vm, 55);
           }
         } else if (nn === -1) obs = C - 1; // impasse : la route a été coupée
+        if (railClosed[c.b]) { const stop = C / 2 - 6 - V.len / 2; if (c.d <= stop + 1) obs = Math.min(obs, stop); } // barrière du passage à niveau
       }
-      // Dernier recours contre un embouteillage en boucle : après 25 s à l'arrêt, la tête de file force le passage.
-      if (c.v < 1) { c.stuck = (c.stuck || 0) + dt; if (c.stuck > 25 && q === 0 && nn >= 0) { c.ghost = 2.5; c.stuck = 0; } } else c.stuck = 0;
-      if (c.ghost > 0 && q === 0 && nn >= 0) obs = Infinity;
+      // Soupape contre les embouteillages sans issue : après 35 s sans avancer d'un mètre, le conducteur renonce.
+      if (c.v < 1) { c.stuck = (c.stuck || 0) + dt; if (c.stuck > 35) { giveUp(c); L.splice(q, 1); q--; continue; } } else c.stuck = 0;
       const gap = obs - c.d, vt = gap <= .5 ? 0 : Math.min(vm, gap * 4);
       c.v = vt < c.v ? vt : Math.min(vt, c.v + 150 * dt);
       let nd2 = c.d + c.v * dt; if (nd2 > obs) nd2 = Math.max(c.d, obs);
       c.d = nd2;
       if (c.v < 8) c.wait += dt;
-      if (c.v < 11) slowN[c.d < C / 2 ? c.a : c.b]++;
+      if (c.v < 11) slowN[cell]++;
       if (c.lock >= 0) { c.lockT += dt; if ((c.a === c.lock && c.d > 12) || c.lockT > 7) { c.lock = -1; c.lockT = 0; } }
       if (q === 0 && nn !== -3) {
         if (nn === -1 && c.d >= C - 2.5) { kill(c); L.splice(q, 1); q--; }
@@ -664,6 +834,7 @@ function stepCars(dt) {
         else if (c.d >= C - .01 && nn >= 0) {
           L.splice(q, 1); q--;
           c.d -= C; c.prev = c.a; c.a = c.b; c.b = nn; c.dir = dirOf(c.a, c.b); c.nn = undefined; c.nodeWait = 0;
+          if (c.k0 >= 0) flow[c.k0 * N + c.a] += 1;
           putOnEdge(c);
         }
       }
@@ -675,57 +846,94 @@ function stepCars(dt) {
   for (const [cell, nd] of ND) { // attribution des croisements
     if (nd.occ.length) nd.occ = nd.occ.filter(c => !c.dead && c.lock === cell);
     const r = nd.req; nd.req = null; nd.reqW = -1;
-    if (!r || r.dead || r.lock >= 0 || nd.occ.length >= (J[cell] === 1 ? 2 : 1)) continue;
+    if (!r || r.dead || r.lock >= 0 || nd.occ.length >= (J[cell] === 1 ? 3 : 1)) continue;
     let free = true;
     if (r.nn >= 0) {
       const L2 = E[cell * 4 + dirOf(cell, r.nn)], tail = L2 && L2.length ? L2[L2.length - 1] : null;
       if (tail && tail.d - VEH[tail.type].len / 2 - VEH[r.type].len - GAP < 13) free = false; // ne pas s'engager si la sortie est pleine
     }
-    if (free || r.nodeWait > 20) { nd.occ.push(r); r.lock = cell; r.lockT = 0; }
+    if (free) { nd.occ.push(r); r.lock = cell; r.lockT = 0; } // jamais de passage en force : il bloquerait le croisement
   }
 }
-let windowInc = 0;
+const puffs = [];
+function giveUp(c) { // un trajet abandonné ne rapporte rien et fait chuter la fluidité
+  if (puffs.length < 30) puffs.push({ x: c.rx, y: c.ry, t: 0 });
+  if (c.type !== 'amb' && c.type !== 'gold') { S.F += (0 - S.F) * 0.02; S.streak = 0; S.st.lost++; }
+  else if (c.type === 'amb') toast('alert', 'Ambulance bloquée', 'Elle n’a jamais pu passer : pas de prime.');
+  kill(c);
+}
+let windowInc = 0, tripsWin = 0;
 function earn(x) { S.money += x; S.total += x; S.st.total += x; windowInc += x; missionHit('earn', x); }
-function payTrip(k, type, score, at) {
+function payTrip(k, type, score, at, mult = 1) { // k : type de lieu concerné, pour la ventilation des gains
   S.F += (score - S.F) * 0.04;
   S.trips++; S.st.trips++;
   if (score > .6) { S.streak++; if (S.streak > S.st.bestStreak) S.st.bestStreak = S.streak; } else S.streak = 0;
   const fest = ev.fest && B[ev.fest.i] && B[ev.fest.i].k === k ? 2 : 1;
-  const v = KINDS[k].val * VEH[type].val * carValue() * fluMult() * (isPeak(S.clock) ? 1.5 : 1) * (ev.rain > 0 ? 1.25 : 1) * fest * cityMult() * achMult();
-  earn(v); missionHit('trips', 1);
-  if (floats.length < 8 && (type !== 'car' || Math.random() < .35)) floatText(cx(at), cy(at), '+' + fmt(v) + ' €', 'gain', true);
+  const v = mult * KINDS[k].val * VEH[type].val * carValue() * fluMult() * (isPeak(S.clock) ? 1.5 : 1) * (ev.rain > 0 ? 1.25 : 1) * (ev.snow > 0 ? 1.3 : 1) * fest * cityMult() * achMult();
+  earn(v); S.st['k' + k] += v; tripsWin++; missionHit('trips', 1);
+  if (floats.length < 8 && (type !== 'car' || Math.random() < .3)) floatText(cx(at), cy(at), '+' + fmt(v) + ' €', 'gain', true);
 }
+function adjacentBuilding(cell, h, k) { for (let d = 0; d < 4; d++) { const j = nb(cell, d), q = j >= 0 ? BL[j] : -1; if (q >= 0 && B[q].h === h && B[q].k === k) return B[q]; } return null; }
 function arrive(c) {
   if (c.type === 'amb') {
-    const ok = c.wait < 3;
-    if (ok) { const b = bonus(30, 30); earn(b); S.st.amb++; toast('gain', 'Ambulance arrivée à temps', '+' + fmt(b) + ' € de prime'); }
+    if (c.wait < 3) { const b = bonus(30, 30); earn(b); S.st.amb++; toast('gain', 'Ambulance arrivée à temps', '+' + fmt(b) + ' € de prime'); }
     else toast('alert', 'Ambulance retardée', 'Elle a attendu ' + nf0.format(c.wait) + ' s dans les bouchons : pas de prime.');
     return;
   }
   if (c.type === 'gold') { toast('info', 'Fourgon reparti', 'Clique dessus la prochaine fois pour toucher la prime.'); return; }
-  for (let d = 0; d < 4; d++) { // il quitte la route et entre chez son destinataire
-    const j = nb(c.b, d), q = j >= 0 ? BL[j] : -1;
-    if (q >= 0 && !B[q].h && B[q].k === c.k) { if (fx.length < 40) fx.push({ c, x0: c.rx, y0: c.ry, x1: cx(j), y1: cy(j), t: 0 }); break; }
+  const home = c.k >= 5, b = home ? adjacentBuilding(c.b, 1, c.k - 5) : adjacentBuilding(c.b, 0, c.k);
+  if (b && fx.length < 40) fx.push({ c, x0: c.rx, y0: c.ry, x1: cx(b.c), y1: cy(b.c), t: 0 }); // il quitte la route et entre dans le bâtiment
+  const man = manh(c.src, c.b) * C, dur = Math.max(.5, time - c.t0), score = man ? Math.min(1, man / 95 / dur) : 1;
+  if (home) { payTrip(c.k - 5, c.type, score, c.b, .5); return; } // retour à la maison
+  let mult = c.pay;
+  if (b) {
+    const was = lvOf(b); b.s++; mult *= 1 + .3 * (was - 1);
+    if (lvOf(b) > was) { // le lieu grossit : il rapporte plus et attire de plus loin
+      netDirty = true;
+      toast('event', KINDS[b.k].lv[was - 1] + ' devient ' + KINDS[b.k].lv[was], 'Niveau ' + (was + 1) + ' : trajets +30 %, et il attire de plus loin.', 6500, 'trend');
+      if (was + 1 === 3) unlock('grow');
+    }
+    if (c.k0 >= 0 && b.vis[0] + b.vis[1] + b.vis[2] + b.vis[3] < 40) b.vis[c.k0]++; // il repartira plus tard
   }
-  const man = manh(c.src, c.b) * C, dur = Math.max(.5, time - c.t0);
-  payTrip(c.k, c.type, man ? Math.min(1, man / 95 / dur) : 1, c.b);
+  payTrip(c.k, c.type, score, c.b, mult);
 }
-function stepTrips(dt, tf) {
-  const every = tripEvery();
+function bestDoor(b, k) { let best = -1, bv = Infinity; for (const j of doorsOf(b)) if (!DEST[k][j] && D[k][j] < bv) { bv = D[k][j]; best = j; } return best; }
+function stepTrips(dt) {
+  const every = tripEvery(), out = outF(S.clock), back = backF(S.clock);
   for (const b of B) {
-    if (!b.h) continue;
-    b.t -= dt * tf * (ev.fest && B[ev.fest.i] && B[ev.fest.i].k === b.k ? 2 : 1);
-    if (b.t > 0) continue;
-    if (!b.conn || b.door < 0 || nCars >= MAX_CARS) { b.t = 1; continue; }
-    const type = typeFor(b.k);
-    if (D[b.k][b.door] === 0) { payTrip(b.k, type, 1, b.door); b.t = every * (.7 + .6 * Math.random()); continue; } // le lieu est au bout de la rue
-    b.t = launch(b.door, b.k, type, b.door, b.c) ? every * (.7 + .6 * Math.random()) : .6;
+    if (b.h) { // départ vers le lieu de sa couleur
+      b.t -= dt * out * (ev.fest && B[ev.fest.i] && B[ev.fest.i].k === b.k ? 2 : 1);
+      if (b.t > 0) continue;
+      if (!b.conn || b.door < 0 || nCars >= MAX_CARS) { b.t = 1; continue; }
+      const type = typeFor(b.k);
+      if (DEST[b.k][b.door]) { payTrip(b.k, type, 1, b.door); b.t = every * (.7 + .6 * Math.random()); continue; } // le lieu est au bout de la rue
+      b.t = launch(b.door, b.k, type, b.door, b.c, b.k) ? every * (.7 + .6 * Math.random()) : .6;
+      continue;
+    }
+    // Un lieu : ses visiteurs repartent, chez eux ou vers une autre étape
+    const tot = b.vis[0] + b.vis[1] + b.vis[2] + b.vis[3];
+    if (!tot) { b.rel = 0; continue; }
+    b.rel = Math.min(3, b.rel + tot * dt / 30 * back);
+    while (b.rel >= 1 && nCars < MAX_CARS) {
+      let r = Math.random() * tot, k0 = 0; while (k0 < 3 && (r -= b.vis[k0]) >= 0) k0++;
+      if (!b.vis[k0]) { k0 = b.vis.findIndex(v => v > 0); if (k0 < 0) break; }
+      let map = 5 + k0, pay = 1;
+      if (Math.random() < .15) { // une étape de plus avant de rentrer
+        const others = [0, 1, 2, 3].filter(k => k !== b.k && bestDoor(b, k) >= 0);
+        if (others.length) { map = rand(others); pay = .6; }
+      }
+      const door = bestDoor(b, map);
+      if (door < 0) { b.vis[k0]--; b.rel -= 1; continue; } // plus de chemin du retour : le visiteur renonce
+      const c = launch(door, map, typeFor(k0), door, b.c, k0);
+      if (!c) break;
+      c.pay = pay; b.vis[k0]--; b.rel -= 1;
+    }
   }
 }
 
 /* ───────── Croissance de la ville ───────── */
 function grow(silent) {
-  if (B.length >= CAP) return null;
+  if (B.length >= cap()) return null;
   const n = B.length, open = KINDS.map((k, i) => i).filter(i => KINDS[i].at <= n);
   const count = (h, k) => B.filter(b => b.h === h && b.k === k).length;
   const fresh1 = open.find(k => count(0, k) === 0);
@@ -737,7 +945,7 @@ function grow(silent) {
   }
   const k = open.slice().sort((x, y) => (count(1, x) + count(0, x) * 3) - (count(1, y) + count(0, y) * 3) + Math.random() - .5)[0];
   b = count(1, k) >= 4 * count(0, k) ? placeBuilding(0, k) : placeBuilding(1, k);
-  if (b && !silent) toast('build', b.h ? 'Une maison s’installe' : 'Nouveau ' + KINDS[k].name.toLowerCase(), 'Relie-la au réseau pour qu’elle rapporte.'.replace('Relie-la', b.h ? 'Relie-la' : 'Relie-le'));
+  if (b && !silent) toast('build', b.h ? 'Une maison s’installe' : 'Nouveau lieu : ' + KINDS[k].name, b.h ? 'Relie-la au réseau pour qu’elle rapporte.' : 'Relie-le au réseau pour qu’il rapporte.');
   return b;
 }
 function stepGrowth(dt) {
@@ -747,52 +955,120 @@ function stepGrowth(dt) {
   if (nUn <= 3) grow(false); // la ville attend que les derniers arrivés soient reliés
 }
 
-/* ───────── Évènements ───────── */
-const ev = { next: 50 + Math.random() * 30, rain: 0, works: null, fest: null, amb: null, gold: null, force: null };
-function resetEv() { Object.assign(ev, { next: 50 + Math.random() * 30, rain: 0, works: null, fest: null, amb: null, gold: null, force: null }); }
-function stepEvents(dt) {
-  if (ev.rain > 0) ev.rain -= dt;
-  if (ev.works) { ev.works.t -= dt; if (ev.works.t <= 0 || !R[ev.works.cell]) { ev.works = null; netDirty = true; } }
-  if (ev.fest) { ev.fest.t -= dt; if (ev.fest.t <= 0) ev.fest = null; }
-  ev.next -= dt;
-  if (ev.next > 0) return;
-  ev.next = 50 + Math.random() * 40;
+/* ───────── Trains ───────── */
+const TRAIN = 150, TRAIN_SPEED = 230;
+function stepRails(dt) {
+  railClosed.fill(0);
+  for (const r of rails) {
+    const len = r.h ? W : H;
+    if (!r.on) { r.t -= dt; if (r.t > 0) continue; r.on = true; r.dir = -r.dir; r.pos = r.dir > 0 ? -280 : len + 280; }
+    r.pos += TRAIN_SPEED * dt * r.dir;
+    const tail = r.pos - r.dir * TRAIN;
+    if ((r.dir > 0 && tail > len + 30) || (r.dir < 0 && tail < -30)) { r.on = false; r.t = 40 + Math.random() * 45; continue; }
+    const n = r.h ? COLS : ROWS;
+    for (let q = 0; q < n; q++) { // les barrières se ferment un peu avant le train et se rouvrent juste après
+      const i = r.h ? r.idx * COLS + q : q * COLS + r.idx;
+      if (!R[i] || R[i] === 4) continue;
+      const p = q * C + C / 2;
+      if ((p - r.pos) * r.dir < 250 && (p - tail) * r.dir > -30) railClosed[i] = 1;
+    }
+  }
+}
+
+/* ───────── Évènements et saisons ───────── */
+const ev = { next: 50 + Math.random() * 30, rain: 0, snow: 0, works: null, fest: null, amb: null, gold: null, marathon: null, flood: null, jam: null, force: null, lastJam: -999 };
+function resetEv() { Object.assign(ev, { next: 50 + Math.random() * 30, rain: 0, snow: 0, works: null, fest: null, amb: null, gold: null, marathon: null, flood: null, jam: null, force: null, lastJam: -999 }); }
+function applyClosed() { closed.fill(0); if (ev.marathon) for (const i of ev.marathon.cells) closed[i] = 1; if (ev.flood) closed[ev.flood.cell] = 1; netDirty = true; }
+function tryClose(cells) { // ne ferme une route que si personne ne se retrouve isolé
+  rebuildNet(); const before = nUn;
+  for (const i of cells) closed[i] = 1;
+  rebuildNet();
+  if (nUn > before) { for (const i of cells) closed[i] = 0; rebuildNet(); return false; }
+  return true;
+}
+function startEvent(pick) {
   const homes = B.filter(b => b.h && b.conn && b.door >= 0), dests = B.filter(b => !b.h && b.conn);
-  const opts = [];
-  if (ev.rain <= 0) opts.push('rain');
-  if (homes.length) { if (!ev.gold) opts.push('gold', 'gold'); if (!ev.fest) opts.push('fest'); }
-  if (!ev.works && nConn >= 4) opts.push('works');
-  if (!ev.amb && homes.length >= 3) opts.push('amb');
-  if (B.length < CAP - 3 && nUn === 0 && B.length >= 6) opts.push('quartier');
-  if (!opts.length) return;
-  let pick = rand(opts);
-  if (ev.force && opts.includes(ev.force)) { pick = ev.force; ev.force = null; }
   if (pick === 'rain') { ev.rain = 40; toast('event', 'Averse', 'Les véhicules ralentissent, les trajets rapportent 25 % de plus.', 5000, 'rain'); }
-  else if (pick === 'gold') {
+  else if (pick === 'snow') { ev.snow = 95; toast('event', 'Chutes de neige', 'Tout roule au ralenti pendant une minute et demie, moins sur les avenues et voies rapides. Trajets +30 %.', 7000, 'snow'); notify('Chutes de neige', 'Le trafic ralentit partout.'); }
+  else if (pick === 'gold' && homes.length) {
     const h = rand(homes), c = launch(h.door, h.k, 'gold', h.door, h.c);
     if (c) { ev.gold = c; toast('event', 'Fourgon blindé en route', 'Clique dessus avant qu’il n’arrive.', 5000, 'van'); notify('Fourgon blindé en route', 'Clique dessus pour toucher la prime.'); }
   }
-  else if (pick === 'fest') { const d = rand(dests); ev.fest = { i: B.indexOf(d), t: 30 }; toast('event', 'Jour de fête : ' + KINDS[d.k].name, 'Deux fois plus de trajets, payés double, pendant 30 s.', 5000, 'star'); }
+  else if (pick === 'fest' && dests.length) { const d = rand(dests); ev.fest = { i: B.indexOf(d), t: 30 }; toast('event', 'Jour de fête : ' + KINDS[d.k].name, 'Deux fois plus de trajets, payés double, pendant 30 s.', 5000, 'star'); }
   else if (pick === 'works') {
-    const cells = []; for (let i = 0; i < N; i++) if (R[i] && deg[i] === 2) cells.push(i);
+    const cells = []; for (let i = 0; i < N; i++) if (R[i] && deg[i] === 2 && !closed[i]) cells.push(i);
     if (cells.length) { ev.works = { cell: rand(cells), t: 40 }; netDirty = true; toast('alert', 'Chantier sur la chaussée', 'Le tronçon est ralenti 40 s. Clique dessus pour presser les ouvriers.', 5500, 'cone'); }
   }
-  else if (pick === 'amb') {
+  else if (pick === 'amb' && homes.length) {
     const h = rand(homes), others = B.filter(b => b !== h && doorsOf(b).length);
     if (others.length) {
-      ev.amb = { target: rand(others), car: null }; dijkstra(D[4], doorsOf(ev.amb.target));
-      const c = D[4][h.door] > 0 && D[4][h.door] < Infinity ? launch(h.door, 4, 'amb', h.door, h.c) : null;
+      ev.amb = { target: rand(others), car: null }; rebuildNet();
+      const c = !DEST[4][h.door] && D[4][h.door] < Infinity ? launch(h.door, 4, 'amb', h.door, h.c) : null;
       if (c) { ev.amb.car = c; toast('alert', 'Ambulance en intervention', 'Prime si elle perd moins de 3 s dans les bouchons.', 5000, 'amb'); }
-      else ev.amb = null;
+      else { ev.amb = null; netDirty = true; }
     }
   }
   else if (pick === 'quartier') { let n = 0; for (let q = 0; q < 3; q++) if (grow(true)) n++; if (n) { toast('event', 'Un nouveau quartier sort de terre', n + ' bâtiments à relier d’un coup.', 5500, 'home'); notify('Nouveau quartier', n + ' bâtiments à relier.'); } }
+  else if (pick === 'marathon' && !ev.marathon) { // ferme un tronçon droit de route ou d'avenue
+    const runs = [];
+    for (let i = 0; i < N; i++) for (const d of [0, 1]) {
+      const run = []; let j = i;
+      while (j >= 0 && run.length < 6 && R[j] >= 2 && R[j] <= 3 && T[j] === 0 && deg[j] === 2 && !closed[j]) { run.push(j); j = nb(j, d); }
+      if (run.length >= 4) runs.push(run);
+    }
+    for (let tries = 0; tries < 6 && runs.length; tries++) {
+      const run = runs.splice((Math.random() * runs.length) | 0, 1)[0];
+      if (tryClose(run)) { ev.marathon = { cells: run, t: 120 }; toast('alert', 'Marathon en ville', 'Un tronçon est fermé pendant deux minutes : le trafic se reporte ailleurs.', 7000, 'flag'); notify('Marathon en ville', 'Un tronçon est fermé.'); break; }
+    }
+  }
+  else if (pick === 'flood' && !ev.flood) { // coupe un pont, s'il en reste un autre pour passer
+    const br = []; for (let i = 0; i < N; i++) if (R[i] && T[i] === 1 && !closed[i]) br.push(i);
+    for (let tries = 0; tries < 5 && br.length; tries++) {
+      const cell = br.splice((Math.random() * br.length) | 0, 1)[0];
+      if (tryClose([cell])) { ev.flood = { cell, t: 100 }; toast('alert', 'Crue : un pont est coupé', 'Il rouvrira dans une minute et demie.', 7000, 'wave'); notify('Crue', 'Un pont est coupé.'); break; }
+    }
+  }
+}
+function stepEvents(dt) {
+  if (ev.rain > 0) ev.rain -= dt;
+  if (ev.snow > 0) ev.snow -= dt;
+  if (ev.works) { ev.works.t -= dt; if (ev.works.t <= 0 || !R[ev.works.cell]) { ev.works = null; netDirty = true; } }
+  if (ev.fest) { ev.fest.t -= dt; if (ev.fest.t <= 0) ev.fest = null; }
+  if (ev.marathon) { ev.marathon.t -= dt; if (ev.marathon.t <= 0) { ev.marathon = null; applyClosed(); toast('info', 'Marathon terminé', 'Le tronçon est rouvert.', 4000, 'flag'); } }
+  if (ev.flood) { ev.flood.t -= dt; if (ev.flood.t <= 0 || !R[ev.flood.cell]) { ev.flood = null; applyClosed(); toast('info', 'La crue se retire', 'Le pont est rouvert.', 4000, 'wave'); } }
+  if (ev.jam) { ev.jam.t -= dt; if (ev.jam.t <= 0 || heat[ev.jam.cell] < .35) ev.jam = null; }
+  ev.next -= dt;
+  if (ev.next > 0) return;
+  ev.next = 50 + Math.random() * 40;
+  const homes = B.filter(b => b.h && b.conn && b.door >= 0), se = season(), opts = [];
+  if (ev.rain <= 0 && ev.snow <= 0 && se !== 3) { opts.push('rain'); if (se === 2) opts.push('rain', 'rain'); }
+  if (se === 3 && ev.snow <= 0) opts.push('snow', 'snow');
+  if (homes.length) { if (!ev.gold) opts.push('gold', 'gold'); if (!ev.fest) opts.push('fest'); }
+  if (!ev.works && nConn >= 4) opts.push('works');
+  if (!ev.amb && homes.length >= 3) opts.push('amb');
+  if (B.length < cap() - 3 && nUn === 0 && B.length >= 6) opts.push('quartier');
+  if (!ev.marathon && nConn >= 10) opts.push('marathon');
+  if (!ev.flood && nConn >= 8) opts.push('flood');
+  if (!opts.length) return;
+  let pick = rand(opts);
+  if (ev.force && opts.includes(ev.force)) { pick = ev.force; ev.force = null; }
+  startEvent(pick);
+}
+function watchJams() { // une fois par seconde : un bouchon qui dure déclenche une alerte ciblée
+  let worst = -1;
+  for (let i = 0; i < N; i++) { if (heat[i] > .8) { jamT[i] += 1; if (jamT[i] > 20 && (worst < 0 || jamT[i] > jamT[worst])) worst = i; } else if (jamT[i] > 0) jamT[i] = Math.max(0, jamT[i] - 2); }
+  for (let q = 0; q < flow.length; q++) flow[q] *= .975;
+  if (worst >= 0 && !ev.jam && time - ev.lastJam > 90) {
+    ev.jam = { cell: worst, t: 75 }; ev.lastJam = time;
+    toast('alert', 'Bouchon persistant', 'Clique sur l’alerte en haut à gauche pour y aller.', 6000, 'jam');
+    notify('Bouchon persistant', 'Une route est saturée depuis plus de 20 secondes.');
+  }
 }
 
 /* ───────── Objectifs et succès ───────── */
 const MISSIONS = {
   connect: { text: () => 'Relie tous les bâtiments', goal: () => 1 },
-  trips:   { text: g => 'Termine ' + g + ' trajets', goal: () => Math.round(20 + nConn * 5) },
+  trips:   { text: g => 'Termine ' + g + ' trajets', goal: () => Math.round(30 + nConn * 8) },
   earn:    { text: g => 'Gagne ' + fmt(g) + ' €', goal: () => Math.max(60, Math.round(S.rate * 75)) },
   flu:     { text: g => 'Tiens ' + g + ' s au-dessus de 70 % de fluidité', goal: () => 45 },
   build:   { text: g => 'Pose ou améliore ' + g + ' tronçons', goal: () => 12 },
@@ -822,7 +1098,7 @@ function unlock(id) {
   S.ach[id] = 1;
   toast('ach', 'Succès : ' + ACH.find(a => a[0] === id)[1], 'Revenus +2 % pour toujours', 6000);
 }
-const cityReady = () => nConn >= CITY_GOAL && nUn === 0;
+const cityReady = () => nConn >= cityGoal() && nUn === 0;
 function checkAch() {
   const t = S.st.trips;
   if (t >= 100) unlock('t100'); if (t >= 1000) unlock('t1k'); if (t >= 10000) unlock('t10k');
@@ -831,49 +1107,82 @@ function checkAch() {
   if (S.streak >= 300) unlock('streak');
   if (S.st.total >= 1e6) unlock('million');
   if (S.city >= 1) unlock('city');
+  if (S.day > 8) unlock('year');
   if (S.mission && S.mission.id === 'connect' && nUn === 0 && B.length >= 3 && nConn === B.length) missionHit('connect', 1);
   if (S.mission && S.mission.id !== 'connect' && nUn > 2) { S.mission = null; newMission(); }
 }
 
-/* ───────── Construction ───────── */
-let tool = 'main', lastWarn = 0;
+/* ───────── Construction : coûts, tracé, sens uniques, annulation ───────── */
+let tool = 'main', lastWarn = 0, act = null;
+const undoStack = [];
 function warnMoney(cost) {
   if (performance.now() - lastWarn < 1500) return;
   lastWarn = performance.now();
-  toast('alert', 'Pas assez d’argent', 'Il faut ' + fmt(cost) + ' € pour ce tronçon.', 2500, 'coin');
+  toast('alert', 'Pas assez d’argent', 'Il faut ' + fmt(cost) + ' € pour continuer.', 2500, 'coin');
+}
+function beginAct() { act = { cells: new Map(), money: 0, stats: {} }; }
+function endAct() { if (act && (act.cells.size || act.money)) { undoStack.push(act); if (undoStack.length > 40) undoStack.shift(); } act = null; }
+function record(i) { if (act && !act.cells.has(i)) act.cells.set(i, [R[i], J[i], T[i], OW[i]]); }
+function spend(cost, cat) { if (god()) return; S.money -= cost; S.st[cat] += cost; if (act) { act.money -= cost; act.stats[cat] = (act.stats[cat] || 0) + cost; } }
+function undoLast() {
+  const a = undoStack.pop();
+  if (!a) { toast('info', 'Rien à annuler', 'Les 40 dernières actions de construction sont annulables.', 2500, 'undo'); return; }
+  for (const [i, v] of a.cells) { R[i] = v[0]; J[i] = v[1]; T[i] = v[2]; OW[i] = v[3]; ND.delete(i); }
+  S.money = Math.max(0, S.money - a.money);
+  for (const k in a.stats) S.st[k] = Math.max(0, S.st[k] - a.stats[k]);
+  netDirty = true;
+  toast('info', 'Action annulée', a.money < 0 ? fmt(-a.money) + ' € rendus.' : a.money > 0 ? fmt(a.money) + ' € repris.' : '', 2500, 'undo');
 }
 function tileCost(i, level) {
   if (i < 0 || BL[i] >= 0) return -1;
   if (R[i] >= level) return 0;
   let c = ROADS[level].cost - (R[i] ? ROADS[R[i]].cost : 0);
-  if (!R[i]) { if (T[i] === 1) c += BRIDGE; else if (T[i] === 2) c *= 2; }
+  if (!R[i]) { if (T[i] === 1) c += BRIDGE; else if (T[i] === 2) c *= 2; else if (T[i] === 3) c += TUNNEL; else if (T[i] === 4) c += level === 4 ? BRIDGE : CROSSING; }
   return price(c);
 }
 function paint(i, level) {
   const cost = tileCost(i, level);
   if (cost < 0) return false;
   if (cost === 0) return true;
-  if (S.money < cost) { warnMoney(cost); return false; }
-  S.money -= cost;
+  if (!canPay(cost)) { warnMoney(cost); return false; }
+  record(i); spend(cost, 'sRoad');
   if (!R[i] && T[i] === 1) unlock('bridge');
+  if (!R[i] && T[i] === 3) unlock('tunnel');
   if (T[i] === 2) T[i] = 0;
   R[i] = level; S.st.tiles++; netDirty = true;
-  unlock('road'); if (level === 2) unlock('route'); if (level === 3) unlock('avenue');
+  unlock('road'); if (level === 2) unlock('route'); if (level === 3) unlock('avenue'); if (level === 4) unlock('highway');
   missionHit('build', 1);
   return true;
 }
 function erase(i) {
   if (i < 0 || !R[i]) return;
-  S.money += Math.round(ROADS[R[i]].cost * .5);
-  R[i] = 0; J[i] = 0; netDirty = true;
+  record(i);
+  const back = Math.round(ROADS[R[i]].cost * .5);
+  if (!god()) { S.money += back; S.st.sRoad = Math.max(0, S.st.sRoad - back); if (act) { act.money += back; act.stats.sRoad = (act.stats.sRoad || 0) - back; } }
+  R[i] = 0; J[i] = 0; OW[i] = 0;
+  for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && (OW[j] & (1 << ((d + 2) & 3)))) { record(j); OW[j] &= ~(1 << ((d + 2) & 3)); } }
+  netDirty = true;
 }
 function setJunction(i, type) {
-  if (i < 0 || !R[i] || !jn[i] || J[i] === type) return;
+  if (i < 0 || !R[i] || !jn[i] || R[i] === 4 || J[i] === type) return;
   const cost = price(type === 1 ? ROND : FEU);
-  if (S.money < cost) { warnMoney(cost); return; }
-  S.money -= cost; J[i] = type; ND.delete(i); bgDirty = true;
+  if (!canPay(cost)) { warnMoney(cost); return; }
+  beginAct(); record(i); spend(cost, 'sJunc'); J[i] = type; ND.delete(i); netDirty = true; endAct();
   unlock(type === 1 ? 'round' : 'light');
   floatText(cx(i), cy(i), type === 1 ? 'Rond-point' : 'Feu installé', 'build');
+}
+function setOneWay(a, b) { // on ne roulera plus que de a vers b
+  if (a < 0 || b < 0 || !R[a] || !R[b] || manh(a, b) !== 1) return false;
+  record(a); record(b);
+  OW[b] |= 1 << dirOf(b, a); OW[a] &= ~(1 << dirOf(a, b));
+  netDirty = true; unlock('oneway');
+  return true;
+}
+function clearOneWay(i) {
+  if (i < 0 || !R[i]) return;
+  record(i); OW[i] = 0;
+  for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && (OW[j] & (1 << ((d + 2) & 3)))) { record(j); OW[j] &= ~(1 << ((d + 2) & 3)); } }
+  netDirty = true;
 }
 function line(a, b, fn) { // relie deux cases en escalier pour ne jamais sauter de tronçon
   let x = a % COLS, y = (a / COLS) | 0; const x1 = b % COLS, y1 = (b / COLS) | 0;
@@ -882,6 +1191,34 @@ function line(a, b, fn) { // relie deux cases en escalier pour ne jamais sauter 
     if (fn(y * COLS + x) === false) return false;
   }
   return true;
+}
+// Aperçu : on dessine d'abord le tracé, avec son coût et ce qu'il changerait ; rien n'est construit avant de relâcher.
+let plan = null;
+function planInfo() {
+  if (!plan) return;
+  let cost = 0, n = 0, bad = 0;
+  for (const i of plan.cells) { const c = tileCost(i, plan.level); if (c < 0) bad++; else if (c > 0) { cost += c; n++; } }
+  plan.cost = cost; plan.n = n; plan.bad = bad;
+  // Simulation : on pose le tracé, on recalcule les distances, puis on remet tout en place
+  const old = plan.cells.map(i => R[i]);
+  for (const i of plan.cells) if (BL[i] < 0 && R[i] < plan.level) R[i] = plan.level;
+  let gained = 0, tOld = 0, tNew = 0, both = 0;
+  for (let k = 0; k < 4; k++) dijkstra(tmpD[k], sourcesFor(k));
+  for (const b of B) if (b.h) {
+    let before = Infinity, after = Infinity;
+    for (const j of doorsOf(b)) { if (tmpD[b.k][j] < after) after = tmpD[b.k][j]; if (old[plan.cells.indexOf(j)] !== 0 && D[b.k][j] < before) before = D[b.k][j]; }
+    if (after < Infinity && before === Infinity) gained++;
+    else if (after < Infinity && before < Infinity) { tOld += before; tNew += after; both++; }
+  }
+  plan.cells.forEach((i, q) => { R[i] = old[q]; });
+  plan.gained = gained; plan.pct = both && tOld > 0 ? Math.round((tNew - tOld) / tOld * 100) : 0;
+}
+function commitPlan() {
+  const p = plan; plan = null;
+  if (!p) return;
+  beginAct();
+  for (const i of p.cells) if (!paint(i, p.level)) { if (tileCost(i, p.level) > 0) break; }
+  endAct(); save();
 }
 
 /* ───────── Notifications ───────── */
@@ -946,6 +1283,20 @@ const PAL = {
            road: ['', '#6f6550', '#4c5660', '#3c454f'], edge: ['', '#584f3c', '#6c7781', '#6c7781'], mark: 'rgba(255,255,255,.45)', deck: '#75818b',
            plot: '#3a4852', yard: '#2b463e', wall: '#5d6a74', glassW: '#3f6079', glass: 'rgba(8,12,15,.88)', go: '#3ddc8c', amber: '#ffc13d', stop: '#ff6a5c' }
 };
+Object.assign(PAL.light, { hill: ['#c3cc9f', '#d2d9b3', '#e2e6c9'], ballast: '#c2bcae', sleeper: '#8d7c63', railc: '#5f656c', tunnel: 'rgba(60,66,72,.55)', portal: '#8d949b', barrier: '#d3d8dd', arrow: 'rgba(255,255,255,.92)', deck2: '#c9ced3' });
+Object.assign(PAL.dark, { hill: ['#2c3f3a', '#354a43', '#40564d'], ballast: '#4a4f52', sleeper: '#3a352d', railc: '#8a949c', tunnel: 'rgba(170,185,195,.4)', portal: '#5d6870', barrier: '#7d8992', arrow: 'rgba(255,255,255,.7)', deck2: '#5b6670' });
+PAL.light.road[4] = '#3a4048'; PAL.light.edge[4] = '#262b31'; PAL.dark.road[4] = '#333b44'; PAL.dark.edge[4] = '#1d2329';
+const SEASON_PAL = [ // ce que chaque saison change, de jour puis de nuit
+  [{}, {}],
+  [{ grass: '#e0e4bd', out: '#d2d6ad', rim: '#c5c99c', field: ['#e7d58f', '#dccf88', '#eddf9e'], patchA: 'rgba(255,250,205,.16)' }, { grass: '#2a3b37', field: ['#32402f', '#34432d', '#2d3b2c'] }],
+  [{ grass: '#e2dfc1', out: '#d4cfaf', rim: '#c7c19d', floor: '#dbcd9c', tree: ['#dc8c3c', '#c9672d', '#e2b24a'], field: ['#d8c18b', '#cab87f', '#e1d09d'], yard: '#d9dcb1', hill: ['#cbc79a', '#d9d5ae', '#e6e2c4'] },
+   { tree: ['#8a6234', '#77502b', '#96713b'], floor: '#2f3125', hill: ['#3a3f33', '#454a3b', '#505544'] }],
+  [{ grass: '#eef2f2', out: '#dde5e6', rim: '#cfd9db', floor: '#e1e9e6', tree: ['#b3ccbe', '#a2c1b2', '#c5d8ce'], treeHi: 'rgba(255,255,255,.55)', field: ['#e6ecec', '#dfe7e6', '#edf1f0'],
+     yard: '#e4ece8', patchA: 'rgba(255,255,255,.42)', patchB: 'rgba(150,170,180,.08)', water: '#a9d5e9', deep: '#94c7df', sand: '#e7eded', hill: ['#dfe5e3', '#eaeeed', '#f6f8f7'], ballast: '#d3d4d2' },
+   { grass: '#3b4b52', out: '#2c3a40', rim: '#33434a', floor: '#35484b', tree: ['#5b7b73', '#507069', '#67877e'], field: ['#3a4a50', '#3d4e52', '#36464c'], yard: '#405355', patchA: 'rgba(255,255,255,.05)', hill: ['#4a5a5f', '#55666a', '#617377'], water: '#27576f' }]
+];
+const PALS = SEASON_PAL.map(se => [Object.assign({}, PAL.light, se[0]), Object.assign({}, PAL.dark, se[1])]);
+const pal = night => PALS[season()][night ? 1 : 0];
 function shade(hex, f) { // éclaircit (f > 0) ou assombrit (f < 0) une couleur
   const n = parseInt(hex.slice(1), 16), t = f < 0 ? 0 : 255, a = Math.abs(f);
   const ch = s => Math.round(((n >> s) & 255) * (1 - a) + t * a);
@@ -1079,7 +1430,7 @@ function drawStatic(canvas, p, night) {
   // Campagne alentour
   for (const f of decor.fields) if (seen(f.x + f.w / 2, f.y + f.h / 2, 200)) {
     g.fillStyle = p.field[f.c]; rr(g, f.x, f.y, f.w, f.h, 10); g.fill();
-    g.strokeStyle = night ? 'rgba(255,255,255,.025)' : 'rgba(90,100,50,.13)'; g.lineWidth = 1.5; g.beginPath();
+    g.strokeStyle = night ? 'rgba(255,255,255,.03)' : 'rgba(90,100,50,.13)'; g.lineWidth = 1.5; g.beginPath();
     if (f.v) for (let x = f.x + 9; x < f.x + f.w - 4; x += 9) { g.moveTo(x, f.y + 6); g.lineTo(x, f.y + f.h - 6); }
     else for (let y = f.y + 9; y < f.y + f.h - 4; y += 9) { g.moveTo(f.x + 6, y); g.lineTo(f.x + f.w - 6, y); }
     g.stroke();
@@ -1102,9 +1453,29 @@ function drawStatic(canvas, p, night) {
   g.strokeStyle = p.ripple; g.lineWidth = 1.3; g.lineCap = 'round'; g.beginPath();
   for (const i of cells) if (isW(i) && hash(i, 7) < .55) { const x = cx(i) + (hash(i, 8) - .5) * 18, y = cy(i) + (hash(i, 9) - .5) * 18; g.moveTo(x - 6, y); g.quadraticCurveTo(x, y - 2.5, x + 6, y); }
   g.stroke();
+  // Collines : une ombre portée et deux courbes de niveau
+  const isH = j => T[j] === 3, isTop = j => { if (T[j] !== 3) return false; for (let d = 0; d < 4; d++) { const q = nb(j, d); if (q < 0 || T[q] !== 3) return false; } return true; };
+  g.save(); g.translate(5, 7); g.fillStyle = p.shadow; g.beginPath(); for (const i of cells) if (isH(i)) blobCell(g, i, isH, 2, 17); g.fill(); g.restore();
+  g.fillStyle = p.hill[0]; g.beginPath(); for (const i of cells) if (isH(i)) blobCell(g, i, isH, 2, 17); g.fill();
+  g.fillStyle = p.hill[1]; g.beginPath(); for (const i of cells) if (isH(i)) { g.moveTo(cx(i) + 17, cy(i) - 2); g.ellipse(cx(i) - 2, cy(i) - 3, 19, 17, 0, 0, 7); } g.fill();
+  g.fillStyle = p.hill[1]; g.beginPath(); for (const i of cells) if (isTop(i)) blobCell(g, i, isTop, 14, 14); g.fill();
+  g.fillStyle = p.hill[2]; g.beginPath(); for (const i of cells) if (isTop(i)) blobCell(g, i, isTop, 2, 14); g.fill();
+  g.fillStyle = p.hill[2]; g.beginPath(); for (const i of cells) if (isH(i) && !isTop(i) && hash(i, 21) < .6) { g.moveTo(cx(i) + 5, cy(i) - 5); g.ellipse(cx(i) - 3, cy(i) - 5, 9, 7, 0, 0, 7); } g.fill();
+  g.fillStyle = p.hill[0];
+  for (const i of cells) if (isH(i) && hash(i, 16) < .5) { g.beginPath(); g.ellipse(cx(i) + (hash(i, 17) - .5) * 20, cy(i) + (hash(i, 18) - .5) * 20, 3.2, 2.2, hash(i, 19) * 3, 0, 7); g.fill(); }
   // Sous-bois
   const isF = j => T[j] === 2;
   g.fillStyle = p.floor; g.beginPath(); for (const i of cells) if (isF(i)) blobCell(g, i, isF, 1.5, 14); g.fill();
+  // Voies ferrées
+  for (const r of rails) {
+    const m = r.idx * C + C / 2, a0 = (r.h ? vx0 : vy0) - 20, a1 = (r.h ? vx1 : vy1) + 20;
+    g.fillStyle = p.ballast; if (r.h) g.fillRect(a0, m - 7.5, a1 - a0, 15); else g.fillRect(m - 7.5, a0, 15, a1 - a0);
+    g.fillStyle = p.sleeper;
+    for (let q = Math.floor(a0 / 9) * 9; q < a1; q += 9) { if (r.h) g.fillRect(q, m - 6, 2.6, 12); else g.fillRect(m - 6, q, 12, 2.6); }
+    g.strokeStyle = p.railc; g.lineWidth = 1.5; g.beginPath();
+    for (const o of [-3.6, 3.6]) { if (r.h) { g.moveTo(a0, m + o); g.lineTo(a1, m + o); } else { g.moveTo(m + o, a0); g.lineTo(m + o, a1); } }
+    g.stroke();
+  }
 
   // Allées : chaque bâtiment est visiblement raccordé aux routes qui le touchent, d'un trait à sa couleur
   g.lineCap = 'butt';
@@ -1114,30 +1485,44 @@ function drawStatic(canvas, p, night) {
     g.strokeStyle = p.plot; g.lineWidth = 10; g.beginPath(); g.moveTo(x, y); g.lineTo(x1, y1); g.stroke();
     g.strokeStyle = night ? shade(KINDS[b.k].col, -.1) : KINDS[b.k].col; g.lineWidth = 3.4; g.beginPath(); g.moveTo(x, y); g.lineTo(x1, y1); g.stroke();
   }
-  // Routes
+  // Routes à l'air libre
   g.lineCap = 'round'; g.lineJoin = 'round';
-  const roads = cells.filter(i => R[i]);
+  const all = cells.filter(i => R[i]), roads = all.filter(i => T[i] !== 3), tunnels = all.filter(i => T[i] === 3);
   const strokeLevel = (L, w, col, list = roads) => { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); for (const i of list) if (R[i] === L) roadCellPath(g, i); g.stroke(); };
-  const bridges = roads.filter(i => T[i] === 1);
+  const bridges = roads.filter(i => T[i] === 1 || (T[i] === 4 && R[i] === 4));
   if (bridges.length) {
-    g.save(); g.translate(3.5, 5); for (let L = 1; L <= 3; L++) strokeLevel(L, ROADS[L].w + 11, p.shadow, bridges); g.restore();
-    for (let L = 1; L <= 3; L++) strokeLevel(L, ROADS[L].w + 11, p.deck, bridges);
-    for (let L = 1; L <= 3; L++) strokeLevel(L, ROADS[L].w + 7, night ? '#5b6670' : '#c9ced3', bridges);
+    g.save(); g.translate(3.5, 5); for (let L = 1; L <= 4; L++) strokeLevel(L, ROADS[L].w + 11, p.shadow, bridges); g.restore();
+    for (let L = 1; L <= 4; L++) strokeLevel(L, ROADS[L].w + 11, p.deck, bridges);
+    for (let L = 1; L <= 4; L++) strokeLevel(L, ROADS[L].w + 7, p.deck2, bridges);
   }
-  for (let L = 1; L <= 3; L++) strokeLevel(L, ROADS[L].w + (L === 1 ? 3.5 : 6), p.edge[L]);
-  for (let L = 1; L <= 3; L++) strokeLevel(L, ROADS[L].w, p.road[L]);
-  strokeLevel(1, 6, night ? 'rgba(255,255,255,.03)' : 'rgba(255,255,255,.22)');
+  for (let L = 1; L <= 4; L++) strokeLevel(L, ROADS[L].w + (L === 1 ? 3.5 : L === 4 ? 5 : 6), p.edge[L]);
+  for (let L = 1; L <= 4; L++) strokeLevel(L, ROADS[L].w, p.road[L]);
+  strokeLevel(1, 6, night ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.22)');
   g.lineCap = 'butt';
   const plain = roads.filter(i => !jn[i]);
   g.setLineDash([5.5, 6.5]); strokeLevel(2, 1.4, p.mark, plain); g.setLineDash([]);
   strokeLevel(3, 3.6, p.mark, plain); strokeLevel(3, 1.3, p.road[3], plain);
+  strokeLevel(4, 5, p.barrier); strokeLevel(4, 2.2, p.road[4]); // terre-plein central de la voie rapide
+  // Tunnels : un pointillé sous la colline et une bouche à chaque entrée
+  g.setLineDash([6, 6]); for (let L = 1; L <= 4; L++) strokeLevel(L, 5, p.tunnel, tunnels); g.setLineDash([]);
+  for (const i of tunnels) for (const d of roadDirs(i)) { const j = nb(i, d); if (T[j] === 3) continue;
+    const x = cx(i) + DX[d] * 22, y = cy(i) + DY[d] * 22, w = ROADS[R[j]].w / 2;
+    g.fillStyle = p.portal; g.beginPath(); g.arc(x, y, w + 2.2, 0, 7); g.fill();
+    g.fillStyle = night ? '#1c2328' : '#3a4148'; g.beginPath(); g.arc(x, y, w - .5, 0, 7); g.fill();
+  }
+  // Sens uniques : un chevron sur chaque tronçon concerné
+  g.fillStyle = p.arrow;
+  for (const i of roads) for (let d = 0; d < 4; d++) {
+    const j = nb(i, d); if (j < 0 || !R[j] || !(OW[j] & (1 << ((d + 2) & 3)))) continue;
+    const x = cx(i) + DX[d] * 20, y = cy(i) + DY[d] * 20, px = -DY[d], py = DX[d];
+    g.beginPath(); g.moveTo(x + DX[d] * 5.5, y + DY[d] * 5.5); g.lineTo(x - DX[d] * 3 + px * 4.6, y - DY[d] * 3 + py * 4.6); g.lineTo(x - DX[d] * .6, y - DY[d] * .6); g.lineTo(x - DX[d] * 3 - px * 4.6, y - DY[d] * 3 - py * 4.6); g.closePath(); g.fill();
+  }
   // Croisements : passages piétons ou rond-point
-  for (const i of roads) if (jn[i]) {
+  for (const i of roads) if (jn[i] && R[i] < 4) {
     const x = cx(i), y = cy(i), L = R[i];
     if (J[i] === 1) {
       g.fillStyle = p.edge[L]; g.beginPath(); g.arc(x, y, 20.5, 0, 7); g.fill();
       g.fillStyle = p.road[L]; g.beginPath(); g.arc(x, y, 18, 0, 7); g.fill();
-      
       g.fillStyle = p.edge[2]; g.beginPath(); g.arc(x, y, 6.6, 0, 7); g.fill();
       g.fillStyle = p.yard; g.beginPath(); g.arc(x, y, 5.2, 0, 7); g.fill();
       tree(g, x, y, 3, p, i);
@@ -1149,10 +1534,17 @@ function drawStatic(canvas, p, night) {
       }
     }
   }
+  // Passages à niveau : les rails affleurent sur la chaussée
+  for (const r of rails) for (const i of roads) if (T[i] === 4 && R[i] < 4 && (r.h ? ((i / COLS) | 0) === r.idx : i % COLS === r.idx)) {
+    const x = cx(i), y = cy(i), w = ROADS[R[i]].w / 2;
+    g.strokeStyle = p.railc; g.lineWidth = 1.5; g.beginPath();
+    for (const o of [-3.6, 3.6]) { if (r.h) { g.moveTo(x - w, y + o); g.lineTo(x + w, y + o); } else { g.moveTo(x + o, y - w); g.lineTo(x + o, y + w); } }
+    g.stroke();
+  }
   // Lampadaires de nuit
   if (night) for (const i of roads) if (R[i] >= 2 && ((i % COLS) + ((i / COLS) | 0)) % 2 === 0) {
-    const x = cx(i), y = cy(i), gr = g.createRadialGradient(x, y, 2, x, y, 30);
-    gr.addColorStop(0, 'rgba(255,214,150,.2)'); gr.addColorStop(1, 'rgba(255,214,150,0)'); g.fillStyle = gr; g.fillRect(x - 30, y - 30, 60, 60);
+    const x = cx(i), y = cy(i), gr = g.createRadialGradient(x, y, 2, x, y, 32);
+    gr.addColorStop(0, 'rgba(255,214,150,.24)'); gr.addColorStop(1, 'rgba(255,214,150,0)'); g.fillStyle = gr; g.fillRect(x - 32, y - 32, 64, 64);
   }
   // Arbres, puis bâtiments
   for (const i of cells) {
@@ -1163,15 +1555,26 @@ function drawStatic(canvas, p, night) {
       const ts = []; for (let q = 0; q < n; q++) ts.push([x + 6 + hash(i, 20 + q) * 28, y + 6 + hash(i, 30 + q) * 28, 6 + hash(i, 40 + q) * 4.5, q]);
       ts.sort((a, b) => a[1] - b[1]); for (const t of ts) tree(g, t[0], t[1], t[2], p, t[3] + i);
     } else if (T[i] === 0 && hash(i, 12) < .1) tree(g, x + 8 + hash(i, 13) * 24, y + 8 + hash(i, 14) * 24, 5 + hash(i, 15) * 4, p, i);
+    else if (T[i] === 3 && hash(i, 12) < .22) tree(g, x + 8 + hash(i, 13) * 24, y + 8 + hash(i, 14) * 24, 4 + hash(i, 15) * 3, p, i);
   }
-  for (const b of B) if (seen(cx(b.c), cy(b.c), 60)) { g.save(); g.translate(cx(b.c), cy(b.c)); if (b.h) drawHome(g, b, p, night); else drawDest(g, b, p, night); g.restore(); }
+  for (const b of B) if (seen(cx(b.c), cy(b.c), 60)) {
+    g.save(); g.translate(cx(b.c), cy(b.c));
+    if (b.h) drawHome(g, b, p, night);
+    else {
+      const lv = lvOf(b), s = 1 + .09 * (lv - 1);
+      g.scale(s, s); drawDest(g, b, p, night);
+      g.fillStyle = '#fff'; for (let q = 0; q < lv; q++) { g.beginPath(); g.arc(-13 + q * 6.5, 21.5, 2.8, 0, 7); g.fill(); }
+      g.fillStyle = KINDS[b.k].col; for (let q = 0; q < lv; q++) { g.beginPath(); g.arc(-13 + q * 6.5, 21.5, 1.8, 0, 7); g.fill(); }
+    }
+    g.restore();
+  }
 }
 function renderCache(dk) {
   const padX = Math.round(cw * .2), padY = Math.round(ch * .2), w = Math.round((cw + 2 * padX) * dpr), h = Math.round((ch + 2 * padY) * dpr);
   for (const c of [cache.day, cache.night]) if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
-  Object.assign(cache, { sc, ox, oy, padX, padY, valid: true, hasDay: dk < 1, hasNight: dk > 0 });
-  if (dk < 1) drawStatic(cache.day, PAL.light, false);
-  if (dk > 0) drawStatic(cache.night, PAL.dark, true);
+  Object.assign(cache, { sc, ox, oy, padX, padY, valid: true, hasDay: dk < 1, hasNight: dk > 0, season: season() });
+  if (dk < 1) drawStatic(cache.day, pal(false), false);
+  if (dk > 0) drawStatic(cache.night, pal(true), true);
   bgDirty = false;
 }
 function blit(canvas) {
@@ -1302,30 +1705,60 @@ function heatColor(h) { // du jaune au rouge à mesure que le bouchon s'installe
   const g = Math.round(205 - 165 * h), b = Math.round(60 - 30 * h);
   return 'rgba(255,' + g + ',' + b + ',' + (.3 + .55 * h).toFixed(2) + ')';
 }
-let hover = -1, hoverXY = [0, 0], dragging = null;
+let hover = -1, hoverXY = [0, 0], dragging = null, layer = 'normal', flowMax = 1;
 function draw(dt) {
   if (netDirty) rebuildNet();
-  const dk = darkness(S.clock), night = dk > .5, p = night ? PAL.dark : PAL.light, now = performance.now();
+  const dk = S.set.day ? 0 : darkness(S.clock), night = dk > .5, p = pal(night), now = performance.now(), se = season();
   const moved = sc !== cache.sc || ox !== cache.ox || oy !== cache.oy, k = cache.sc ? sc / cache.sc : 1;
-  if (bgDirty || !cache.valid || (dk < 1 && !cache.hasDay) || (dk > 0 && !cache.hasNight)
+  if (bgDirty || !cache.valid || cache.season !== se || (dk < 1 && !cache.hasDay) || (dk > 0 && !cache.hasNight)
       || (moved && (now - camT > 140 || k > 1.5 || k < .67 || Math.abs(ox - k * cache.ox) > cache.padX * .85 || Math.abs(oy - k * cache.oy) > cache.padY * .85))) renderCache(dk);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = dk > .5 ? PAL.dark.out : PAL.light.out; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = p.out; ctx.fillRect(0, 0, cv.width, cv.height);
   ctx.imageSmoothingQuality = 'high';
   if (dk < 1) blit(cache.day);
   if (dk > 0) { ctx.globalAlpha = dk; blit(cache.night); ctx.globalAlpha = 1; }
-  ctx.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * ox, dpr * oy);
+  const world = () => ctx.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * ox, dpr * oy);
+  world();
   const vx0 = -ox / sc - 30, vx1 = (cw - ox) / sc + 30, vy0 = -oy / sc - 30, vy1 = (ch - oy) / sc + 30;
   const seen = (x, y) => x > vx0 && x < vx1 && y > vy0 && y < vy1;
+  const fxOn = S.set.fx;
 
-  // Reflets sur l'eau
-  ctx.strokeStyle = p.ripple; ctx.lineWidth = 1.2; ctx.lineCap = 'round'; ctx.beginPath();
-  for (let i = 0; i < N; i++) if (T[i] === 1 && !R[i] && seen(cx(i), cy(i))) {
-    const ph = (time * .35 + hash(i, 50)) % 1; if (ph > .5) continue;
-    const x = cx(i) + (hash(i, 51) - .5) * 22 + ph * 10, y = cy(i) + (hash(i, 52) - .5) * 22;
-    ctx.moveTo(x - 4, y); ctx.quadraticCurveTo(x, y - 2, x + 4, y);
+  if (layer === 'normal') {
+    // Reflets sur l'eau
+    ctx.strokeStyle = p.ripple; ctx.lineWidth = 1.2; ctx.lineCap = 'round'; ctx.beginPath();
+    for (let i = 0; i < N; i++) if (T[i] === 1 && !R[i] && seen(cx(i), cy(i))) {
+      const ph = (time * .35 + hash(i, 50)) % 1; if (ph > .5) continue;
+      const x = cx(i) + (hash(i, 51) - .5) * 22 + ph * 10, y = cy(i) + (hash(i, 52) - .5) * 22;
+      ctx.moveTo(x - 4, y); ctx.quadraticCurveTo(x, y - 2, x + 4, y);
+    }
+    ctx.globalAlpha = .7; ctx.stroke(); ctx.globalAlpha = 1;
+  } else {
+    // Calques : la carte s'efface, le réseau prend la couleur de l'information
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = night ? 'rgba(12,18,21,.68)' : 'rgba(238,242,235,.78)'; ctx.fillRect(0, 0, cv.width, cv.height);
+    world(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (layer === 'traffic') {
+      const tiers = [[], [], [], [], [], [], [], [], []];
+      for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) tiers[heat[i] < .07 ? 0 : 1 + Math.min(7, (heat[i] * 8) | 0)].push(i);
+      for (let q = 0; q < 9; q++) if (tiers[q].length) {
+        ctx.strokeStyle = q === 0 ? (night ? '#2f9d64' : '#3fb876') : heatColor((q - .5) / 8).replace(/[\d.]+\)$/, '1)'); ctx.lineWidth = q === 0 ? 7 : 9 + q * .8;
+        ctx.beginPath(); for (const i of tiers[q]) roadCellPath(ctx, i); ctx.stroke();
+      }
+    } else {
+      for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) {
+        let best = 0, tot = 0; for (let q = 0; q < 4; q++) { const v = flow[q * N + i]; tot += v; if (v > flow[best * N + i]) best = q; }
+        ctx.strokeStyle = tot < .4 ? (night ? 'rgba(150,165,172,.45)' : 'rgba(110,122,128,.45)') : KINDS[best].col;
+        ctx.lineWidth = tot < .4 ? 2.5 : 4 + Math.min(1, tot / flowMax) * 15;
+        ctx.beginPath(); roadCellPath(ctx, i); ctx.stroke();
+      }
+    }
+    for (const b of B) if (seen(cx(b.c), cy(b.c))) { // les bâtiments restent repérables
+      const x = cx(b.c), y = cy(b.c), r = b.h ? 7 : 13;
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, r + 2, 0, 7); ctx.fill();
+      ctx.fillStyle = KINDS[b.k].col; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+      if (!b.h) { ctx.save(); ctx.translate(x, y); ctx.scale(.85, .85); glyph(ctx, b.k); ctx.restore(); }
+    }
   }
-  ctx.globalAlpha = .7; ctx.stroke(); ctx.globalAlpha = 1;
 
   // Grille de construction
   if (tool !== 'main') {
@@ -1335,34 +1768,53 @@ function draw(dt) {
     ctx.stroke();
   }
 
-  // Bouchons : la chaussée vire au rouge
-  // (lissé le long de la route, puis tracé par paliers pour éviter les surépaisseurs)
-  ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
-  const tiers = [[], [], [], [], [], [], [], []];
-  for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) {
-    let sum = 0, n = 0;
-    for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { sum += heat[j]; n++; } }
-    const h = Math.min(1, n ? heat[i] * .55 + sum / n * .45 : heat[i]);
-    if (h > .07) tiers[Math.min(7, (h * 8) | 0)].push(i);
-  }
-  for (let q = 0; q < 8; q++) if (tiers[q].length) for (let L = 1; L <= 3; L++) {
-    ctx.strokeStyle = heatColor((q + .5) / 8); ctx.lineWidth = ROADS[L].w - 2; ctx.beginPath();
-    for (const i of tiers[q]) if (R[i] === L) {
-      const ds = roadDirs(i), x = cx(i), y = cy(i), h = C / 2;
-      if (ds.length < 3) roadCellPath(ctx, i);
-      else for (let a = 0; a < ds.length; a += 2) { const d1 = ds[a], d2 = ds[a + 1 < ds.length ? a + 1 : 0]; ctx.moveTo(x + DX[d1] * h, y + DY[d1] * h); ctx.lineTo(x, y); ctx.lineTo(x + DX[d2] * h, y + DY[d2] * h); }
+  // Bouchons : la chaussée vire au rouge (lissé le long de la route, tracé par paliers pour éviter les surépaisseurs)
+  if (layer === 'normal') {
+    ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
+    const tiers = [[], [], [], [], [], [], [], []];
+    for (let i = 0; i < N; i++) if (R[i] && T[i] !== 3 && seen(cx(i), cy(i))) {
+      let sum = 0, n = 0;
+      for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { sum += heat[j]; n++; } }
+      const h = Math.min(1, n ? heat[i] * .55 + sum / n * .45 : heat[i]);
+      if (h > .07) tiers[Math.min(7, (h * 8) | 0)].push(i);
     }
-    ctx.stroke();
+    for (let q = 0; q < 8; q++) if (tiers[q].length) for (let L = 1; L <= 4; L++) {
+      ctx.strokeStyle = heatColor((q + .5) / 8); ctx.lineWidth = ROADS[L].w - 2; ctx.beginPath();
+      for (const i of tiers[q]) if (R[i] === L) {
+        const ds = roadDirs(i), x = cx(i), y = cy(i), h = C / 2;
+        if (ds.length < 3) roadCellPath(ctx, i);
+        else for (let a = 0; a < ds.length; a += 2) { const d1 = ds[a], d2 = ds[a + 1 < ds.length ? a + 1 : 0]; ctx.moveTo(x + DX[d1] * h, y + DY[d1] * h); ctx.lineTo(x, y); ctx.lineTo(x + DX[d2] * h, y + DY[d2] * h); }
+      }
+      ctx.stroke();
+    }
   }
 
-  // Chantier
+  // Routes fermées : marathon, crue ; chantier ralenti
+  const barrier = (x, y, horiz) => { for (let q = 0; q < 4; q++) { ctx.fillStyle = q % 2 ? '#f4f4ef' : '#e8503f'; if (horiz) ctx.fillRect(x - 14 + q * 7, y - 2, 7, 4); else ctx.fillRect(x - 2, y - 14 + q * 7, 4, 7); } };
+  if (ev.marathon) {
+    const cs = ev.marathon.cells, horiz = cs.length > 1 && cs[1] - cs[0] === 1;
+    for (const i of cs) { ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fillRect((i % COLS) * C, ((i / COLS) | 0) * C + (horiz ? 8 : 0), horiz ? C : C, horiz ? C - 16 : C); }
+    const a = cs[0], b = cs[cs.length - 1];
+    barrier(cx(a) - (horiz ? 19 : 0), cy(a) - (horiz ? 0 : 19), !horiz); barrier(cx(b) + (horiz ? 19 : 0), cy(b) + (horiz ? 0 : 19), !horiz);
+    const len = cs.length * C;
+    for (let q = 0; q < 9; q++) { // les coureurs
+      const u = ((time * 26 + q * 37 + (q % 3) * 11) % len), o = (q % 3 - 1) * 4.5;
+      const x = horiz ? cx(a) - 20 + u : cx(a) + o, y = horiz ? cy(a) + o : cy(a) - 20 + u;
+      ctx.fillStyle = ['#e2574c', '#3d7fe0', '#f2b134'][q % 3]; ctx.beginPath(); ctx.arc(x, y, 2.1, 0, 7); ctx.fill();
+    }
+  }
+  if (ev.flood) {
+    const i = ev.flood.cell, x = cx(i), y = cy(i), horiz = roadDirs(i).some(d => d === 0 || d === 2);
+    ctx.fillStyle = p.water; ctx.globalAlpha = .8 + .1 * Math.sin(time * 3); rr(ctx, x - 21, y - 21, 42, 42, 10); ctx.fill(); ctx.globalAlpha = 1;
+    barrier(x - (horiz ? 22 : 0), y - (horiz ? 0 : 22), !horiz); barrier(x + (horiz ? 22 : 0), y + (horiz ? 0 : 22), !horiz);
+  }
   if (ev.works) {
     const i = ev.works.cell, x = cx(i), y = cy(i);
     for (let q = 0; q < 4; q++) { ctx.fillStyle = q % 2 ? '#f4f4ef' : '#f08a2b'; ctx.fillRect(x - 16 + q * 8, y - 17, 8, 3.5); ctx.fillRect(x - 16 + q * 8, y + 13.5, 8, 3.5); }
     ctx.fillStyle = '#f08a2b'; for (const dx of [-9, 9]) { ctx.beginPath(); ctx.arc(x + dx, y, 2.6, 0, 7); ctx.fill(); }
   }
   // Feux
-  for (let i = 0; i < N; i++) if (J[i] === 2 && R[i] && jn[i]) {
+  for (let i = 0; i < N; i++) if (J[i] === 2 && R[i] && jn[i] && R[i] < 4) {
     const nd = ND.get(i), x = cx(i), y = cy(i);
     for (let d = 0; d < 4; d++) {
       const j = nb(i, d); if (j < 0 || !R[j]) continue;
@@ -1373,25 +1825,54 @@ function draw(dt) {
       ctx.beginPath(); ctx.arc(px, py, 3, 0, 7); ctx.fill();
     }
   }
-  // Véhicules
+  // Véhicules (invisibles dans les tunnels)
   placeCars(dt);
-  for (const key of live) for (const c of E[key]) if (!c.dead && seen(c.rx, c.ry)) drawVehicle(c, p, night);
-
+  if (layer !== 'flow') for (const key of live) for (const c of E[key]) if (!c.dead && T[c.d < C / 2 ? c.a : c.b] !== 3 && seen(c.rx, c.ry)) drawVehicle(c, p, night);
   for (let q = fx.length - 1; q >= 0; q--) {
     const f = fx[q]; f.t += dt / .45;
     if (f.t >= 1) { fx.splice(q, 1); continue; }
     const e = f.t * f.t * (3 - 2 * f.t), c = f.c, sx = c.rx, sy = c.ry, sa = c.ra;
     c.rx = f.x0 + (f.x1 - f.x0) * e; c.ry = f.y0 + (f.y1 - f.y0) * e; c.ra = Math.atan2(f.y1 - f.y0, f.x1 - f.x0);
-    ctx.globalAlpha = 1 - e * e; drawVehicle(c, p, night); ctx.globalAlpha = 1;
+    if (layer !== 'flow') { ctx.globalAlpha = 1 - e * e; drawVehicle(c, p, night); ctx.globalAlpha = 1; }
     c.rx = sx; c.ry = sy; c.ra = sa;
   }
+  for (let q = puffs.length - 1; q >= 0; q--) { // un conducteur a renoncé
+    const f = puffs[q]; f.t += dt / .7;
+    if (f.t >= 1) { puffs.splice(q, 1); continue; }
+    ctx.fillStyle = night ? 'rgba(200,210,218,' + (.5 * (1 - f.t)).toFixed(3) + ')' : 'rgba(90,100,108,' + (.45 * (1 - f.t)).toFixed(3) + ')';
+    ctx.beginPath(); ctx.arc(f.x, f.y - f.t * 8, 5 + f.t * 9, 0, 7); ctx.fill();
+  }
+  // Passages à niveau et trains
+  for (const r of rails) {
+    for (let q = 0, n = r.h ? COLS : ROWS; q < n; q++) {
+      const i = r.h ? r.idx * COLS + q : q * COLS + r.idx;
+      if (!R[i] || R[i] === 4) continue;
+      const x = cx(i), y = cy(i), shut = railClosed[i], w = ROADS[R[i]].w / 2 + 3, blink = shut && Math.floor(time * 4) % 2;
+      for (const s of [-1, 1]) {
+        const bx = r.h ? x + s * w : x + s * 13, by = r.h ? y + s * 13 : y + s * w;
+        ctx.fillStyle = night ? '#0c1114' : '#2a3036'; ctx.beginPath(); ctx.arc(bx, by, 3.6, 0, 7); ctx.fill();
+        ctx.fillStyle = blink ? '#ff4a3d' : shut ? '#7a2a24' : (night ? '#3a454c' : '#8b949b'); ctx.beginPath(); ctx.arc(bx, by, 2.2, 0, 7); ctx.fill();
+        if (shut) { ctx.fillStyle = '#f4f4ef'; if (r.h) ctx.fillRect(x - w + 2, y + s * 13 - 1.2, 2 * w - 4, 2.4); else ctx.fillRect(x + s * 13 - 1.2, y - w + 2, 2.4, 2 * w - 4);
+          ctx.fillStyle = '#e8503f'; for (let u = 0; u < 3; u++) { if (r.h) ctx.fillRect(x - w + 4 + u * (2 * w - 8) / 2.6, y + s * 13 - 1.2, 3.5, 2.4); else ctx.fillRect(x + s * 13 - 1.2, y - w + 4 + u * (2 * w - 8) / 2.6, 2.4, 3.5); } }
+      }
+    }
+    if (!r.on) continue;
+    const m = r.idx * C + C / 2;
+    for (let q = 0; q < 3; q++) { // une locomotive et deux wagons
+      const a = r.pos - r.dir * (q * 51), b = a - r.dir * 47, lo = Math.min(a, b);
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; if (r.h) rr(ctx, lo + 2.5, m - 4.5, 47, 13, 3); else rr(ctx, m - 4.5, lo + 2.5, 13, 47, 3); ctx.fill();
+      ctx.fillStyle = q === 0 ? '#c9473b' : (night ? '#8792a0' : '#eef0ee'); if (r.h) rr(ctx, lo, m - 6.5, 47, 13, 3); else rr(ctx, m - 6.5, lo, 13, 47, 3); ctx.fill();
+      ctx.fillStyle = q === 0 ? '#f4f4ef' : '#3d7fe0'; if (r.h) ctx.fillRect(lo + 3, m - 1, 41, 2); else ctx.fillRect(m - 1, lo + 3, 2, 41);
+    }
+  }
+
   // Fumée des usines, repères sur les bâtiments
   for (let q = 0; q < B.length; q++) {
     const b = B[q], x = cx(b.c), y = cy(b.c);
     if (!seen(x, y)) continue;
-    if (!b.h && b.k === 3 && b.conn) for (const sx of [-10, -1.5]) for (let s = 0; s < 3; s++) {
+    if (layer === 'normal' && !b.h && b.k === 3 && b.conn) for (const sx of [-10, -1.5]) for (let s = 0; s < 3; s++) {
       const ph = (time * .22 + s / 3 + (sx < -5 ? .15 : 0)) % 1;
-      ctx.fillStyle = night ? 'rgba(170,185,195,' + (.22 * (1 - ph)).toFixed(3) + ')' : 'rgba(255,255,255,' + (.6 * (1 - ph)).toFixed(3) + ')';
+      ctx.fillStyle = night ? 'rgba(190,205,215,' + (.26 * (1 - ph)).toFixed(3) + ')' : 'rgba(255,255,255,' + (.6 * (1 - ph)).toFixed(3) + ')';
       ctx.beginPath(); ctx.arc(x + sx + ph * 13, y - 13 - ph * 17, 2.6 + ph * 6, 0, 7); ctx.fill();
     }
     if (time - b.born < 1.2) { const kk = (time - b.born) / 1.2; ctx.strokeStyle = KINDS[b.k].col; ctx.globalAlpha = 1 - kk; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, 18 + kk * 30, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
@@ -1399,9 +1880,10 @@ function draw(dt) {
     if (ev.fest && ev.fest.i === q) star(x - 15, y + 15, 10, p.amber);
   }
   if (ev.amb && ev.amb.target) { const b = ev.amb.target; ctx.strokeStyle = p.stop; ctx.lineWidth = 2.5; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(cx(b.c), cy(b.c), 25 + 2 * Math.sin(time * 5), 0, 7); ctx.stroke(); ctx.setLineDash([]); }
+  if (ev.jam) { const i = ev.jam.cell, kk = (time * .9) % 1; ctx.strokeStyle = p.stop; ctx.lineWidth = 3 / Math.max(.7, cam.z); ctx.globalAlpha = 1 - kk; ctx.beginPath(); ctx.arc(cx(i), cy(i), 26 + kk * 44, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
 
   // Ombres de nuages, de jour
-  if (dk < 1) {
+  if (dk < 1 && fxOn && layer === 'normal') {
     const gr = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
     gr.addColorStop(0, 'rgba(30,50,40,' + (.11 * (1 - dk)).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(30,50,40,0)');
     ctx.fillStyle = gr;
@@ -1412,27 +1894,46 @@ function draw(dt) {
   }
 
   // Avec un outil de tracé, les cases où raccorder un bâtiment isolé clignotent à sa couleur
-  if (tool === 'r1' || tool === 'r2' || tool === 'r3') for (const b of B) if (!b.conn) {
+  const roadTool = tool[0] === 'r' && tool !== 'rond';
+  if (roadTool) for (const b of B) if (!b.conn) {
     ctx.strokeStyle = KINDS[b.k].col; ctx.lineWidth = 2.2; ctx.setLineDash([4, 4]); ctx.lineDashOffset = -time * 14; ctx.globalAlpha = .55 + .35 * Math.sin(time * 4);
     for (let d = 0; d < 4; d++) { const j = nb(b.c, d); if (j >= 0 && BL[j] < 0 && !R[j]) { rr(ctx, (j % COLS) * C + 5, ((j / COLS) | 0) * C + 5, C - 10, C - 10, 8); ctx.stroke(); } }
     ctx.setLineDash([]); ctx.globalAlpha = 1;
   }
+  ctx.lineDashOffset = 0;
   // Aide des outils
-  if (tool === 'rond' || tool === 'feu') {
-    const want = tool === 'rond' ? 1 : 2;
-    for (let i = 0; i < N; i++) if (R[i] && jn[i] && J[i] !== want) {
+  if (plan) { // aperçu du tracé : rien n'est construit avant de relâcher
+    let left = god() ? Infinity : S.money;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (const i of plan.cells) {
+      const c = tileCost(i, plan.level), x = (i % COLS) * C, y = ((i / COLS) | 0) * C;
+      const ok = c >= 0 && c <= left; if (c > 0 && ok) left -= c;
+      ctx.fillStyle = c < 0 ? 'rgba(239,90,76,.35)' : !ok ? 'rgba(245,182,46,.38)' : c === 0 ? 'rgba(255,255,255,.2)' : 'rgba(47,199,125,.36)';
+      rr(ctx, x + 4, y + 4, C - 8, C - 8, 9); ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 3; ctx.setLineDash([2, 7]); ctx.lineDashOffset = -time * 20; ctx.beginPath();
+    plan.cells.forEach((i, q) => { if (q) ctx.lineTo(cx(i), cy(i)); else ctx.moveTo(cx(i), cy(i)); }); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+    const last = plan.cells[plan.cells.length - 1], can = canPay(plan.cost), s = 26 / Math.max(.6, cam.z);
+    const l1 = plan.n ? plan.n + ' tronçon' + (plan.n > 1 ? 's' : '') + ', ' + fmt(plan.cost) + ' €' + (can ? '' : ' (il te manque ' + fmt(plan.cost - S.money) + ' €)') : plan.bad ? 'Impossible ici' : 'Déjà construit';
+    const bits = []; if (plan.gained) bits.push(plan.gained + ' maison' + (plan.gained > 1 ? 's' : '') + ' reliée' + (plan.gained > 1 ? 's' : '')); if (plan.pct <= -1) bits.push('trajets ' + plan.pct + ' %'); else if (plan.pct >= 1) bits.push('trajets +' + plan.pct + ' %');
+    tag(l1, cx(last), cy(last) - 30 - (bits.length ? s : 0), p.glass, can ? '#fff' : p.amber);
+    if (bits.length) tag(bits.join(', ').replace('-', '−'), cx(last), cy(last) - 30, p.glass, p.go);
+  } else if (tool === 'rond' || tool === 'feu') {
+    const want = tool === 'rond' ? 1 : 2, okJ = i => R[i] && R[i] < 4 && jn[i] && J[i] !== want;
+    for (let i = 0; i < N; i++) if (okJ(i)) {
       ctx.strokeStyle = i === hover ? p.go : 'rgba(255,255,255,.95)'; ctx.lineWidth = i === hover ? 3.5 : 2.2; ctx.setLineDash(i === hover ? [] : [4, 4]);
       ctx.beginPath(); ctx.arc(cx(i), cy(i), 21, 0, 7); ctx.stroke(); ctx.setLineDash([]);
     }
-    if (hover >= 0 && R[hover] && jn[hover] && J[hover] !== want) tag(fmt(price(tool === 'rond' ? ROND : FEU)) + ' €', cx(hover), cy(hover) - 36, p.glass, '#fff');
+    if (hover >= 0 && okJ(hover)) tag(fmt(price(tool === 'rond' ? ROND : FEU)) + ' €', cx(hover), cy(hover) - 36, p.glass, '#fff');
   } else if (hover >= 0 && tool !== 'main') {
     const x = (hover % COLS) * C, y = ((hover / COLS) | 0) * C;
-    if (tool === 'erase') { if (R[hover]) { ctx.strokeStyle = p.stop; ctx.lineWidth = 2.5; rr(ctx, x + 3, y + 3, C - 6, C - 6, 9); ctx.stroke(); } }
+    if (tool === 'erase' || tool === 'ow') { if (R[hover]) { ctx.strokeStyle = tool === 'ow' ? p.go : p.stop; ctx.lineWidth = 2.5; rr(ctx, x + 3, y + 3, C - 6, C - 6, 9); ctx.stroke(); } }
     else {
-      const cost = tileCost(hover, +tool[1]), ok = cost >= 0 && S.money >= cost;
+      const cost = tileCost(hover, +tool[1]), ok = cost >= 0 && canPay(cost);
       ctx.fillStyle = cost < 0 ? 'rgba(239,90,76,.18)' : ok ? 'rgba(47,199,125,.18)' : 'rgba(245,182,46,.2)'; rr(ctx, x + 3, y + 3, C - 6, C - 6, 9); ctx.fill();
       ctx.strokeStyle = cost < 0 ? p.stop : ok ? p.go : p.amber; ctx.lineWidth = 2.5; ctx.stroke();
-      if (cost > 0 && !dragging) tag((T[hover] === 1 && !R[hover] ? 'Pont  ' : '') + fmt(cost) + ' €', x + C / 2, y - 14, p.glass, ok ? '#fff' : p.amber);
+      const what = R[hover] ? '' : T[hover] === 1 ? 'Pont  ' : T[hover] === 3 ? 'Tunnel  ' : T[hover] === 4 ? (tool === 'r4' ? 'Pont  ' : 'Passage à niveau  ') : '';
+      if (cost > 0) tag(what + fmt(cost) + ' €', x + C / 2, y - 14, p.glass, ok ? '#fff' : p.amber);
     }
   } else if (hover >= 0 && tool === 'main' && BL[hover] >= 0 && !panning) {
     const b = B[BL[hover]];
@@ -1444,13 +1945,15 @@ function draw(dt) {
       ctx.beginPath();
       for (const h of list) if (h.conn && h.door >= 0) {
         ctx.moveTo(cx(h.c), cy(h.c)); let cur = h.door, from = -1; ctx.lineTo(cx(cur), cy(cur));
-        for (let n = 0; n < 160 && D[h.k][cur] > 0; n++) { const nx = chooseNext(cur, from, h.k); if (nx < 0) break; from = cur; cur = nx; ctx.lineTo(cx(cur), cy(cur)); }
-        for (let d = 0; d < 4; d++) { const j = nb(cur, d), q = j >= 0 ? BL[j] : -1; if (q >= 0 && !B[q].h && B[q].k === h.k) { ctx.lineTo(cx(j), cy(j)); break; } }
+        for (let n = 0; n < 220 && !DEST[h.k][cur]; n++) { const nx = chooseNext(cur, from, h.k); if (nx < 0) break; from = cur; cur = nx; ctx.lineTo(cx(cur), cy(cur)); }
+        const d = adjacentBuilding(cur, 0, h.k); if (d) ctx.lineTo(cx(d.c), cy(d.c));
       }
-      ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+      ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0; ctx.globalAlpha = 1;
     }
     for (const h of list) { ctx.strokeStyle = KINDS[b.k].col; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx(h.c), cy(h.c), 22, 0, 7); ctx.stroke(); }
-    tag((b.h ? 'Maison, va vers : ' + KINDS[b.k].name : KINDS[b.k].name) + (b.conn ? '' : ', non relié'), cx(b.c), cy(b.c) - 36, p.glass, b.conn ? '#fff' : p.amber);
+    const lv = lvOf(b), nx = LV_AT[lv];
+    const label = b.h ? 'Maison, va vers : ' + KINDS[b.k].name : KINDS[b.k].lv[lv - 1] + ', niveau ' + lv + (lv < 3 ? ' (' + b.s + ' visites sur ' + nx + ')' : '');
+    tag(label + (b.conn ? '' : ', non relié'), cx(b.c), cy(b.c) - 36, p.glass, b.conn ? '#fff' : p.amber);
   }
 
   // Textes flottants
@@ -1461,13 +1964,19 @@ function draw(dt) {
     else tag(f.text, f.x, yy, p.glass, f.tone === 'gain' ? p.go : f.tone === 'event' ? p.amber : '#fff');
     ctx.globalAlpha = 1;
   }
-  // Pluie
-  if (ev.rain > 0) {
+  // Pluie et neige
+  if (fxOn && (ev.rain > 0 || ev.snow > 0)) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = night ? 'rgba(40,70,95,.06)' : 'rgba(70,95,120,.07)'; ctx.fillRect(0, 0, cw, ch);
-    ctx.strokeStyle = night ? 'rgba(200,225,245,.34)' : 'rgba(255,255,255,.6)'; ctx.lineWidth = 1.1; ctx.beginPath();
-    for (let q = 0; q < 110; q++) { const x = (q * 137.5 + time * 260) % (cw + 60) - 30, y = (q * 71.3 + time * 900) % (ch + 40) - 20; ctx.moveTo(x, y); ctx.lineTo(x - 5, y + 16); }
-    ctx.stroke();
+    if (ev.rain > 0) {
+      ctx.fillStyle = night ? 'rgba(40,70,95,.06)' : 'rgba(70,95,120,.07)'; ctx.fillRect(0, 0, cw, ch);
+      ctx.strokeStyle = night ? 'rgba(200,225,245,.34)' : 'rgba(255,255,255,.6)'; ctx.lineWidth = 1.1; ctx.beginPath();
+      for (let q = 0; q < 110; q++) { const x = (q * 137.5 + time * 260) % (cw + 60) - 30, y = (q * 71.3 + time * 900) % (ch + 40) - 20; ctx.moveTo(x, y); ctx.lineTo(x - 5, y + 16); }
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,.07)'; ctx.fillRect(0, 0, cw, ch);
+      ctx.fillStyle = night ? 'rgba(235,242,248,.75)' : 'rgba(255,255,255,.92)';
+      for (let q = 0; q < 140; q++) { const x = (q * 137.5 + Math.sin(time * .9 + q) * 14 + time * 18) % (cw + 40) - 20, y = (q * 71.3 + time * (55 + q % 5 * 12)) % (ch + 20) - 10; ctx.beginPath(); ctx.arc(x, y, 1.2 + (q % 3) * .7, 0, 7); ctx.fill(); }
+    }
   }
 }
 
@@ -1487,18 +1996,19 @@ let panning = null, pinch = null;
 function setCursor(i) {
   cv.style.cursor = panning && panning.moved ? 'grabbing' : goldAt() || (tool === 'main' && ev.works && ev.works.cell === i) ? 'pointer' : tool === 'main' ? 'grab' : 'crosshair';
 }
-cv.addEventListener('contextmenu', e => e.preventDefault());
-cv.addEventListener('wheel', e => { // molette ou glissement à deux doigts : zoom sur le curseur
+cv.addEventListener('contextmenu', e => { e.preventDefault(); plan = null; }); // clic droit : on abandonne le tracé en cours
+cv.addEventListener('wheel', e => { // molette ou glissement à deux doigts : zoom sur le curseur (ou déplacement, selon les réglages)
   e.preventDefault();
-  const dy = e.deltaMode === 1 ? e.deltaY * 30 : e.deltaY;
-  zoomAt(e.clientX, e.clientY, Math.exp(-clamp(dy, -160, 160) * (e.ctrlKey ? .011 : .0022)));
+  const k = e.deltaMode === 1 ? 30 : 1;
+  if (S.set.scroll === 'pan' && !e.ctrlKey) { panBy(-e.deltaX * k, -e.deltaY * k); return; }
+  zoomAt(e.clientX, e.clientY, Math.exp(-clamp(e.deltaY * k, -160, 160) * (e.ctrlKey ? .011 : .0022)));
 }, { passive: false });
 cv.addEventListener('pointerdown', e => {
   ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
   try { cv.setPointerCapture(e.pointerId); } catch (err) {}
   if (ptrs.size === 2) { // deux doigts : pincer pour zoomer, glisser pour se déplacer
     const [a, b] = [...ptrs.values()];
-    dragging = null; panning = null;
+    if (dragging) { endAct(); dragging = null; } plan = null; panning = null;
     pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
     return;
   }
@@ -1508,12 +2018,15 @@ cv.addEventListener('pointerdown', e => {
     floatText(g.rx, g.ry, '+' + fmt(b) + ' €', 'event'); missionHit('gold', 1); return;
   }
   if (e.button === 1 || e.shiftKey || (tool === 'main' && e.button === 0)) { panning = { x: e.clientX, y: e.clientY, moved: false, cell: i }; e.preventDefault(); return; }
+  if (e.button === 2 && plan) { plan = null; return; } // clic droit : on abandonne le tracé en cours
   if (i < 0) return;
+  if (netDirty) rebuildNet();
   const mode = e.button === 2 || tool === 'erase' ? 'erase' : tool;
   if (mode === 'main') return;
-  if (mode === 'rond' || mode === 'feu') { if (netDirty) rebuildNet(); setJunction(i, mode === 'rond' ? 1 : 2); return; }
-  dragging = { mode, last: i };
-  if (mode === 'erase') erase(i); else paint(i, +mode[1]);
+  if (mode === 'rond' || mode === 'feu') { setJunction(i, mode === 'rond' ? 1 : 2); return; }
+  if (mode[0] === 'r') { plan = { level: +mode[1], cells: [i] }; planInfo(); return; }
+  beginAct(); dragging = { mode, last: i, moved: false };
+  if (mode === 'erase') erase(i);
 });
 cv.addEventListener('pointermove', e => {
   const pt = ptrs.get(e.pointerId);
@@ -1530,10 +2043,16 @@ cv.addEventListener('pointermove', e => {
     setCursor(-1); return;
   }
   const i = cellAt(e); hover = i;
-  if (dragging && i >= 0 && i !== dragging.last) {
-    const lvl = +dragging.mode[1];
-    const ok = line(dragging.last, i, j => { if (dragging.mode === 'erase') { erase(j); return true; } return paint(j, lvl); });
-    if (ok) dragging.last = i; else if (dragging.mode !== 'erase') dragging = null;
+  if (plan && (e.buttons & 2)) plan = null;
+  if (plan && i >= 0 && i !== plan.cells[plan.cells.length - 1]) { // on allonge le tracé, ou on revient en arrière en repassant dessus
+    const at = plan.cells.indexOf(i);
+    if (at >= 0) plan.cells.length = at + 1;
+    else line(plan.cells[plan.cells.length - 1], i, j => { const q = plan.cells.indexOf(j); if (q >= 0) plan.cells.length = q + 1; else if (plan.cells.length < 90) plan.cells.push(j); });
+    planInfo();
+  } else if (dragging && i >= 0 && i !== dragging.last) {
+    let prev = dragging.last;
+    line(dragging.last, i, j => { if (dragging.mode === 'erase') erase(j); else setOneWay(prev, j); prev = j; });
+    dragging.last = i; dragging.moved = true;
   }
   setCursor(i);
 });
@@ -1545,34 +2064,53 @@ function pointerEnd(e) {
     if (!p.moved && tool === 'main' && ev.works && ev.works.cell === p.cell) { ev.works.t -= 4; floatText(cx(p.cell), cy(p.cell), '−4 s', 'event'); }
     setCursor(hover);
   }
-  if (dragging) { dragging = null; save(); }
+  if (plan) commitPlan();
+  if (dragging) {
+    if (dragging.mode === 'ow' && !dragging.moved) clearOneWay(dragging.last);
+    endAct(); dragging = null; save();
+  }
 }
 cv.addEventListener('pointerup', pointerEnd); cv.addEventListener('pointercancel', pointerEnd);
 cv.addEventListener('mouseleave', () => { hover = -1; });
 $('z-in').addEventListener('click', () => zoomAt(vcx, vcy, 1.35));
 $('z-out').addEventListener('click', () => zoomAt(vcx, vcy, 1 / 1.35));
 $('z-fit').addEventListener('click', resetCam);
+let camGo = null;
+function goTo(x, y, z) { camGo = { x, y, z: Math.max(cam.z, z || 1.8), t: 0, x0: cam.x, y0: cam.y, z0: cam.z }; } // glissement de la caméra vers un point
+function stepCam(dt) {
+  if (!camGo) return;
+  camGo.t = Math.min(1, camGo.t + dt / .5);
+  const e = camGo.t * camGo.t * (3 - 2 * camGo.t);
+  cam.x = camGo.x0 + (camGo.x - camGo.x0) * e; cam.y = camGo.y0 + (camGo.y - camGo.y0) * e; cam.z = camGo.z0 + (camGo.z - camGo.z0) * e;
+  applyCam(); if (camGo.t >= 1) camGo = null;
+}
+const LAYERS = ['normal', 'traffic', 'flow'];
+function setLayer(id) { layer = id; for (const b of $('layers').children) b.classList.toggle('on', b.dataset.l === id); }
+for (const b of $('layers').children) b.addEventListener('click', () => setLayer(b.dataset.l));
 
 let paused = false, speed = 1;
 function setPaused(v) { paused = v; document.body.classList.toggle('paused', v); $('pause-ic').setAttribute('href', v ? '#i-play' : '#i-pause'); $('b-pause').classList.toggle('on', v); }
 function setSpeed(v) { speed = v; $('b-speed').textContent = '×' + v; $('b-speed').classList.toggle('on', v > 1); }
+const nextSpeed = () => setSpeed(speed === 1 ? 2 : speed === 2 && god() ? 4 : 1);
 function setTool(id) {
-  tool = id;
-  for (const b of $('dock').querySelectorAll('.tool')) b.classList.toggle('on', b.dataset.t === id);
-  $('hint').textContent = TOOLS.find(t => t.id === id).hint;
+  tool = id; plan = null;
+  for (const b of $('dock').querySelectorAll('.tool[data-t]')) b.classList.toggle('on', b.dataset.t === id);
+  const cost = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU }[id], t = TOOLS.find(t => t.id === id);
+  $('hint').textContent = (cost ? t.name + ', ' + fmt(price(cost)) + ' €' + (id[0] === 'r' && id !== 'rond' ? ' la case. ' : '. ') : '') + t.hint;
 }
 $('b-pause').addEventListener('click', () => setPaused(!paused));
-$('b-speed').addEventListener('click', () => setSpeed(speed === 1 ? 2 : 1));
+$('b-speed').addEventListener('click', nextSpeed);
 window.addEventListener('keydown', e => {
+  const tagN = document.activeElement && document.activeElement.tagName, typing = tagN === 'TEXTAREA' || tagN === 'INPUT';
   if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) { e.preventDefault(); saveNow(); return; }
-  if (e.metaKey || e.ctrlKey || e.altKey) return;
-  const tagN = document.activeElement && document.activeElement.tagName;
-  if (tagN === 'TEXTAREA' || tagN === 'INPUT') return;
-  if (e.key === 'Escape') { if (!$('veil').hidden) closeSheet(); else setTool('main'); return; }
+  if ((e.metaKey || e.ctrlKey) && (e.key === 'z' || e.key === 'Z') && !typing) { e.preventDefault(); undoLast(); return; }
+  if (e.metaKey || e.ctrlKey || e.altKey || typing) return;
+  if (e.key === 'Escape') { if (plan) plan = null; else if (!$('veil').hidden) closeSheet(); else setTool('main'); return; }
   if (!$('veil').hidden) return;
   if (e.code === 'Space') { if (tagN === 'BUTTON') return; e.preventDefault(); setPaused(!paused); return; }
-  if (e.key === 'v' || e.key === 'V') { setSpeed(speed === 1 ? 2 : 1); return; }
-  if (e.key >= '1' && e.key <= '7') { setTool(TOOLS[+e.key - 1].id); return; }
+  if (e.key === 'v' || e.key === 'V') { nextSpeed(); return; }
+  if (e.key === 'l' || e.key === 'L') { setLayer(LAYERS[(LAYERS.indexOf(layer) + 1) % 3]); return; }
+  if (e.key >= '1' && e.key <= '9') { setTool(TOOLS[+e.key - 1].id); return; }
   const arrows = { ArrowLeft: [90, 0], ArrowRight: [-90, 0], ArrowUp: [0, 90], ArrowDown: [0, -90] };
   if (arrows[e.key]) { e.preventDefault(); panBy(arrows[e.key][0], arrows[e.key][1]); }
   else if (e.key === '+' || e.key === '=') zoomAt(vcx, vcy, 1.3);
@@ -1581,9 +2119,11 @@ window.addEventListener('keydown', e => {
 });
 
 /* ───────── Interface ───────── */
-$('dock').innerHTML = TOOLS.map((t, q) => (q === 1 || q === 4 || q === 6 ? '<div class="sep"></div>' : '')
-  + '<button class="tool' + (t.id === 'erase' ? ' erase' : '') + '" type="button" data-t="' + t.id + '">' + ic(t.ic) + '<b>' + t.name + '</b><small class="num"></small><kbd>' + (q + 1) + '</kbd></button>').join('');
-for (const b of $('dock').querySelectorAll('.tool')) b.addEventListener('click', () => setTool(b.dataset.t));
+$('dock').innerHTML = TOOLS.map((t, q) => (q === 1 || q === 5 || q === 8 ? '<div class="sep"></div>' : '')
+  + '<button class="tool' + (t.id === 'erase' ? ' erase' : '') + '" type="button" data-t="' + t.id + '">' + ic(t.ic) + '<b>' + t.name + '</b><small class="num"></small><kbd>' + (q + 1) + '</kbd></button>').join('')
+  + '<div class="sep"></div><button class="tool" type="button" id="undo" title="Annuler la dernière construction (Cmd + Z)">' + ic('undo') + '<b>Annuler</b></button>';
+for (const b of $('dock').querySelectorAll('.tool[data-t]')) b.addEventListener('click', () => setTool(b.dataset.t));
+$('undo').addEventListener('click', undoLast);
 const rows = {};
 for (const k in UP) {
   const b = document.createElement('button');
@@ -1602,8 +2142,9 @@ function upDesc(k) {
 }
 function buy(k) {
   const max = S.lv[k] >= UP[k].max, cost = upCost(k);
-  if (max || S.money < cost) return;
-  S.money -= cost; S.lv[k]++;
+  if (max || !canPay(cost)) return;
+  if (!god()) { S.money -= cost; S.st.sUp += cost; }
+  S.lv[k]++; netDirty = true;
   save(); refreshUI();
 }
 function setShop(open) { // tout l'en-tête est cliquable, replié comme déplié
@@ -1616,33 +2157,176 @@ $('shop').querySelector('h2').addEventListener('click', () => setShop(!S.shop));
 // Après un clic de souris, le bouton rend la main : Espace reste la touche de pause.
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('button'); if (b && e.detail > 0 && !b.closest('#sheet')) b.blur(); });
 
+// Réglages
+function renderSet() {
+  $('set-god').setAttribute('aria-checked', S.set.god); $('set-day').setAttribute('aria-checked', S.set.day); $('set-fx').setAttribute('aria-checked', S.set.fx);
+  $('god-box').hidden = !S.set.god;
+  for (const b of $('set-scroll').children) b.classList.toggle('on', b.dataset.v === S.set.scroll);
+  const x4 = document.querySelector('[data-god="x4"]'); x4.classList.toggle('on', speed === 4);
+  if (!$('upd-info').dataset.busy) $('upd-info').textContent = $('upd-info').dataset.msg || 'Version ' + APP_VERSION + ' installée.';
+}
+for (const [id, key] of [['set-god', 'god'], ['set-day', 'day'], ['set-fx', 'fx']]) $(id).addEventListener('click', () => {
+  S.set[key] = !S.set[key];
+  if (key === 'god') { if (!S.set.god && speed === 4) setSpeed(1); netDirty = true; toast('info', S.set.god ? 'Mode dieu activé' : 'Mode dieu désactivé', S.set.god ? 'Tout est gratuit et l’entretien est suspendu.' : 'Les coûts et l’entretien reprennent.', 4000, 'gear'); }
+  if (key === 'day') cache.valid = false;
+  save(); renderSet(); refreshUI();
+});
+for (const b of $('set-scroll').children) b.addEventListener('click', () => { S.set.scroll = b.dataset.v; save(); renderSet(); });
+for (const b of document.querySelectorAll('[data-god]')) b.addEventListener('click', () => {
+  if (!god()) return;
+  const a = b.dataset.god;
+  if (a === 'cash') { S.money += 10000; toast('gain', '+10 000 €', 'Ajoutés à la caisse pour quand tu quitteras le mode dieu.', 3000); }
+  else if (a === 'bld') { const n = grow(true); toast('build', n ? 'Bâtiment ajouté' : 'La carte est pleine', n ? 'Il attend d’être relié.' : 'Fonde une nouvelle ville pour continuer.', 3000); if (n) goTo(cx(n.c), cy(n.c), 1.6); }
+  else if (a === 'time') { S.clock = (S.clock + 6) % 24; if (S.clock < 6) S.day++; cache.valid = false; }
+  else if (a === 'season') { S.day += 2; cache.valid = false; toast('event', 'Saison : ' + SEASONS[season()].name, '', 3000, SEASONS[season()].ic); }
+  else if (a === 'grow') { for (const d of B) if (!d.h && lvOf(d) < 3) d.s = LV_AT[lvOf(d)]; netDirty = true; toast('event', 'Les lieux ont grossi d’un niveau', '', 3000, 'trend'); }
+  else if (a === 'x4') setSpeed(speed === 4 ? 1 : 4);
+  renderSet(); refreshUI();
+});
+for (const b of document.querySelectorAll('[data-ev]')) b.addEventListener('click', () => {
+  if (!god()) return;
+  const before = JSON.stringify([ev.rain > 0, ev.snow > 0, !!ev.marathon, !!ev.flood, !!ev.works, !!ev.gold, !!ev.amb, !!ev.fest, B.length]);
+  if (netDirty) rebuildNet();
+  startEvent(b.dataset.ev);
+  const after = JSON.stringify([ev.rain > 0, ev.snow > 0, !!ev.marathon, !!ev.flood, !!ev.works, !!ev.gold, !!ev.amb, !!ev.fest, B.length]);
+  if (before === after) toast('info', 'Évènement impossible pour l’instant', 'Il manque de quoi le déclencher sur cette carte (routes, pont de rechange, maisons reliées…).', 4500);
+  else closeSheet();
+});
+// Recherche de mise à jour : on compare la version publiée à celle qui tourne
+$('upd-btn').addEventListener('click', async () => {
+  const info = $('upd-info'), btn = $('upd-btn');
+  if (btn.dataset.ready) { // une version plus récente attend : on vide le cache hors ligne et on recharge
+    save();
+    try { if (window.caches) for (const k of await caches.keys()) await caches.delete(k); const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (reg) await reg.update(); } catch (e) {}
+    location.reload(); return;
+  }
+  const say = t => { info.dataset.msg = t; info.textContent = t; };
+  if (!/^https?:$/.test(location.protocol)) { say('Version ' + APP_VERSION + '. Ce fichier est ouvert en local : la recherche ne fonctionne que sur la version hébergée. Ici, remplace simplement les fichiers.'); return; }
+  info.dataset.busy = '1'; info.textContent = 'Recherche en cours…';
+  try {
+    const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('http');
+    const v = String((await r.json()).version || '').slice(0, 20);
+    delete info.dataset.busy;
+    if (v && v !== APP_VERSION) { say('La version ' + v + ' est disponible (tu as la ' + APP_VERSION + '). Ta partie est conservée.'); btn.textContent = 'Installer et recharger'; btn.classList.add('go'); btn.dataset.ready = '1'; }
+    else say('Tu as la dernière version (' + APP_VERSION + ').');
+  } catch (e) { delete info.dataset.busy; say('Version ' + APP_VERSION + '. Impossible de joindre le serveur : vérifie ta connexion et réessaie.'); }
+});
+
 // Fenêtres
-const SHEETS = { city: ['Ville', 'city', 't-ach'], ach: ['Succès', 'trophy', 't-ach'], stat: ['Statistiques', 'chart', 't-info'], save: ['Sauvegarde', 'save', 't-gain'] };
+const SHEETS = { set: ['Réglages', 'gear', 't-build'], fin: ['Finances', 'coin', 't-gain'], city: ['Ville', 'city', 't-ach'], ach: ['Succès', 'trophy', 't-ach'], stat: ['Statistiques', 'chart', 't-info'], save: ['Sauvegarde', 'save', 't-gain'] };
 let sheet = null;
 function openSheet(id) {
   sheet = id;
   $('veil').hidden = false;
   $('sh-title').textContent = SHEETS[id][0]; $('sh-ic').setAttribute('href', '#i-' + SHEETS[id][1]); $('sh-head').className = SHEETS[id][2];
   for (const s of document.querySelectorAll('.sec')) s.hidden = s.id !== 'm-' + id;
+  $('sheet').classList.toggle('wide', id === 'fin');
   renderSheet(); $('sh-x').focus();
 }
 function closeSheet() { sheet = null; $('veil').hidden = true; pending = null; $('sv-confirm').hidden = true; }
 for (const b of document.querySelectorAll('[data-open]')) b.addEventListener('click', () => openSheet(b.dataset.open));
+for (const b of document.querySelectorAll('[data-fin]')) b.addEventListener('click', () => { if (b.dataset.fin === 'city') openSheet('city'); else { finTab = b.dataset.fin; finHover = -1; openSheet('fin'); } });
+
+// Finances : quatre courbes au choix, la ventilation des gains et des dépenses, les multiplicateurs
+const FIN = {
+  m: { name: 'Argent', col: '--go', unit: v => fmtMoney(v) + ' €', now: () => S.money },
+  r: { name: 'Revenu net par minute', col: '--info', unit: v => fmt(v) + ' €', now: () => netPerMin() },
+  f: { name: 'Fluidité', col: '--event', unit: v => nf0.format(v) + ' %', now: () => S.F * 100, max: 100 },
+  t: { name: 'Trajets par minute', col: '--ach', unit: v => nf0.format(v), now: () => { const a = S.hx.t.slice(-3); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0; } }
+};
+let finTab = 'm', finHover = -1, finGeom = null;
+$('fin-tabs').innerHTML = Object.keys(FIN).map(k => '<button type="button" role="tab" data-k="' + k + '">' + FIN[k].name + '</button>').join('');
+for (const b of $('fin-tabs').children) b.addEventListener('click', () => { finTab = b.dataset.k; finHover = -1; renderSheet(); });
+const agoText = n => { const s = n * 10; return s < 60 ? 'il y a ' + s + ' s' : 'il y a ' + Math.floor(s / 60) + ' min' + (s % 60 ? ' ' + String(s % 60).padStart(2, '0') : ''); };
+function niceMax(v) { if (v <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(v))), m = v / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+function drawFin() {
+  const F = FIN[finTab], data = S.hx[finTab].concat([F.now()]), c = $('fin-chart'), cs = getComputedStyle(document.documentElement);
+  const col = cs.getPropertyValue(F.col).trim(), ink = cs.getPropertyValue('--ink').trim(), muted = cs.getPropertyValue('--muted').trim(), hair = cs.getPropertyValue('--hair').trim();
+  const w = c.clientWidth, h = c.clientHeight, r = Math.min(window.devicePixelRatio || 1, 2);
+  if (c.width !== Math.round(w * r) || c.height !== Math.round(h * r)) { c.width = Math.round(w * r); c.height = Math.round(h * r); }
+  const g = c.getContext('2d'); g.setTransform(r, 0, 0, r, 0, 0); g.clearRect(0, 0, w, h);
+  const L = 52, Rm = 10, Tm = 12, Bm = 24, pw = w - L - Rm, ph = h - Tm - Bm, n = data.length;
+  const max = F.max || niceMax(Math.max(1, ...data) * 1.05);
+  const X = i => L + (n > 1 ? i / (n - 1) : 1) * pw, Y = v => Tm + ph - Math.min(1, Math.max(0, v / max)) * ph;
+  finGeom = { L, pw, n };
+  g.font = '11px -apple-system,system-ui,sans-serif'; g.textBaseline = 'middle';
+  for (let q = 0; q <= 4; q++) { // graduations
+    const y = Tm + ph - q / 4 * ph;
+    g.strokeStyle = hair; g.lineWidth = 1; g.beginPath(); g.moveTo(L, y + .5); g.lineTo(w - Rm, y + .5); g.stroke();
+    g.fillStyle = muted; g.textAlign = 'right'; g.fillText(F.unit(max * q / 4), L - 8, y);
+  }
+  g.textBaseline = 'alphabetic'; g.textAlign = 'left'; g.fillText(n > 1 ? agoText(n - 1) : '', L, h - 6);
+  g.textAlign = 'right'; g.fillText('maintenant', w - Rm, h - 6);
+  if (n > 2) { g.textAlign = 'center'; g.fillText(agoText(Math.round((n - 1) / 2)), L + pw / 2, h - 6); }
+  if (n < 2) return;
+  g.beginPath(); data.forEach((v, i) => { if (i) g.lineTo(X(i), Y(v)); else g.moveTo(X(i), Y(v)); });
+  g.strokeStyle = col; g.lineWidth = 2.2; g.lineJoin = 'round'; g.lineCap = 'round'; g.stroke();
+  g.lineTo(X(n - 1), Tm + ph); g.lineTo(X(0), Tm + ph); g.closePath();
+  const gr = g.createLinearGradient(0, Tm, 0, Tm + ph); gr.addColorStop(0, col); gr.addColorStop(1, 'transparent');
+  g.globalAlpha = .22; g.fillStyle = gr; g.fill(); g.globalAlpha = 1;
+  const hi = finHover >= 0 && finHover < n ? finHover : n - 1, hx = X(hi), hy = Y(data[hi]);
+  if (finHover >= 0) { g.strokeStyle = muted; g.lineWidth = 1; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(hx + .5, Tm); g.lineTo(hx + .5, Tm + ph); g.stroke(); g.setLineDash([]); }
+  g.fillStyle = cs.getPropertyValue('--row-on').trim() || '#fff'; g.beginPath(); g.arc(hx, hy, 5.5, 0, 7); g.fill();
+  g.fillStyle = col; g.beginPath(); g.arc(hx, hy, 3.6, 0, 7); g.fill();
+  if (finHover >= 0) { // étiquette du point survolé
+    const txt = F.unit(data[hi]) + (hi === n - 1 ? ', maintenant' : ', ' + agoText(n - 1 - hi));
+    g.font = '600 12px -apple-system,system-ui,sans-serif'; const tw = g.measureText(txt).width + 16, tx = Math.min(w - Rm - tw, Math.max(L, hx - tw / 2)), ty = hy > Tm + 40 ? hy - 34 : hy + 12;
+    g.fillStyle = ink; g.beginPath(); g.roundRect ? g.roundRect(tx, ty, tw, 22, 8) : g.rect(tx, ty, tw, 22); g.fill();
+    g.fillStyle = cs.getPropertyValue('--ground').trim(); g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(txt, tx + 8, ty + 11.5);
+  }
+}
+$('fin-chart').addEventListener('mousemove', e => {
+  if (!finGeom || finGeom.n < 2) return;
+  const r = $('fin-chart').getBoundingClientRect();
+  finHover = Math.round(Math.min(1, Math.max(0, (e.clientX - r.left - finGeom.L) / finGeom.pw)) * (finGeom.n - 1)); drawFin();
+});
+$('fin-chart').addEventListener('mouseleave', () => { finHover = -1; drawFin(); });
+const hbar = (label, val, share, col) => '<div class="hb"><span>' + label + '</span><b class="num">' + val + '</b><i><u style="width:' + Math.round(Math.max(0, Math.min(1, share)) * 100) + '%;background:' + col + '"></u></i></div>';
+function renderFin() {
+  const F = FIN[finTab], d = S.hx[finTab], cur = F.now();
+  for (const b of $('fin-tabs').children) { b.classList.toggle('on', b.dataset.k === finTab); b.setAttribute('aria-selected', b.dataset.k === finTab); }
+  $('fin-now').textContent = F.unit(cur);
+  const back = Math.min(30, d.length), ref = back ? d[d.length - back] : cur, diff = cur - ref, el = $('fin-delta');
+  if (back < 2) { el.textContent = ''; el.className = ''; }
+  else {
+    const sign = diff > 0 ? '+' : diff < 0 ? '−' : '', mag = finTab === 'f' ? nf0.format(Math.abs(diff)) + ' pts' : finTab === 't' ? nf0.format(Math.abs(diff)) : fmt(Math.abs(diff)) + ' €';
+    el.textContent = sign + mag + ' en ' + (back >= 6 ? Math.round(back / 6) + ' min' : back * 10 + ' s'); el.className = diff > 0 ? 'pos' : diff < 0 ? 'neg' : '';
+  }
+  $('fin-empty').textContent = d.length < 2 ? 'La courbe se remplit au fil de la partie : un point toutes les 10 secondes de jeu, sur les 30 dernières minutes.' : '';
+  drawFin();
+  const st = S.st, kinds = [0, 1, 2, 3].map(k => st['k' + k]), other = Math.max(0, st.total - kinds.reduce((a, b) => a + b, 0)), tot = Math.max(1, st.total);
+  $('fin-in').innerHTML = KINDS.map((K, k) => hbar('Trajets vers : ' + K.name, fmt(kinds[k]) + ' €', kinds[k] / tot, K.col)).join('')
+    + hbar('Primes, objectifs et absences', fmt(other) + ' €', other / tot, 'var(--muted)');
+  const sp = [['Routes, ponts et tunnels', st.sRoad], ['Ronds-points et feux', st.sJunc], ['Améliorations', st.sUp], ['Entretien du réseau', st.sKeep]], spT = Math.max(1, sp.reduce((a, b) => a + b[1], 0));
+  $('fin-out').innerHTML = sp.map(x => hbar(x[0], fmt(x[1]) + ' €', x[1] / spT, 'var(--alert)')).join('')
+    + '<div class="hb"><span>Entretien en ce moment</span><b class="num">' + (god() ? 'offert' : '−' + fmt(upkeepMin) + ' € par minute') + '</b></div><div class="hb"><span>Total gagné</span><b class="num">' + fmt(st.total) + ' €</b></div><div class="hb"><span>Total dépensé</span><b class="num">' + fmt(sp.reduce((a, b) => a + b[1], 0)) + ' €</b></div>';
+  const x = v => '×' + nf1.format(Math.round(v * 100) / 100), ms = [['Valeur de base', fmt(carValue()) + ' €'], ['Fluidité', x(fluMult())]];
+  let total = carValue() * fluMult();
+  if (S.city) { ms.push(['Villes fondées', x(cityMult())]); total *= cityMult(); }
+  if (achCount()) { ms.push(['Succès', x(achMult())]); total *= achMult(); }
+  if (isPeak(S.clock)) { ms.push(['Heure de pointe', '×1,5']); total *= 1.5; }
+  if (ev.rain > 0) { ms.push(['Averse', '×1,25']); total *= 1.25; }
+  $('fin-mult').innerHTML = ms.map(m => '<span>' + m[0] + '<b class="num">' + m[1] + '</b></span>').join('') + '<span class="tot">Un trajet en voiture vers le marché<b class="num">' + fmt(total) + ' €</b></span>';
+}
 $('sh-x').addEventListener('click', closeSheet);
 $('veil').addEventListener('pointerdown', e => { if (e.target === $('veil')) closeSheet(); });
 function fmtTime(s) { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + ' h ' + String(m).padStart(2, '0') : m + ' min'; }
 function renderSheet() {
   if (!sheet) return;
+  if (sheet === 'fin') { renderFin(); return; }
+  if (sheet === 'set') { renderSet(); return; }
   if (sheet === 'city') {
-    $('city-note').innerHTML = '<b>' + MAP_NAME[mapType()] + '</b>, ville n° ' + (S.city + 1) + '. Revenus ×' + nf1.format(cityMult()) + '. Chaque maison porte la couleur du lieu où ses habitants se rendent.';
+    $('city-note').innerHTML = '<b>' + MAP_NAME[mapType()] + '</b>, ville n° ' + (S.city + 1) + '. Revenus ×' + nf1.format(cityMult()) + '. Chaque maison porte la couleur du lieu où ses habitants se rendent, puis ils rentrent le soir. Un lieu très fréquenté grossit : il rapporte plus et attire de plus loin.';
     $('legend').innerHTML = KINDS.map((k, q) => {
       const on = B.some(b => !b.h && b.k === q);
-      return '<div class="' + (on ? '' : 'off') + '"><i style="background:' + k.col + '"></i><div><b>' + k.name + '</b><span>' + (on ? k.homes + ', trajets ×' + nf1.format(k.val) : 'arrive au ' + k.at + 'e bâtiment') + '</span></div></div>';
+      const top = B.filter(b => !b.h && b.k === q).reduce((m, b) => Math.max(m, lvOf(b)), 1);
+      return '<div class="' + (on ? '' : 'off') + '"><i style="background:' + k.col + '"></i><div><b>' + (on ? k.lv[top - 1] : k.name) + '</b><span>' + (on ? k.homes + ', trajets ×' + nf1.format(k.val) + ', niveau ' + top + ' sur 3' : 'arrive au ' + k.at + 'e bâtiment') + '</span></div></div>';
     }).join('');
     const ok = cityReady();
     $('city-goal').innerHTML = ok ? 'Tu peux fonder une nouvelle ville : tu repars de zéro dans <b>' + MAP_NAME[MAPS[(S.city + 1) % MAPS.length]] + '</b> avec +50 % de revenus pour toujours.'
-      : 'Relie <b>' + CITY_GOAL + ' bâtiments</b>, sans en laisser un seul à l’écart, pour pouvoir fonder une nouvelle ville (+50 % de revenus pour toujours). Tu en es à ' + nConn + (nUn ? ', dont ' + nUn + ' non relié' + (nUn > 1 ? 's' : '') + ' en attente' : '') + '.';
-    $('city-bar').style.width = Math.min(100, nConn / CITY_GOAL * 100) + '%';
+      : 'Relie <b>' + cityGoal() + ' bâtiments</b>, sans en laisser un seul à l’écart, pour pouvoir fonder une nouvelle ville (+50 % de revenus pour toujours). Tu en es à ' + nConn + (nUn ? ', dont ' + nUn + ' non relié' + (nUn > 1 ? 's' : '') + ' en attente' : '') + '.';
+    $('city-bar').style.width = Math.min(100, nConn / cityGoal() * 100) + '%';
     const btn = $('city-go'); btn.classList.toggle('ok', ok && !btn.classList.contains('sure'));
   } else if (sheet === 'ach') {
     const c = achCount();
@@ -1652,7 +2336,7 @@ function renderSheet() {
     const st = S.st, list = [
       ['Meilleur revenu', fmt(st.bestRate * 60) + ' € par minute'], ['Trajets terminés', nf0.format(st.trips)], ['Gains cumulés', fmt(st.total) + ' €'],
       ['Meilleure série de trajets fluides', nf0.format(st.bestStreak)], ['Tronçons posés', nf0.format(st.tiles)], ['Véhicules sur la carte', nf0.format(nCars)],
-      ['Fourgons interceptés', nf0.format(st.gold)], ['Ambulances à l’heure', nf0.format(st.amb)], ['Villes fondées', nf0.format(S.city)], ['Jour', nf0.format(S.day)], ['Temps de jeu', fmtTime(st.play)]];
+      ['Trajets abandonnés dans les bouchons', nf0.format(st.lost)], ['Fourgons interceptés', nf0.format(st.gold)], ['Ambulances à l’heure', nf0.format(st.amb)], ['Villes fondées', nf0.format(S.city)], ['Jour', nf0.format(S.day)], ['Temps de jeu', fmtTime(st.play)]];
     $('stats').innerHTML = list.map(r => '<div class="srow"><span>' + r[0] + '</span><b class="num">' + r[1] + '</b></div>').join('');
     const c = $('spark'), g = c.getContext('2d'), col = getComputedStyle(document.documentElement).getPropertyValue('--info');
     g.clearRect(0, 0, c.width, c.height);
@@ -1672,16 +2356,18 @@ $('city-go').addEventListener('click', () => {
   if (!btn.classList.contains('sure')) { btn.classList.add('sure'); btn.classList.remove('ok'); btn.textContent = 'Confirmer : tout reprendre de zéro'; cityT = setTimeout(() => { btn.classList.remove('sure'); btn.textContent = 'Fonder une nouvelle ville'; }, 4000); return; }
   clearTimeout(cityT); btn.classList.remove('sure'); btn.textContent = 'Fonder une nouvelle ville';
   backup();
-  const next = fresh();
-  Object.assign(next, { city: S.city + 1, ach: S.ach, st: S.st, clock: S.clock, day: S.day, notif: S.notif, shop: S.shop });
+  const next = fresh(S.city + 1);
+  Object.assign(next, { ach: S.ach, st: S.st, clock: S.clock, day: S.day, notif: S.notif, shop: S.shop, set: S.set });
   applyState(next); unlock('city'); closeSheet();
   toast('event', 'Bienvenue dans ' + MAP_NAME[mapType()], 'Revenus ×' + nf1.format(cityMult()) + ' pour toujours.', 7000, 'city');
 });
 
 // Fil d'actualité : l'objectif, puis ce qui se passe en ce moment
-function chip(type, icon, title, sub, pg) {
-  return '<div class="chip glass t-' + type + '"><div class="bd">' + ic(icon) + '</div><div><b>' + title + '</b><span class="num">' + sub + '</span></div>' + (pg != null ? '<i class="pg" style="width:' + Math.round(pg * 100) + '%"></i>' : '') + '</div>';
+function chip(type, icon, title, sub, pg, go) { // go : case de la carte où un clic emmène la caméra
+  const tag = go >= 0 ? 'button type="button" data-go="' + go + '"' : 'div';
+  return '<' + tag + ' class="chip glass t-' + type + '"><div class="bd">' + ic(icon) + '</div><div><b>' + title + '</b><span class="num">' + sub + '</span></div>' + (pg != null ? '<i class="pg" style="width:' + Math.round(pg * 100) + '%"></i>' : '') + '</' + (go >= 0 ? 'button' : 'div') + '>';
 }
+$('strip').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) goTo(cx(+b.dataset.go), cy(+b.dataset.go), 2); });
 let stripSig = '';
 function renderStrip() {
   const out = [], m = S.mission;
@@ -1690,20 +2376,25 @@ function renderStrip() {
     const sub = m.id === 'connect' ? nConn + ' sur ' + B.length + ' reliés' : m.id === 'earn' ? fmt(m.prog) + ' € sur ' + fmt(m.goal) + ' €' : m.goal > 1 ? Math.floor(m.prog) + ' sur ' + m.goal : 'Prime à la clé';
     out.push(chip('goal', 'target', MISSIONS[m.id].text(m.goal), sub, pr));
   }
-  if (ev.amb) out.push(chip('alert', 'amb', 'Ambulance en intervention', 'Prime si elle ne reste pas bloquée'));
-  if (ev.gold) out.push(chip('event', 'van', 'Fourgon blindé en route', 'Clique dessus sur la carte'));
-  if (ev.works) out.push(chip('alert', 'cone', 'Chantier', 'Encore ' + Math.ceil(ev.works.t) + ' s, clique dessus pour l’accélérer', ev.works.t / 40));
+  if (god()) out.push(chip('build', 'gear', 'Mode dieu', 'Tout est gratuit, pas d’entretien'));
+  if (broke) out.push(chip('alert', 'coin', 'Caisse vide', 'L’entretien n’est plus payé : tout roule 25 % moins vite'));
+  if (ev.jam) out.push(chip('alert', 'jam', 'Bouchon persistant', 'Voir sur la carte', null, ev.jam.cell));
+  if (ev.amb) out.push(chip('alert', 'amb', 'Ambulance en intervention', 'Prime si elle ne reste pas bloquée', null, ev.amb.car && !ev.amb.car.dead ? ev.amb.car.a : -1));
+  if (ev.gold) out.push(chip('event', 'van', 'Fourgon blindé en route', 'Clique dessus sur la carte', null, ev.gold.a));
+  if (ev.marathon) out.push(chip('alert', 'flag', 'Marathon : tronçon fermé', 'Encore ' + Math.ceil(ev.marathon.t) + ' s', ev.marathon.t / 120, ev.marathon.cells[0]));
+  if (ev.flood) out.push(chip('alert', 'wave', 'Crue : pont coupé', 'Encore ' + Math.ceil(ev.flood.t) + ' s', ev.flood.t / 100, ev.flood.cell));
+  if (ev.snow > 0) out.push(chip('info', 'snow', 'Chutes de neige', 'Trafic ralenti, revenus ×1,3, encore ' + Math.ceil(ev.snow) + ' s', ev.snow / 95));
+  if (ev.works) out.push(chip('alert', 'cone', 'Chantier', 'Encore ' + Math.ceil(ev.works.t) + ' s, clique dessus pour l’accélérer', ev.works.t / 40, ev.works.cell));
   if (ev.fest && B[ev.fest.i]) out.push(chip('event', 'star', 'Jour de fête : ' + KINDS[B[ev.fest.i].k].name, 'Trajets doublés, encore ' + Math.ceil(ev.fest.t) + ' s', ev.fest.t / 30));
   if (ev.rain > 0) out.push(chip('info', 'rain', 'Averse', 'Revenus ×1,25, encore ' + Math.ceil(ev.rain) + ' s', ev.rain / 40));
-  if (isPeak(S.clock)) out.push(chip('event', 'clock', 'Heure de pointe', 'Plus de départs, revenus ×1,5'));
-  if (nUn > 3) out.push(chip('alert', 'home', nUn + ' bâtiments attendent une route', 'La ville ne grandit plus tant qu’ils sont isolés'));
+  if (isPeak(S.clock)) out.push(chip('event', 'clock', S.clock < 12 ? 'Pointe du matin' : 'Pointe du soir', (S.clock < 12 ? 'Les habitants partent' : 'Les habitants rentrent') + ', revenus ×1,5'));
+  if (nUn > 3) { const u = B.find(b => !b.conn); out.push(chip('alert', 'home', nUn + ' bâtiments attendent une route', 'La ville ne grandit plus tant qu’ils sont isolés', null, u ? u.c : -1)); }
   const html = out.join('');
   if (html !== stripSig) { stripSig = html; $('strip').innerHTML = html; }
 }
 let lastTitle = '';
 function refreshUI() {
-  $('money').textContent = fmtMoney(S.money) + ' €';
-  $('rate').textContent = fmt(S.rate * 60) + ' €';
+  const net = netPerMin(); $('rate').textContent = fmt(net) + ' €'; $('st-rate').classList.toggle('bad', net < 0);
   $('cityname').textContent = MAP_NAME[mapType()];
   $('fmul').textContent = '×' + fluMult().toFixed(1).replace('.', ',');
   const fb = $('fbar'); fb.style.width = Math.round(S.F * 100) + '%';
@@ -1711,21 +2402,23 @@ function refreshUI() {
   $('bld').textContent = nConn + ' sur ' + B.length; $('st-bld').classList.toggle('bad', nUn > 0);
   $('bldl').textContent = nUn ? (nUn > 1 ? nUn + ' isolés' : '1 isolé') : 'reliés';
   const h = Math.floor(S.clock), mi = Math.floor((S.clock - h) * 60), night = darkness(S.clock) > .5;
+  $('money').textContent = god() ? '∞' : fmtMoney(S.money) + ' €';
   $('clock').textContent = String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
-  $('phase').textContent = phaseName(S.clock) + ', jour ' + S.day;
+  $('phase').textContent = phaseName(S.clock) + ', jour ' + S.day + ', ' + SEASONS[season()].name;
   $('clock-ic').setAttribute('href', night ? '#i-moon' : '#i-sun'); $('clockbox').classList.toggle('night', night);
   for (const k in rows) {
-    const r = rows[k], max = S.lv[k] >= UP[k].max, cost = upCost(k), ok = !max && S.money >= cost;
+    const r = rows[k], max = S.lv[k] >= UP[k].max, cost = upCost(k), ok = !max && canPay(cost);
     r.n.textContent = UP[k].name; r.d.textContent = 'Niv. ' + S.lv[k] + ' : ' + upDesc(k);
-    r.c.textContent = max ? 'Max' : fmt(cost) + ' €';
+    r.c.textContent = max ? 'Max' : god() ? 'Gratuit' : fmt(cost) + ' €';
     r.b.classList.toggle('ok', ok); r.b.classList.toggle('max', max); r.b.setAttribute('aria-disabled', ok ? 'false' : 'true');
   }
-  const costs = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, rond: ROND, feu: FEU };
-  for (const b of $('dock').querySelectorAll('.tool')) { const c = costs[b.dataset.t]; b.querySelector('small').textContent = c ? fmt(price(c)) + ' €' : ''; }
+  const costs = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU };
+  $('undo').style.opacity = undoStack.length ? 1 : .45;
+  for (const b of $('dock').querySelectorAll('.tool[data-t]')) { const c = costs[b.dataset.t]; b.querySelector('small').textContent = c ? fmt(price(c)) + ' €' : ''; }
   $('b-save').classList.toggle('warn', !saveOK);
   $('notif').classList.toggle('on', S.notif && canNotify() && Notification.permission === 'granted');
   renderStrip();
-  const alert = ev.amb || ev.gold || nUn > 0;
+  const alert = ev.amb || ev.gold || ev.jam || nUn > 0;
   const title = (alert ? '● ' : '') + 'Traffic : ' + fmtMoney(S.money) + ' €';
   if (title !== lastTitle) { document.title = title; lastTitle = title; }
   if (sheet && sheet !== 'ach') renderSheet();
@@ -1768,9 +2461,8 @@ function describe(o) {
 }
 function applyState(next) {
   S = next; S.seen = Date.now();
-  for (const key of live) E[key].length = 0;
-  live.clear(); ND.clear(); nCars = 0; floats.length = 0; resetEv(); windowInc = 0; dragging = null; heat.fill(0); fx.length = 0; resetCam();
-  loadGrid(); netDirty = true; rebuildNet();
+  tripsWin = 0; nCars = 0; floats.length = 0; fx.length = 0; undoStack.length = 0; plan = null; act = null; dragging = null; windowInc = 0; broke = false; resetEv();
+  loadGrid(); resetCam(); netDirty = true; rebuildNet();
   if (!S.mission || !MISSIONS[S.mission.id]) newMission();
   setShop(S.shop); save(); refreshUI();
 }
@@ -1856,7 +2548,8 @@ function creditAway() {
   const away = Math.min((Date.now() - (S.seen || Date.now())) / 1000, 3 * 3600);
   S.seen = Date.now();
   if (away < 20 || S.rate <= 0) return;
-  const gain = S.rate * away * 0.6;
+  const gain = Math.max(0, netPerMin() / 60) * away * 0.6;
+  if (gain <= 0) return;
   S.money += gain; S.total += gain; S.st.total += gain;
   const min = Math.round(away / 60);
   toast('gain', 'Pendant ton absence', '+' + fmt(gain) + ' € en ' + (min < 1 ? 'moins d’une minute' : min + ' min'), 7000);
@@ -1864,29 +2557,47 @@ function creditAway() {
 
 /* ───────── Boucle ───────── */
 let secT = 0, histT = 0;
+function sample() { // un point de courbe : argent, revenu par minute, fluidité, trajets par minute
+  const h = S.hx;
+  h.m.push(Math.round(S.money)); h.r.push(Math.round(netPerMin() * 10) / 10); h.f.push(Math.round(S.F * 100)); h.t.push(tripsWin * 6);
+  tripsWin = 0;
+  for (const k in h) if (h[k].length > HX_MAX) h[k].shift();
+}
 function step(dt) {
   time += dt;
-  const prev = S.clock;
+  const prev = S.clock, seBefore = season();
   S.clock += dt * 24 / DAY;
-  if (S.clock >= 24) { S.clock -= 24; S.day++; }
-  if (!isPeak(prev) && isPeak(S.clock)) toast('event', 'Heure de pointe', 'Plus de départs, revenus ×1,5.', 4500, 'clock');
+  if (S.clock >= 24) {
+    S.clock -= 24; S.day++;
+    if (season() !== seBefore) { // changement de saison
+      const se = season(), txt = ['La ville attire davantage : les nouveaux bâtiments arrivent plus vite.', 'Les habitants sortent plus : davantage de trajets.', 'Les averses se multiplient.', 'Tout roule un peu moins vite, et la neige peut tomber.'][se];
+      toast('event', 'Voici ' + (se === 1 || se === 2 ? 'l’' : 'le ') + SEASONS[se].name, txt, 7000, SEASONS[se].ic);
+    }
+  }
+  if (!isPeak(prev) && isPeak(S.clock)) toast('event', S.clock < 12 ? 'Pointe du matin' : 'Pointe du soir', (S.clock < 12 ? 'Les habitants partent vers les lieux' : 'Les habitants rentrent chez eux') + ', revenus ×1,5.', 4500, 'clock');
   if (netDirty) rebuildNet();
-  stepTrips(dt, trafficF(S.clock));
+  stepRails(dt);
+  stepTrips(dt);
   stepCars(dt);
   stepGrowth(dt);
   stepEvents(dt);
+  if (!god() && upkeepMin > 0) { // entretien du réseau, prélevé en continu
+    const due = upkeepMin / 60 * dt; S.money -= due; S.st.sKeep += due;
+    if (S.money <= 0) { S.money = 0; broke = true; } else if (S.money > upkeepMin * .5) broke = false;
+  } else broke = false;
   if (S.mission && S.mission.id === 'flu') { if (S.F > .7) missionHit('flu', dt); else S.mission.prog = 0; }
   for (let i = floats.length - 1; i >= 0; i--) { floats[i].t += dt; if (floats[i].t > 1.4) floats.splice(i, 1); }
   secT += dt;
   if (secT >= 1) {
     S.rate += (windowInc / secT - S.rate) * 0.06; windowInc = 0; secT = 0;
     if (S.rate > S.st.bestRate) S.st.bestRate = S.rate;
-    checkAch();
+    checkAch(); watchJams();
+    let fm = 1; for (let q = 0; q < flow.length; q++) if (flow[q] > fm) fm = flow[q]; flowMax = fm;
     // Filet de sécurité : sans aucune maison reliée ni de quoi construire, la mairie avance de quoi tracer un chemin.
-    if (S.money < 40 && !B.some(b => b.h && b.conn)) { S.money = 40; toast('info', 'Coup de pouce de la mairie', 'Ta caisse est remontée à 40 € pour relier une première maison.', 6000, 'coin'); }
+    if (!god() && S.money < 40 && !B.some(b => b.h && b.conn)) { S.money = 40; toast('info', 'Coup de pouce de la mairie', 'Ta caisse est remontée à 40 € pour relier une première maison.', 6000, 'coin'); }
   }
   histT += dt;
-  if (histT >= 10) { histT = 0; S.hist.push(Math.round(S.rate * 600) / 10); if (S.hist.length > 60) S.hist.shift(); }
+  if (histT >= 10) { histT = 0; S.hist.push(Math.round(S.rate * 600) / 10); if (S.hist.length > 60) S.hist.shift(); sample(); }
 }
 let lastT = performance.now(), awayAcc = 0, awayT = 0, hiddenTimer = 0, uiClock = 0, saveClock = 0, backupClock = performance.now(), lastFrame = performance.now();
 function tick(now, hidden) {
@@ -1894,15 +2605,16 @@ function tick(now, hidden) {
   if (paused) return;
   S.st.play += Math.min(gap, 2);
   const sim = Math.min(gap, hidden ? 2 : 0.25), extra = gap - sim;
-  if (extra > 1 && S.rate > 0) { const g = S.rate * extra * 0.6; S.money += g; S.total += g; S.st.total += g; awayAcc += g; awayT += extra; }
+  if (extra > 1 && netPerMin() > 0) { const g = netPerMin() / 60 * extra * 0.6; S.money += g; S.total += g; S.st.total += g; awayAcc += g; awayT += extra; }
   let dt = sim * speed;
   while (dt > 1e-6) { const d = Math.min(dt, 1 / 30); step(d); dt -= d; }
 }
 function frame(now) {
   tick(now, false);
+  stepCam(Math.min(.1, (now - lastFrame) / 1000));
   draw(Math.min(.1, (now - lastFrame) / 1000) * (paused ? 0 : speed)); lastFrame = now;
   if (now - uiClock > 200) { uiClock = now; refreshUI(); }
-  if (now - saveClock > 5000) { saveClock = now; if (!dragging) save(); }
+  if (now - saveClock > 5000) { saveClock = now; if (!dragging && !plan) save(); }
   if (now - backupClock > 600000) { backupClock = now; backup(); }
   requestAnimationFrame(frame);
 }
@@ -1916,20 +2628,23 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 window.addEventListener('pagehide', save);
-window.addEventListener('resize', resize);
+window.addEventListener('resize', () => { resize(); if (sheet === 'fin') drawFin(); });
 
 loadGrid(); rebuildNet(); resize(); creditAway();
 if (!S.mission || !MISSIONS[S.mission.id]) newMission();
 setShop(S.shop);
 setTool('main'); save(); refreshUI();
 if (!saveOK) toast('alert', 'Partie non enregistrée', 'Ce navigateur ne garde rien : pense à exporter un fichier.', 8000, 'save');
-if (S.st.tiles === 0) toast('info', 'Bienvenue', 'Prends l’outil Chemin en bas et trace un trait des maisons jusqu’au marché.', 9000, 'path');
+if (S.st.tiles === 0) toast('info', 'Bienvenue', 'Prends l’outil Chemin en bas, dessine un trait des maisons jusqu’au marché, puis relâche.', 9000, 'path');
 requestAnimationFrame(frame);
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 
 // Accès pour les tests
-window.__feuVert = { get S() { return S; }, get B() { return B; }, R, T, J, D, deg, jn, ev, E, live, ND, COLS, ROWS, C, step, paint, erase, setJunction, line, grow, rebuildNet,
-  get nCars() { return nCars; }, get nConn() { return nConn; }, get nUn() { return nUn; }, applyState, fresh, normalize, chooseNext, redraw() { bgDirty = true; }, view: () => ({ sc, ox, oy }), cam, zoomAt, panBy, resetCam, heat, refreshUI, setTool, carPose, ringPose };
+window.__feuVert = { get S() { return S; }, get B() { return B; }, get R() { return R; }, get T() { return T; }, get J() { return J; }, get OW() { return OW; }, get D() { return D; }, get DEST() { return DEST; },
+  get deg() { return deg; }, get jn() { return jn; }, get E() { return E; }, get heat() { return heat; }, get flow() { return flow; }, get COLS() { return COLS; }, get ROWS() { return ROWS; }, get rails() { return rails; }, get closed() { return closed; },
+  get nCars() { return nCars; }, get nConn() { return nConn; }, get nUn() { return nUn; }, get upkeep() { return upkeepMin; }, get plan() { return plan; }, get undoN() { return undoStack.length; }, get layer() { return layer; },
+  ev, live, ND, C, step, paint, erase, setJunction, setOneWay, clearOneWay, line, grow, rebuildNet, applyState, fresh, normalize, chooseNext, startEvent, undoLast, beginAct, endAct, setLayer, goTo, lvOf, cap, cityGoal, season,
+  redraw() { bgDirty = true; }, sample, view: () => ({ sc, ox, oy }), cam, zoomAt, panBy, resetCam, refreshUI, setTool, carPose, ringPose, APP_VERSION };
 })();
 </script>
 </body>
