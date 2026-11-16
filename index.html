@@ -49,7 +49,8 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 
 /* ── Barre du haut : état de la ville à gauche, temps et menus à droite ── */
 #top{position:fixed;top:10px;left:10px;right:10px;height:48px;border-radius:16px;display:flex;align-items:center;gap:6px;padding:0 8px 0 14px;white-space:nowrap}
-#brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:6px}
+#left{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;flex:0 1 auto}
+#brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:6px;flex:none}
 #brand i{width:10px;height:10px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px var(--go-soft)}
 #brand span{font-weight:500;color:var(--muted)}
 .stat{flex:none;display:flex;align-items:center;gap:7px;padding:0 11px;height:32px;border-radius:10px;cursor:pointer;transition:background .15s}
@@ -58,7 +59,9 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .stat small{color:var(--muted);font-size:12px}
 .stat b{font-weight:700}
 #st-money{color:var(--go)} #st-money b{font-size:17px;color:var(--ink);letter-spacing:-.01em}
-#st-rate{color:var(--info)} #st-flu{color:var(--event)} #st-bld{color:var(--ach)}
+#st-rate{color:var(--go)} #st-rate b{color:var(--go)} #st-rate.bad{color:var(--alert)}
+.split{display:flex;flex-direction:column;line-height:1.05;font-size:11px;font-weight:600;margin-left:3px;padding-left:9px;border-left:1px solid var(--hair);text-align:right}
+.split i{font-style:normal} #rate-in{color:var(--go)} #rate-out{color:var(--alert)} #st-flu{color:var(--event)} #st-bld{color:var(--ach)}
 .stat b, .stat small{color:var(--ink)} .stat small{color:var(--muted)}
 #st-bld.bad{color:var(--alert)} #st-bld.bad b{color:var(--alert)} #st-rate.bad b{color:var(--alert)}
 .mini{width:54px;height:5px;border-radius:3px;background:var(--hair);overflow:hidden}
@@ -72,6 +75,13 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .tb.on{background:var(--go);color:var(--go-ink)}
 .tb.warn{background:var(--event-soft);color:var(--event)}
 .sep{width:1px;height:22px;background:var(--hair);margin:0 4px}
+#speedbox{flex:none;display:flex;gap:2px;background:var(--hair);border-radius:11px;padding:2px;margin:0 2px}
+.spd{flex:none;width:30px;height:28px;border-radius:9px;display:grid;place-items:center;color:var(--muted);position:relative}
+.spd svg.ic{width:17px;height:17px}
+.spd:hover{color:var(--ink)}
+.spd.on{background:var(--row-on);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.16)}
+#b-pause.on{background:var(--event);color:#2a1c00}
+.spd[data-x4]::after{content:"×4";position:absolute;right:-1px;bottom:-3px;font-size:9px;font-weight:700;background:var(--ink);color:var(--ground);border-radius:5px;padding:0 3px;line-height:12px}
 
 /* ── Fil d'actualité : objectif et évènements en cours ── */
 #strip{position:fixed;top:68px;left:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none;max-width:330px}
@@ -184,6 +194,17 @@ body.paused #paused{display:block}
 .hb span{color:var(--muted)} .hb b{font-weight:600}
 .hb i{grid-column:1/3;height:6px;border-radius:3px;background:var(--hair);overflow:hidden;display:block}
 .hb i u{display:block;height:100%;border-radius:3px}
+.budget{display:grid;grid-template-columns:1fr 1fr;gap:4px 22px;margin-top:14px;background:var(--row);border:1px solid var(--hair);border-radius:14px;padding:12px 14px}
+.budget h3{grid-column:auto;font-size:12.5px;font-weight:650;margin:0 0 4px}
+.budget .col{display:flex;flex-direction:column;gap:3px}
+.bl{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted)} .bl b{font-weight:600;color:var(--ink)} .bl.zero{opacity:.45}
+.bl.tot{border-top:1px solid var(--hair);margin-top:4px;padding-top:5px;color:var(--ink);font-weight:600}
+.bl .plus{color:var(--go)} .bl .minus{color:var(--alert)}
+.budget .net{grid-column:1/3;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--hair);margin-top:8px;padding-top:9px;font-weight:650}
+.budget .net b{font-size:18px}
+.bank{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 14px;background:var(--row);border:1px solid var(--hair);border-radius:14px}
+.bank > div{flex:1} .bank b{display:block;font-weight:650} .bank span{display:block;color:var(--muted);font-size:12.5px}
+@media (max-width:620px){.budget{grid-template-columns:1fr}.budget .net{grid-column:auto}}
 .mults{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .mults span{background:var(--row);border:1px solid var(--hair);border-radius:999px;padding:4px 10px;font-size:12.5px;color:var(--muted)}
 .mults span b{color:var(--ink);font-weight:650;margin-left:4px}
@@ -212,29 +233,45 @@ body.paused #paused{display:block}
 #sv-text[hidden],#sv-confirm[hidden]{display:none}
 #sv-confirm{background:var(--info-soft);border-radius:12px;padding:10px 12px;margin-top:10px}
 @media (prefers-reduced-motion: reduce){.toast,.chip.t-alert .bd{animation:none}}
-@media (max-width:1560px){.tb .lb{display:none}}
+@media (max-width:1700px){.tb .lb{display:none}}
+@media (max-width:1500px){.mini{display:none}}
+@media (max-width:1430px){#ph-x{display:none}}
+@media (max-width:1280px){#brand span,#st-flu small{display:none}}
 @media (max-width:1240px){#toasts{width:270px}}
-@media (max-width:1180px){#phase,#st-rate small,#st-flu small{display:none}}
+@media (max-width:1320px){.split{display:none}}
+@media (max-width:1180px){#phase,#st-rate small{display:none}}
 @media (max-width:1680px){.tool kbd{display:none}}
 @media (max-width:1480px){.tool small{display:none}}
 @media (max-width:1180px){.tool b{font-size:12px}.tool{padding:0 7px 0 6px;gap:5px}#bottom{max-width:calc(100% - 20px);bottom:54px}#layers button{padding:0 8px}}
-@media (max-width:980px){#st-rate,#brand span{display:none}#bottom{right:10px}.tool b{display:none}}
-@media (max-width:760px){#st-flu,#clockbox{display:none}#toasts{width:240px}.tool b{display:none}.tool{padding:0 9px}}
+@media (max-width:1040px){#st-flu{display:none}}
+@media (max-width:980px){#bottom{right:10px}.tool b{display:none}}
+@media (max-width:960px){#st-bld small{display:none}}
+@media (max-width:900px){#brand{display:none}}
+@media (max-width:840px){#clockbox{display:none}}
+@media (max-width:745px){#st-bld{display:none}}
+@media (max-width:680px){#top .tb{min-width:30px;padding:0 6px}.spd{width:26px}}
+@media (max-width:760px){#toasts{width:240px}.tool b{display:none}.tool{padding:0 9px}}
 </style>
 </head>
 <body>
 <canvas id="cv" aria-label="Carte de la ville : trace des routes entre les maisons et les lieux, glisse pour te déplacer, molette pour zoomer"></canvas>
 
 <header id="top" class="glass">
+  <div id="left">
   <div id="brand"><i></i>Traffic<span id="cityname"></span></div>
   <button type="button" class="stat" id="st-money" data-fin="m" title="Argent disponible : ouvrir les finances"><svg class="ic"><use href="#i-coin"/></svg><b class="num" id="money">0 €</b></button>
-  <button type="button" class="stat" id="st-rate" data-fin="r" title="Revenu net par minute, entretien déduit : ouvrir les finances"><svg class="ic"><use href="#i-trend"/></svg><b class="num" id="rate">0 €</b><small>par minute</small></button>
+  <button type="button" class="stat" id="st-rate" data-fin="r" title="Solde par minute : ce que tu gagnes moins ce que tu dépenses. Clique pour le détail."><svg class="ic"><use id="rate-ic" href="#i-up"/></svg><b class="num" id="rate">0 €</b><small>par minute</small><span class="split num"><i id="rate-in">+0</i><i id="rate-out">−0</i></span></button>
   <button type="button" class="stat" id="st-flu" data-fin="f" title="Fluidité : voir la courbe"><svg class="ic"><use href="#i-gauge"/></svg><small>Fluidité</small><b class="num" id="fmul">×2,0</b><div class="mini"><span id="fbar"></span></div></button>
   <button type="button" class="stat" id="st-bld" data-fin="city" title="Bâtiments reliés : ouvrir la ville"><svg class="ic"><use href="#i-home"/></svg><b class="num" id="bld">0 sur 0</b><small id="bldl">reliés</small></button>
+  </div>
   <div class="sp"></div>
-  <div id="clockbox"><svg class="ic"><use id="clock-ic" href="#i-sun"/></svg><span id="clock" class="num">09:00</span><span id="phase">Matinée</span></div>
-  <button class="tb" id="b-pause" type="button" title="Pause (Espace)" aria-label="Pause"><svg class="ic"><use id="pause-ic" href="#i-pause"/></svg></button>
-  <button class="tb num" id="b-speed" type="button" title="Vitesse (V)">×1</button>
+  <div id="clockbox"><svg class="ic"><use id="clock-ic" href="#i-sun"/></svg><span id="clock" class="num">09:00</span><span id="phase"><span id="ph-n">Matinée</span><span id="ph-x"></span></span></div>
+  <div id="speedbox" role="group" aria-label="Vitesse du temps">
+    <button class="spd" id="b-pause" type="button" data-s="pause" title="Pause (Espace)" aria-label="Pause"><svg class="ic"><use href="#i-pause"/></svg></button>
+    <button class="spd" id="b-slow" type="button" data-s="0.5" title="Avance lente, ×0,5 (V : vitesse suivante)" aria-label="Avance lente"><svg class="ic"><use href="#i-slow"/></svg></button>
+    <button class="spd on" id="b-normal" type="button" data-s="1" title="Normal, ×1 (V : vitesse suivante)" aria-label="Vitesse normale"><svg class="ic"><use href="#i-normal"/></svg></button>
+    <button class="spd" id="b-fast" type="button" data-s="2" title="Rapide, ×2 (V : vitesse suivante)" aria-label="Avance rapide"><svg class="ic"><use href="#i-fast"/></svg></button>
+  </div>
   <div class="sep"></div>
   <button class="tb" data-open="city" type="button" title="Ville"><svg class="ic"><use href="#i-city"/></svg><span class="lb">Ville</span></button>
   <button class="tb" data-open="ach" type="button" title="Succès"><svg class="ic"><use href="#i-trophy"/></svg><span class="lb">Succès</span></button>
@@ -251,7 +288,7 @@ body.paused #paused{display:block}
   <div id="ups"></div>
 </aside>
 
-<div id="layers" class="glass" role="group" aria-label="Calques"><button type="button" data-l="normal" class="on" title="Carte (L)">Carte</button><button type="button" data-l="traffic" title="Trafic (L)">Trafic</button><button type="button" data-l="flow" title="Flux par lieu (L)">Flux</button></div>
+<div id="layers" class="glass" role="group" aria-label="Calques"><button type="button" data-l="normal" class="on" title="Carte (L)">Carte</button><button type="button" data-l="traffic" title="Trafic (L)">Trafic</button><button type="button" data-l="flow" title="Flux par lieu (L)">Flux</button><button type="button" data-l="cost" title="Coût d’entretien face au trafic (L)">Coûts</button></div>
 <div id="zoom" class="glass"><button class="tb" id="z-in" type="button" title="Zoomer (+)" aria-label="Zoomer"><svg class="ic"><use href="#i-plus"/></svg></button><button class="tb" id="z-out" type="button" title="Dézoomer (−)" aria-label="Dézoomer"><svg class="ic"><use href="#i-minus"/></svg></button><button class="tb" id="z-fit" type="button" title="Recentrer (0)" aria-label="Recentrer la carte"><svg class="ic"><use href="#i-fit"/></svg></button></div>
 <div id="bottom"><div id="hint" class="glass"></div><nav id="dock" class="glass" aria-label="Outils de construction"></nav></div>
 <div id="toasts"></div>
@@ -273,9 +310,11 @@ body.paused #paused{display:block}
         <div class="fin-head"><b class="num" id="fin-now"></b><span id="fin-delta"></span></div>
         <canvas id="fin-chart" aria-label="Courbe d’évolution"></canvas>
         <p class="note" id="fin-empty" style="margin-top:8px"></p>
+        <div class="budget" id="fin-budget"></div>
+        <div class="bank"><div><b>Banque</b><span id="bank-info"></span></div><button type="button" class="pill" id="bank-borrow">Emprunter</button><button type="button" class="pill" id="bank-repay">Rembourser</button></div>
         <div class="fin-cols">
-          <div><h3>D’où vient l’argent</h3><div id="fin-in"></div></div>
-          <div><h3>Où il part</h3><div id="fin-out"></div></div>
+          <div><h3>Gagné depuis le début</h3><div id="fin-in"></div></div>
+          <div><h3>Dépensé depuis le début</h3><div id="fin-out"></div></div>
         </div>
         <h3 style="font-size:12.5px;font-weight:650;margin:10px 0 6px">Ce qui multiplie chaque trajet en ce moment</h3>
         <div class="mults" id="fin-mult"></div>
@@ -328,6 +367,9 @@ body.paused #paused{display:block}
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.2A8 8 0 0 1 9.8 4.5a8 8 0 1 0 9.7 9.7z"/></symbol>
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8.5 5.5v13M15.5 5.5v13"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5l10.5 6.5L8 18.5z"/></symbol>
+  <symbol id="i-slow" viewBox="0 0 24 24"><path d="M6.500 4.500l13 7.500-13 7.500z"/><path d="M6.500 4.500l6.500 3.750v7.500l-6.500 3.750z" fill="currentColor"/></symbol>
+  <symbol id="i-normal" viewBox="0 0 24 24"><path d="M7.500 5.500l11 6.500-11 6.500z" fill="currentColor"/></symbol>
+  <symbol id="i-fast" viewBox="0 0 24 24"><path d="M3.500 6l8 6-8 6zM12.500 6l8 6-8 6z" fill="currentColor"/></symbol>
   <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4.5h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1.5a3 3 0 0 0 3 3M16 6h3v1.5a3 3 0 0 1-3 3M12 13.5V17M8.5 19.5h7M10 17h4"/></symbol>
   <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4.5 4.5v15h15"/><path d="M8.5 15.5v-4M12.5 15.5v-8M16.5 15.5v-6"/></symbol>
   <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4.5h11.5l3 3v12h-15z"/><path d="M8 4.5v5h7v-5M8 19.5v-6h8v6"/></symbol>
@@ -350,6 +392,8 @@ body.paused #paused{display:block}
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13"/></symbol>
   <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5.5 12h13"/></symbol>
   <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4.500 9v-4.500H9M15 4.500h4.500V9M19.500 15v4.500H15M9 19.500H4.500V15"/><circle cx="12" cy="12" r="1.600"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5.500M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v13.500M6 13l6 6 6-6"/></symbol>
   <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.3M12 18.2v2.3M3.5 12h2.3M18.2 12h2.3M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6"/><circle cx="12" cy="12" r="6.3"/></symbol>
   <symbol id="i-highway" viewBox="0 0 24 24"><path d="M4.500 20L8 4M19.500 20L16 4"/><path d="M12 4v16"/><path d="M9.200 9h1.200M13.600 9h1.200M8.700 14h1.400M13.900 14h1.400"/></symbol>
   <symbol id="i-oneway" viewBox="0 0 24 24"><path d="M4 12h15M13.500 6.500L19 12l-5.500 5.500"/></symbol>
@@ -373,7 +417,7 @@ body.paused #paused{display:block}
 'use strict';
 
 /* ───────── Constantes ───────── */
-const APP_VERSION = '1.5.0';
+const APP_VERSION = '1.6.1';
 const C = 40, GAP = 5;
 let COLS = 30, ROWS = 18, N = COLS * ROWS, W = COLS * C, H = ROWS * C; // taille de la carte, propre à chaque partie
 const SIZES = [[38, 24], [40, 25], [42, 26], [44, 27], [46, 28], [48, 29]];
@@ -391,10 +435,12 @@ const KINDS = [
 const LV_AT = [0, 120, 500]; // visites nécessaires pour qu'un lieu passe au niveau 2 puis 3
 const ROADS = [null,
   { name: 'Chemin',      sp: 45,  cost: 5,   w: 15, off: 4,   up: .1 },
-  { name: 'Route',       sp: 80,  cost: 20,  w: 21, off: 5.2, up: .4 },
-  { name: 'Avenue',      sp: 125, cost: 60,  w: 27, off: 6.8, up: 1 },
-  { name: 'Voie rapide', sp: 190, cost: 150, w: 30, off: 7.6, up: 3 }];
+  { name: 'Route',       sp: 80,  cost: 20,  w: 21, off: 5.2, up: .5 },
+  { name: 'Avenue',      sp: 125, cost: 60,  w: 27, off: 6.8, up: 2 },
+  { name: 'Voie rapide', sp: 190, cost: 150, w: 30, off: 7.6, up: 6 }];
 const BRIDGE = 60, TUNNEL = 80, CROSSING = 15, ROND = 150, FEU = 120, MAX_CARS = 520;
+const UP_BRIDGE = 3, UP_TUNNEL = 4, UP_ROND = 3, UP_FEU = 4; // entretien des ouvrages et des croisements équipés, par minute
+const TAX_HOME = .5, TAX_DEST = 1.5, LOAN_RATE = .008; // impôts locaux par bâtiment relié et par minute ; intérêts par minute
 const SEASONS = [{ name: 'printemps', ic: 'sprout' }, { name: 'été', ic: 'sun' }, { name: 'automne', ic: 'leaf' }, { name: 'hiver', ic: 'snow' }];
 const VEH = {
   car:   { len: 15, w: 8,   sp: 1,   val: 1 },
@@ -480,9 +526,9 @@ function fresh(city = 0) {
   return { v: 3, money: 150, total: 0, trips: 0, lv: { value: 0, freq: 0, attract: 0, discount: 0 }, F: 1, rate: 0,
            seen: Date.now(), clock: 9, day: 1, city, seed: (Math.random() * 1e9) | 0, growT: 25, ach: {}, streak: 0,
            mission: null, hist: [], hx: { m: [], r: [], f: [], t: [] }, notif: false, shop: true,
-           cols, rows, terr: '', road: '', junc: '', ow: '', blds: [],
+           debt: 0, cols, rows, terr: '', road: '', junc: '', ow: '', blds: [],
            set: { god: false, day: false, fx: true, scroll: 'zoom' },
-           st: { trips: 0, total: 0, play: 0, bestRate: 0, bestStreak: 0, tiles: 0, gold: 0, amb: 0, k0: 0, k1: 0, k2: 0, k3: 0, sRoad: 0, sJunc: 0, sUp: 0, sKeep: 0, lost: 0 } };
+           st: { trips: 0, total: 0, play: 0, bestRate: 0, bestStreak: 0, tiles: 0, gold: 0, amb: 0, k0: 0, k1: 0, k2: 0, k3: 0, sRoad: 0, sJunc: 0, sUp: 0, sKeep: 0, sInt: 0, tax: 0, lost: 0 } };
 }
 // Remet n'importe quelle sauvegarde (ancienne, importée, abîmée) dans un état jouable.
 function normalize(s) {
@@ -494,6 +540,7 @@ function normalize(s) {
   r.lv = Object.assign(f.lv, obj(r.lv)); r.st = Object.assign(f.st, obj(r.st)); r.ach = obj(r.ach);
   r.money = num(r.money, f.money);
   for (const k of ['total', 'trips', 'rate', 'streak']) r[k] = num(r[k], 0);
+  r.debt = num(r.debt, 0, 0, 1e12);
   r.F = num(r.F, 1, 0, 1); r.clock = num(r.clock, 9, 0, 23.999); r.day = Math.floor(num(r.day, 1, 1));
   r.seed = Math.floor(num(r.seed, f.seed, 0, 2e9)); r.growT = num(r.growT, 25, 0, 600);
   for (const k in UP) r.lv[k] = Math.floor(num(r.lv[k], 0, 0, UP[k].max));
@@ -649,9 +696,27 @@ const upCost = k => Math.round(UP[k].base * Math.pow(UP[k].g, S.lv[k]));
 const price = n => Math.max(1, Math.round(n * discount()));
 const bonus = (sec, min) => Math.max(min * carValue() * cityMult(), S.rate * sec);
 const canPay = c => god() || S.money >= c;
-let upkeepMin = 0, broke = false; // entretien du réseau, en euros par minute
+let upkeepMin = 0, taxMin = 0, broke = false; // entretien du réseau et impôts locaux, en euros par minute
+let upParts = [0, 0, 0, 0, 0, 0, 0]; // entretien détaillé : [—, chemins, routes, avenues, voies rapides, ponts et tunnels, croisements équipés]
 const upkeepScale = () => (1 + 0.35 * S.lv.value) * cityMult();
-const netPerMin = () => S.rate * 60 - (god() ? 0 : upkeepMin);
+const tileUp = (i, level = R[i]) => level ? ROADS[level].up + (T[i] === 1 || (T[i] === 4 && level === 4) ? UP_BRIDGE : T[i] === 3 ? UP_TUNNEL : 0) : 0;
+const interestMin = () => S.debt * LOAN_RATE;
+const gainsMin = () => S.rate * 60 + taxMin;                                  // ce qui rentre : trajets et impôts locaux
+const costsMin = () => god() ? 0 : upkeepMin + interestMin();                 // ce qui sort : entretien et intérêts
+const netPerMin = () => gainsMin() - costsMin();
+const maxDebt = () => Math.max(300, Math.round(gainsMin() * 8 / 50) * 50);    // on peut emprunter huit minutes de recettes
+function borrow() {
+  const room = maxDebt() - S.debt, amount = Math.min(room, Math.max(100, Math.round(maxDebt() / 4 / 50) * 50));
+  if (amount < 50) { toast('alert', 'Plafond d’emprunt atteint', 'La banque prête au plus huit minutes de recettes : ' + fmt(maxDebt()) + ' €.', 4500, 'coin'); return; }
+  S.debt += amount; S.money += amount;
+  toast('info', 'Emprunt de ' + fmt(amount) + ' €', 'Intérêts : ' + fmt(interestMin()) + ' € par minute tant que la dette court.', 5000, 'coin');
+}
+function repay() {
+  const amount = Math.min(S.debt, Math.floor(S.money));
+  if (amount <= 0) { toast('info', S.debt > 0 ? 'Rien en caisse pour rembourser' : 'Aucune dette', '', 2500, 'coin'); return; }
+  S.debt -= amount; S.money -= amount; if (S.debt < .5) S.debt = 0;
+  toast('gain', 'Remboursement de ' + fmt(amount) + ' €', S.debt > 0 ? 'Il reste ' + fmt(S.debt) + ' € de dette.' : 'Dette soldée : plus d’intérêts.', 4000, 'coin');
+}
 function outF(h) { // départs des maisons : surtout le matin
   if (h < 5.5 || h >= 22) return .3;
   if (h < 7.5) return .3 + (h - 5.5) / 2 * 1.2;
@@ -731,9 +796,14 @@ function rebuildNet() {
     else b.conn = doors.length > 0;
     if (b.conn) nConn++; else nUn++;
   }
-  let up = 0;
-  for (let i = 0; i < N; i++) if (R[i]) { up += ROADS[R[i]].up + (T[i] === 1 ? 2 : T[i] === 3 ? 3 : 0) + (jn[i] && J[i] ? 2 : 0); }
-  upkeepMin = up * upkeepScale();
+  const sc2 = upkeepScale(); upParts = [0, 0, 0, 0, 0, 0, 0];
+  for (let i = 0; i < N; i++) if (R[i]) {
+    upParts[R[i]] += ROADS[R[i]].up * sc2; upParts[5] += (tileUp(i) - ROADS[R[i]].up) * sc2;
+    if (jn[i] && J[i] && R[i] < 4) upParts[6] += (J[i] === 1 ? UP_ROND : UP_FEU) * sc2;
+  }
+  upkeepMin = upParts.reduce((a, b) => a + b, 0);
+  let tax = 0; for (const b of B) if (b.conn) tax += b.h ? TAX_HOME : TAX_DEST * lvOf(b);
+  taxMin = tax * sc2;
   for (const key of live) for (const c of E[key]) { c.nn = undefined; if (!R[c.a] || !R[c.b]) kill(c); }
 }
 function chooseNext(cell, from, k) {
@@ -1199,6 +1269,8 @@ function planInfo() {
   let cost = 0, n = 0, bad = 0;
   for (const i of plan.cells) { const c = tileCost(i, plan.level); if (c < 0) bad++; else if (c > 0) { cost += c; n++; } }
   plan.cost = cost; plan.n = n; plan.bad = bad;
+  let up = 0; for (const i of plan.cells) if (BL[i] < 0 && R[i] < plan.level) up += tileUp(i, plan.level) - tileUp(i);
+  plan.up = up * upkeepScale();
   // Simulation : on pose le tracé, on recalcule les distances, puis on remet tout en place
   const old = plan.cells.map(i => R[i]);
   for (const i of plan.cells) if (BL[i] < 0 && R[i] < plan.level) R[i] = plan.level;
@@ -1744,6 +1816,15 @@ function draw(dt) {
         ctx.strokeStyle = q === 0 ? (night ? '#2f9d64' : '#3fb876') : heatColor((q - .5) / 8).replace(/[\d.]+\)$/, '1)'); ctx.lineWidth = q === 0 ? 7 : 9 + q * .8;
         ctx.beginPath(); for (const i of tiers[q]) roadCellPath(ctx, i); ctx.stroke();
       }
+    } else if (layer === 'cost') {
+      const need = [0, .02, .1, .32, .65]; // part du trafic maximal qu'il faut pour justifier chaque type de route
+      for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) {
+        let tot = 0; for (let q = 0; q < 4; q++) tot += flow[q * N + i];
+        const ratio = (tot / flowMax) / need[R[i]] / (tileUp(i) / ROADS[R[i]].up);
+        ctx.strokeStyle = ratio >= 1 ? (night ? '#2f9d64' : '#3fb876') : ratio >= .4 ? '#f0b02e' : '#e8503f';
+        ctx.lineWidth = 3 + Math.sqrt(tileUp(i)) * 5.5;
+        ctx.beginPath(); roadCellPath(ctx, i); ctx.stroke();
+      }
     } else {
       for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) {
         let best = 0, tot = 0; for (let q = 0; q < 4; q++) { const v = flow[q * N + i]; tot += v; if (v > flow[best * N + i]) best = q; }
@@ -1827,13 +1908,13 @@ function draw(dt) {
   }
   // Véhicules (invisibles dans les tunnels)
   placeCars(dt);
-  if (layer !== 'flow') for (const key of live) for (const c of E[key]) if (!c.dead && T[c.d < C / 2 ? c.a : c.b] !== 3 && seen(c.rx, c.ry)) drawVehicle(c, p, night);
+  if (layer !== 'flow' && layer !== 'cost') for (const key of live) for (const c of E[key]) if (!c.dead && T[c.d < C / 2 ? c.a : c.b] !== 3 && seen(c.rx, c.ry)) drawVehicle(c, p, night);
   for (let q = fx.length - 1; q >= 0; q--) {
     const f = fx[q]; f.t += dt / .45;
     if (f.t >= 1) { fx.splice(q, 1); continue; }
     const e = f.t * f.t * (3 - 2 * f.t), c = f.c, sx = c.rx, sy = c.ry, sa = c.ra;
     c.rx = f.x0 + (f.x1 - f.x0) * e; c.ry = f.y0 + (f.y1 - f.y0) * e; c.ra = Math.atan2(f.y1 - f.y0, f.x1 - f.x0);
-    if (layer !== 'flow') { ctx.globalAlpha = 1 - e * e; drawVehicle(c, p, night); ctx.globalAlpha = 1; }
+    if (layer !== 'flow' && layer !== 'cost') { ctx.globalAlpha = 1 - e * e; drawVehicle(c, p, night); ctx.globalAlpha = 1; }
     c.rx = sx; c.ry = sy; c.ra = sa;
   }
   for (let q = puffs.length - 1; q >= 0; q--) { // un conducteur a renoncé
@@ -1915,9 +1996,9 @@ function draw(dt) {
     plan.cells.forEach((i, q) => { if (q) ctx.lineTo(cx(i), cy(i)); else ctx.moveTo(cx(i), cy(i)); }); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
     const last = plan.cells[plan.cells.length - 1], can = canPay(plan.cost), s = 26 / Math.max(.6, cam.z);
     const l1 = plan.n ? plan.n + ' tronçon' + (plan.n > 1 ? 's' : '') + ', ' + fmt(plan.cost) + ' €' + (can ? '' : ' (il te manque ' + fmt(plan.cost - S.money) + ' €)') : plan.bad ? 'Impossible ici' : 'Déjà construit';
-    const bits = []; if (plan.gained) bits.push(plan.gained + ' maison' + (plan.gained > 1 ? 's' : '') + ' reliée' + (plan.gained > 1 ? 's' : '')); if (plan.pct <= -1) bits.push('trajets ' + plan.pct + ' %'); else if (plan.pct >= 1) bits.push('trajets +' + plan.pct + ' %');
+    const bits = []; if (plan.n && plan.up > .05 && !god()) bits.push('entretien +' + fmt(plan.up) + ' € par minute'); if (plan.gained) bits.push(plan.gained + ' maison' + (plan.gained > 1 ? 's' : '') + ' reliée' + (plan.gained > 1 ? 's' : '')); if (plan.pct <= -1) bits.push('trajets ' + plan.pct + ' %'); else if (plan.pct >= 1) bits.push('trajets +' + plan.pct + ' %');
     tag(l1, cx(last), cy(last) - 30 - (bits.length ? s : 0), p.glass, can ? '#fff' : p.amber);
-    if (bits.length) tag(bits.join(', ').replace('-', '−'), cx(last), cy(last) - 30, p.glass, p.go);
+    if (bits.length) tag(bits.join(', ').replace('-', '−'), cx(last), cy(last) - 30, p.glass, plan.gained || plan.pct <= -1 ? p.go : p.amber);
   } else if (tool === 'rond' || tool === 'feu') {
     const want = tool === 'rond' ? 1 : 2, okJ = i => R[i] && R[i] < 4 && jn[i] && J[i] !== want;
     for (let i = 0; i < N; i++) if (okJ(i)) {
@@ -2084,22 +2165,33 @@ function stepCam(dt) {
   cam.x = camGo.x0 + (camGo.x - camGo.x0) * e; cam.y = camGo.y0 + (camGo.y - camGo.y0) * e; cam.z = camGo.z0 + (camGo.z - camGo.z0) * e;
   applyCam(); if (camGo.t >= 1) camGo = null;
 }
-const LAYERS = ['normal', 'traffic', 'flow'];
-function setLayer(id) { layer = id; for (const b of $('layers').children) b.classList.toggle('on', b.dataset.l === id); }
+const LAYERS = ['normal', 'traffic', 'flow', 'cost'];
+const LAYER_HINT = { traffic: 'Calque Trafic : du vert au rouge selon l’encombrement de chaque tronçon.', flow: 'Calque Flux : la couleur du lieu qui emprunte le plus chaque route, d’autant plus épaisse qu’elle est fréquentée.',
+  cost: 'Calque Coûts : en vert les tronçons que leur trafic justifie, en rouge ceux qui coûtent cher pour presque personne. L’épaisseur suit le prix d’entretien.' };
+function setLayer(id) { layer = id; for (const b of $('layers').children) b.classList.toggle('on', b.dataset.l === id); $('hint').textContent = LAYER_HINT[id] || TOOLS.find(t => t.id === tool).hint; }
 for (const b of $('layers').children) b.addEventListener('click', () => setLayer(b.dataset.l));
 
 let paused = false, speed = 1;
-function setPaused(v) { paused = v; document.body.classList.toggle('paused', v); $('pause-ic').setAttribute('href', v ? '#i-play' : '#i-pause'); $('b-pause').classList.toggle('on', v); }
-function setSpeed(v) { speed = v; $('b-speed').textContent = '×' + v; $('b-speed').classList.toggle('on', v > 1); }
-const nextSpeed = () => setSpeed(speed === 1 ? 2 : speed === 2 && god() ? 4 : 1);
+function syncSpeed() { // un seul état allumé à la fois : pause, lent, normal ou rapide
+  document.body.classList.toggle('paused', paused);
+  for (const b of $('speedbox').children) {
+    const on = b.dataset.s === 'pause' ? paused : !paused && +b.dataset.s === (speed === 4 ? 2 : speed);
+    b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
+  }
+  $('b-fast').toggleAttribute('data-x4', speed === 4 && !paused); // le mode dieu ajoute un ×4, signalé sur le bouton rapide
+}
+function setPaused(v) { paused = v; syncSpeed(); }
+function setSpeed(v) { speed = v; paused = false; syncSpeed(); } // choisir une vitesse relance aussi le temps
+const nextSpeed = () => { const L = god() ? [.5, 1, 2, 4] : [.5, 1, 2]; setSpeed(L[(Math.max(0, L.indexOf(speed)) + 1) % L.length]); };
 function setTool(id) {
   tool = id; plan = null;
   for (const b of $('dock').querySelectorAll('.tool[data-t]')) b.classList.toggle('on', b.dataset.t === id);
   const cost = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU }[id], t = TOOLS.find(t => t.id === id);
-  $('hint').textContent = (cost ? t.name + ', ' + fmt(price(cost)) + ' €' + (id[0] === 'r' && id !== 'rond' ? ' la case. ' : '. ') : '') + t.hint;
+  const up = id === 'rond' ? UP_ROND : id === 'feu' ? UP_FEU : id[0] === 'r' ? ROADS[+id[1]].up : 0, road = id[0] === 'r' && id !== 'rond';
+  $('hint').textContent = (cost ? t.name + ' : ' + fmt(price(cost)) + ' €' + (road ? ' la case' : '') + ', puis ' + fmt(up * upkeepScale()) + ' € d’entretien par minute. ' : '') + t.hint;
 }
 $('b-pause').addEventListener('click', () => setPaused(!paused));
-$('b-speed').addEventListener('click', nextSpeed);
+for (const id of ['b-slow', 'b-normal', 'b-fast']) $(id).addEventListener('click', e => setSpeed(+e.currentTarget.dataset.s));
 window.addEventListener('keydown', e => {
   const tagN = document.activeElement && document.activeElement.tagName, typing = tagN === 'TEXTAREA' || tagN === 'INPUT';
   if ((e.metaKey || e.ctrlKey) && (e.key === 's' || e.key === 'S')) { e.preventDefault(); saveNow(); return; }
@@ -2109,7 +2201,7 @@ window.addEventListener('keydown', e => {
   if (!$('veil').hidden) return;
   if (e.code === 'Space') { if (tagN === 'BUTTON') return; e.preventDefault(); setPaused(!paused); return; }
   if (e.key === 'v' || e.key === 'V') { nextSpeed(); return; }
-  if (e.key === 'l' || e.key === 'L') { setLayer(LAYERS[(LAYERS.indexOf(layer) + 1) % 3]); return; }
+  if (e.key === 'l' || e.key === 'L') { setLayer(LAYERS[(LAYERS.indexOf(layer) + 1) % LAYERS.length]); return; }
   if (e.key >= '1' && e.key <= '9') { setTool(TOOLS[+e.key - 1].id); return; }
   const arrows = { ArrowLeft: [90, 0], ArrowRight: [-90, 0], ArrowUp: [0, 90], ArrowDown: [0, -90] };
   if (arrows[e.key]) { e.preventDefault(); panBy(arrows[e.key][0], arrows[e.key][1]); }
@@ -2120,10 +2212,8 @@ window.addEventListener('keydown', e => {
 
 /* ───────── Interface ───────── */
 $('dock').innerHTML = TOOLS.map((t, q) => (q === 1 || q === 5 || q === 8 ? '<div class="sep"></div>' : '')
-  + '<button class="tool' + (t.id === 'erase' ? ' erase' : '') + '" type="button" data-t="' + t.id + '">' + ic(t.ic) + '<b>' + t.name + '</b><small class="num"></small><kbd>' + (q + 1) + '</kbd></button>').join('')
-  + '<div class="sep"></div><button class="tool" type="button" id="undo" title="Annuler la dernière construction (Cmd + Z)">' + ic('undo') + '<b>Annuler</b></button>';
+  + '<button class="tool' + (t.id === 'erase' ? ' erase' : '') + '" type="button" data-t="' + t.id + '">' + ic(t.ic) + '<b>' + t.name + '</b><small class="num"></small><kbd>' + (q + 1) + '</kbd></button>').join('');
 for (const b of $('dock').querySelectorAll('.tool[data-t]')) b.addEventListener('click', () => setTool(b.dataset.t));
-$('undo').addEventListener('click', undoLast);
 const rows = {};
 for (const k in UP) {
   const b = document.createElement('button');
@@ -2231,7 +2321,7 @@ for (const b of document.querySelectorAll('[data-fin]')) b.addEventListener('cli
 // Finances : quatre courbes au choix, la ventilation des gains et des dépenses, les multiplicateurs
 const FIN = {
   m: { name: 'Argent', col: '--go', unit: v => fmtMoney(v) + ' €', now: () => S.money },
-  r: { name: 'Revenu net par minute', col: '--info', unit: v => fmt(v) + ' €', now: () => netPerMin() },
+  r: { name: 'Solde par minute', col: '--info', unit: v => fmt(v) + ' €', now: () => netPerMin() },
   f: { name: 'Fluidité', col: '--event', unit: v => nf0.format(v) + ' %', now: () => S.F * 100, max: 100 },
   t: { name: 'Trajets par minute', col: '--ach', unit: v => nf0.format(v), now: () => { const a = S.hx.t.slice(-3); return a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0; } }
 };
@@ -2247,14 +2337,14 @@ function drawFin() {
   if (c.width !== Math.round(w * r) || c.height !== Math.round(h * r)) { c.width = Math.round(w * r); c.height = Math.round(h * r); }
   const g = c.getContext('2d'); g.setTransform(r, 0, 0, r, 0, 0); g.clearRect(0, 0, w, h);
   const L = 52, Rm = 10, Tm = 12, Bm = 24, pw = w - L - Rm, ph = h - Tm - Bm, n = data.length;
-  const max = F.max || niceMax(Math.max(1, ...data) * 1.05);
-  const X = i => L + (n > 1 ? i / (n - 1) : 1) * pw, Y = v => Tm + ph - Math.min(1, Math.max(0, v / max)) * ph;
+  const max = F.max || niceMax(Math.max(1, ...data) * 1.05), min = Math.min(0, ...data) < 0 ? -niceMax(-Math.min(0, ...data) * 1.05) : 0; // le solde peut passer sous zéro
+  const X = i => L + (n > 1 ? i / (n - 1) : 1) * pw, Y = v => Tm + ph - Math.min(1, Math.max(0, (v - min) / (max - min))) * ph;
   finGeom = { L, pw, n };
   g.font = '11px -apple-system,system-ui,sans-serif'; g.textBaseline = 'middle';
   for (let q = 0; q <= 4; q++) { // graduations
     const y = Tm + ph - q / 4 * ph;
     g.strokeStyle = hair; g.lineWidth = 1; g.beginPath(); g.moveTo(L, y + .5); g.lineTo(w - Rm, y + .5); g.stroke();
-    g.fillStyle = muted; g.textAlign = 'right'; g.fillText(F.unit(max * q / 4), L - 8, y);
+    g.fillStyle = muted; g.textAlign = 'right'; g.fillText(F.unit(min + (max - min) * q / 4), L - 8, y);
   }
   g.textBaseline = 'alphabetic'; g.textAlign = 'left'; g.fillText(n > 1 ? agoText(n - 1) : '', L, h - 6);
   g.textAlign = 'right'; g.fillText('maintenant', w - Rm, h - 6);
@@ -2262,7 +2352,9 @@ function drawFin() {
   if (n < 2) return;
   g.beginPath(); data.forEach((v, i) => { if (i) g.lineTo(X(i), Y(v)); else g.moveTo(X(i), Y(v)); });
   g.strokeStyle = col; g.lineWidth = 2.2; g.lineJoin = 'round'; g.lineCap = 'round'; g.stroke();
-  g.lineTo(X(n - 1), Tm + ph); g.lineTo(X(0), Tm + ph); g.closePath();
+  if (min < 0) { g.save(); g.strokeStyle = muted; g.lineWidth = 1; g.setLineDash([4, 3]); g.beginPath(); g.moveTo(L, Y(0) + .5); g.lineTo(w - Rm, Y(0) + .5); g.stroke(); g.restore(); }
+  g.beginPath(); data.forEach((v, i) => { if (i) g.lineTo(X(i), Y(v)); else g.moveTo(X(i), Y(v)); });
+  g.lineTo(X(n - 1), Y(0)); g.lineTo(X(0), Y(0)); g.closePath();
   const gr = g.createLinearGradient(0, Tm, 0, Tm + ph); gr.addColorStop(0, col); gr.addColorStop(1, 'transparent');
   g.globalAlpha = .22; g.fillStyle = gr; g.fill(); g.globalAlpha = 1;
   const hi = finHover >= 0 && finHover < n ? finHover : n - 1, hx = X(hi), hy = Y(data[hi]);
@@ -2282,6 +2374,8 @@ $('fin-chart').addEventListener('mousemove', e => {
   finHover = Math.round(Math.min(1, Math.max(0, (e.clientX - r.left - finGeom.L) / finGeom.pw)) * (finGeom.n - 1)); drawFin();
 });
 $('fin-chart').addEventListener('mouseleave', () => { finHover = -1; drawFin(); });
+$('bank-borrow').addEventListener('click', () => { borrow(); save(); refreshUI(); });
+$('bank-repay').addEventListener('click', () => { repay(); save(); refreshUI(); });
 const hbar = (label, val, share, col) => '<div class="hb"><span>' + label + '</span><b class="num">' + val + '</b><i><u style="width:' + Math.round(Math.max(0, Math.min(1, share)) * 100) + '%;background:' + col + '"></u></i></div>';
 function renderFin() {
   const F = FIN[finTab], d = S.hx[finTab], cur = F.now();
@@ -2295,12 +2389,22 @@ function renderFin() {
   }
   $('fin-empty').textContent = d.length < 2 ? 'La courbe se remplit au fil de la partie : un point toutes les 10 secondes de jeu, sur les 30 dernières minutes.' : '';
   drawFin();
+  // Budget par minute : ce qui rentre, ce qui sort, le solde
+  const bl = (label, v, cls) => '<div class="bl' + (Math.abs(v) < .05 ? ' zero' : '') + '"><span>' + label + '</span><b class="num ' + cls + '">' + (cls === 'plus' ? '+' : '−') + fmt(Math.abs(v)) + ' €</b></div>';
+  const g0 = god(), netB = netPerMin(), names = ['', 'Chemins', 'Routes', 'Avenues', 'Voies rapides', 'Ponts, tunnels', 'Ronds-points et feux'];
+  $('fin-budget').innerHTML = '<div class="col"><h3>Ce qui rentre, par minute</h3>' + bl('Trajets', S.rate * 60, 'plus') + bl('Impôts locaux (' + nConn + ' bâtiments reliés)', taxMin, 'plus')
+    + '<div class="bl tot"><span>Recettes</span><b class="num plus">+' + fmt(gainsMin()) + ' €</b></div></div>'
+    + '<div class="col"><h3>Ce qui sort, par minute' + (g0 ? ' (offert en mode dieu)' : '') + '</h3>' + [1, 2, 3, 4, 5, 6].map(q => bl(names[q], g0 ? 0 : upParts[q], 'minus')).join('') + bl('Intérêts d’emprunt', g0 ? 0 : interestMin(), 'minus')
+    + '<div class="bl tot"><span>Dépenses</span><b class="num minus">−' + fmt(costsMin()) + ' €</b></div></div>'
+    + '<div class="net"><span>Solde par minute</span><b class="num ' + (netB < 0 ? 'minus' : 'plus') + '" style="color:var(--' + (netB < 0 ? 'alert' : 'go') + ')">' + (netB < 0 ? '−' : '+') + fmt(Math.abs(netB)) + ' €</b></div>';
+  $('bank-info').textContent = S.debt > 0 ? 'Dette : ' + fmt(S.debt) + ' €, soit ' + fmt(interestMin()) + ' € d’intérêts par minute. Plafond : ' + fmt(maxDebt()) + ' €.' : 'Aucune dette. Tu peux emprunter jusqu’à ' + fmt(maxDebt()) + ' €, à 0,8 % d’intérêts par minute.';
+  $('bank-repay').style.display = S.debt > 0 ? '' : 'none';
   const st = S.st, kinds = [0, 1, 2, 3].map(k => st['k' + k]), other = Math.max(0, st.total - kinds.reduce((a, b) => a + b, 0)), tot = Math.max(1, st.total);
   $('fin-in').innerHTML = KINDS.map((K, k) => hbar('Trajets vers : ' + K.name, fmt(kinds[k]) + ' €', kinds[k] / tot, K.col)).join('')
-    + hbar('Primes, objectifs et absences', fmt(other) + ' €', other / tot, 'var(--muted)');
-  const sp = [['Routes, ponts et tunnels', st.sRoad], ['Ronds-points et feux', st.sJunc], ['Améliorations', st.sUp], ['Entretien du réseau', st.sKeep]], spT = Math.max(1, sp.reduce((a, b) => a + b[1], 0));
+    + hbar('Impôts locaux', fmt(st.tax) + ' €', st.tax / tot, 'var(--go)') + hbar('Primes, objectifs et absences', fmt(Math.max(0, other - st.tax)) + ' €', Math.max(0, other - st.tax) / tot, 'var(--muted)');
+  const sp = [['Construction de routes et d’ouvrages', st.sRoad], ['Ronds-points et feux', st.sJunc], ['Améliorations', st.sUp], ['Entretien du réseau', st.sKeep], ['Intérêts d’emprunt', st.sInt]], spT = Math.max(1, sp.reduce((a, b) => a + b[1], 0));
   $('fin-out').innerHTML = sp.map(x => hbar(x[0], fmt(x[1]) + ' €', x[1] / spT, 'var(--alert)')).join('')
-    + '<div class="hb"><span>Entretien en ce moment</span><b class="num">' + (god() ? 'offert' : '−' + fmt(upkeepMin) + ' € par minute') + '</b></div><div class="hb"><span>Total gagné</span><b class="num">' + fmt(st.total) + ' €</b></div><div class="hb"><span>Total dépensé</span><b class="num">' + fmt(sp.reduce((a, b) => a + b[1], 0)) + ' €</b></div>';
+    + '<div class="hb"><span>Total gagné</span><b class="num">' + fmt(st.total) + ' €</b></div><div class="hb"><span>Total dépensé</span><b class="num">' + fmt(sp.reduce((a, b) => a + b[1], 0)) + ' €</b></div>';
   const x = v => '×' + nf1.format(Math.round(v * 100) / 100), ms = [['Valeur de base', fmt(carValue()) + ' €'], ['Fluidité', x(fluMult())]];
   let total = carValue() * fluMult();
   if (S.city) { ms.push(['Villes fondées', x(cityMult())]); total *= cityMult(); }
@@ -2378,6 +2482,7 @@ function renderStrip() {
   }
   if (god()) out.push(chip('build', 'gear', 'Mode dieu', 'Tout est gratuit, pas d’entretien'));
   if (broke) out.push(chip('alert', 'coin', 'Caisse vide', 'L’entretien n’est plus payé : tout roule 25 % moins vite'));
+  else if (!god() && netPerMin() < 0 && nConn > 0) out.push(chip('alert', 'down', 'Tu perds ' + fmt(-netPerMin()) + ' € par minute', 'Le réseau coûte plus qu’il ne rapporte : regarde le calque Coûts'));
   if (ev.jam) out.push(chip('alert', 'jam', 'Bouchon persistant', 'Voir sur la carte', null, ev.jam.cell));
   if (ev.amb) out.push(chip('alert', 'amb', 'Ambulance en intervention', 'Prime si elle ne reste pas bloquée', null, ev.amb.car && !ev.amb.car.dead ? ev.amb.car.a : -1));
   if (ev.gold) out.push(chip('event', 'van', 'Fourgon blindé en route', 'Clique dessus sur la carte', null, ev.gold.a));
@@ -2394,7 +2499,10 @@ function renderStrip() {
 }
 let lastTitle = '';
 function refreshUI() {
-  const net = netPerMin(); $('rate').textContent = fmt(net) + ' €'; $('st-rate').classList.toggle('bad', net < 0);
+  const net = netPerMin(), sign = v => (v < 0 ? '−' : '+') + fmt(Math.abs(v));
+  $('rate').textContent = sign(net) + ' €'; $('st-rate').classList.toggle('bad', net < 0);
+  $('rate-ic').setAttribute('href', net < 0 ? '#i-down' : '#i-up');
+  $('rate-in').textContent = '+' + fmt(gainsMin()); $('rate-out').textContent = '−' + fmt(costsMin());
   $('cityname').textContent = MAP_NAME[mapType()];
   $('fmul').textContent = '×' + fluMult().toFixed(1).replace('.', ',');
   const fb = $('fbar'); fb.style.width = Math.round(S.F * 100) + '%';
@@ -2404,7 +2512,8 @@ function refreshUI() {
   const h = Math.floor(S.clock), mi = Math.floor((S.clock - h) * 60), night = darkness(S.clock) > .5;
   $('money').textContent = god() ? '∞' : fmtMoney(S.money) + ' €';
   $('clock').textContent = String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
-  $('phase').textContent = phaseName(S.clock) + ', jour ' + S.day + ', ' + SEASONS[season()].name;
+  $('ph-n').textContent = phaseName(S.clock); $('ph-x').textContent = ', jour ' + S.day + ', ' + SEASONS[season()].name;
+  $('clockbox').title = phaseName(S.clock) + ', jour ' + S.day + ', ' + SEASONS[season()].name;
   $('clock-ic').setAttribute('href', night ? '#i-moon' : '#i-sun'); $('clockbox').classList.toggle('night', night);
   for (const k in rows) {
     const r = rows[k], max = S.lv[k] >= UP[k].max, cost = upCost(k), ok = !max && canPay(cost);
@@ -2413,7 +2522,6 @@ function refreshUI() {
     r.b.classList.toggle('ok', ok); r.b.classList.toggle('max', max); r.b.setAttribute('aria-disabled', ok ? 'false' : 'true');
   }
   const costs = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU };
-  $('undo').style.opacity = undoStack.length ? 1 : .45;
   for (const b of $('dock').querySelectorAll('.tool[data-t]')) { const c = costs[b.dataset.t]; b.querySelector('small').textContent = c ? fmt(price(c)) + ' €' : ''; }
   $('b-save').classList.toggle('warn', !saveOK);
   $('notif').classList.toggle('on', S.notif && canNotify() && Notification.permission === 'granted');
@@ -2581,9 +2689,11 @@ function step(dt) {
   stepCars(dt);
   stepGrowth(dt);
   stepEvents(dt);
-  if (!god() && upkeepMin > 0) { // entretien du réseau, prélevé en continu
-    const due = upkeepMin / 60 * dt; S.money -= due; S.st.sKeep += due;
-    if (S.money <= 0) { S.money = 0; broke = true; } else if (S.money > upkeepMin * .5) broke = false;
+  if (taxMin > 0) { const t = taxMin / 60 * dt; S.money += t; S.total += t; S.st.total += t; S.st.tax += t; } // impôts locaux des bâtiments reliés
+  if (!god() && (upkeepMin > 0 || S.debt > 0)) { // entretien du réseau et intérêts, prélevés en continu
+    const keep = upkeepMin / 60 * dt, int = interestMin() / 60 * dt;
+    S.money -= keep + int; S.st.sKeep += keep; S.st.sInt += int;
+    if (S.money <= 0) { S.money = 0; broke = true; } else if (S.money > costsMin() * .5) broke = false;
   } else broke = false;
   if (S.mission && S.mission.id === 'flu') { if (S.F > .7) missionHit('flu', dt); else S.mission.prog = 0; }
   for (let i = floats.length - 1; i >= 0; i--) { floats[i].t += dt; if (floats[i].t > 1.4) floats.splice(i, 1); }
@@ -2633,7 +2743,7 @@ window.addEventListener('resize', () => { resize(); if (sheet === 'fin') drawFin
 loadGrid(); rebuildNet(); resize(); creditAway();
 if (!S.mission || !MISSIONS[S.mission.id]) newMission();
 setShop(S.shop);
-setTool('main'); save(); refreshUI();
+syncSpeed(); setTool('main'); save(); refreshUI();
 if (!saveOK) toast('alert', 'Partie non enregistrée', 'Ce navigateur ne garde rien : pense à exporter un fichier.', 8000, 'save');
 if (S.st.tiles === 0) toast('info', 'Bienvenue', 'Prends l’outil Chemin en bas, dessine un trait des maisons jusqu’au marché, puis relâche.', 9000, 'path');
 requestAnimationFrame(frame);
@@ -2642,7 +2752,7 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigat
 // Accès pour les tests
 window.__feuVert = { get S() { return S; }, get B() { return B; }, get R() { return R; }, get T() { return T; }, get J() { return J; }, get OW() { return OW; }, get D() { return D; }, get DEST() { return DEST; },
   get deg() { return deg; }, get jn() { return jn; }, get E() { return E; }, get heat() { return heat; }, get flow() { return flow; }, get COLS() { return COLS; }, get ROWS() { return ROWS; }, get rails() { return rails; }, get closed() { return closed; },
-  get nCars() { return nCars; }, get nConn() { return nConn; }, get nUn() { return nUn; }, get upkeep() { return upkeepMin; }, get plan() { return plan; }, get undoN() { return undoStack.length; }, get layer() { return layer; },
+  get nCars() { return nCars; }, get nConn() { return nConn; }, get nUn() { return nUn; }, get upkeep() { return upkeepMin; }, get tax() { return taxMin; }, get net() { return netPerMin(); }, borrow, repay, get plan() { return plan; }, get undoN() { return undoStack.length; }, get layer() { return layer; },
   ev, live, ND, C, step, paint, erase, setJunction, setOneWay, clearOneWay, line, grow, rebuildNet, applyState, fresh, normalize, chooseNext, startEvent, undoLast, beginAct, endAct, setLayer, goTo, lvOf, cap, cityGoal, season,
   redraw() { bgDirty = true; }, sample, view: () => ({ sc, ox, oy }), cam, zoomAt, panBy, resetCam, refreshUI, setTool, carPose, ringPose, APP_VERSION };
 })();
