@@ -1,7 +1,7 @@
 {
-  "name": "Feu Vert",
-  "short_name": "Feu Vert",
-  "description": "Gère les carrefours d'une ville qui grandit.",
+  "name": "Traffic",
+  "short_name": "Traffic",
+  "description": "Trace les routes d'une ville qui grandit.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",
