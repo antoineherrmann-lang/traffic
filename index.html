@@ -477,7 +477,7 @@ body.paused #paused{display:block}
 'use strict';
 
 /* ───────── Constantes ───────── */
-const APP_VERSION = '1.9.0';
+const APP_VERSION = '1.9.1';
 const C = 40, GAP = 5;
 let COLS = 30, ROWS = 18, N = COLS * ROWS, W = COLS * C, H = ROWS * C; // taille de la carte, propre à chaque partie
 const SIZES = [[56, 34], [60, 36], [64, 38], [68, 40], [72, 42], [76, 44]];
@@ -666,7 +666,7 @@ const god = () => S.set.god;
 /* ───────── Carte ───────── */
 let T, R, J, OW, BL, closed, railClosed, deg, jn, D, DEST, E, heat, slowN, jamT, flow, tmpD, hpD, hpI, hpN = 0;
 let WEAR, TP, TW, TUNP, tunnels = []; // usure de chaque case ; portail → portail opposé du tunnel, durée, index du tunnel
-let AX, AY, AFIX, AT2X, AT2Y; // points d'ancrage des routes (voir buildAnchors)
+let AX, AY, AFIX, AT2X, AT2Y, ACOR; // points d'ancrage des routes (voir buildAnchors)
 let B = [], rails = [];
 const live = new Set(), ND = new Map();
 function setSize(cols, rows) { // (ré)alloue tout ce qui dépend de la taille de la carte
@@ -676,7 +676,7 @@ function setSize(cols, rows) { // (ré)alloue tout ce qui dépend de la taille d
   D = Array.from({ length: 9 }, () => new Float32Array(N).fill(Infinity)); DEST = Array.from({ length: 9 }, () => new Uint8Array(N));
   tmpD = Array.from({ length: 4 }, () => new Float32Array(N));
   WEAR = new Float32Array(N); TP = new Int32Array(N).fill(-1); TW = new Float32Array(N); TUNP = new Int16Array(N).fill(-1); tunnels = [];
-  AX = new Float32Array(N); AY = new Float32Array(N); AFIX = new Uint8Array(N).fill(1); AT2X = new Float32Array(N); AT2Y = new Float32Array(N);
+  AX = new Float32Array(N); AY = new Float32Array(N); AFIX = new Uint8Array(N).fill(1); AT2X = new Float32Array(N); AT2Y = new Float32Array(N); ACOR = new Uint8Array(N);
   E = new Array(N * 4); live.clear(); ND.clear();
   heat = new Float32Array(N); slowN = new Uint8Array(N); jamT = new Float32Array(N); flow = new Float32Array(4 * N);
   hpD = new Float32Array(5 * N + 64); hpI = new Int32Array(5 * N + 64);
@@ -919,11 +919,13 @@ function sourcesFor(k) { // portes des lieux (0 à 3) ou des maisons (5 à 8) ; 
 // Plus la route est grosse, plus elle est droite : les chemins de terre serpentent librement, les routes se redressent un peu,
 // les avenues et les voies rapides tendent vers des lignes droites et de larges arcs. Seuls les points de passage dans les cases
 // changent (de 14 px au plus) : la simulation, elle, reste sur la grille.
+// Chemin de terre : spline libre. Route, avenue, voie rapide : des lignes droites et des coins nets, arrondis en arc (de plus en plus large) ;
+// seuls les escaliers de coins consécutifs sont redressés, pour qu'une diagonale ne ressemble pas à une marche.
 const ROAD_FEEL = [null,
-  { lam: .30, it: 2, wob: 7, cap: 14 },    // chemin de terre : méandres
-  { lam: .50, it: 4, wob: 0, cap: 20 },    // route : courbes douces
-  { lam: .60, it: 8, wob: 0, cap: 30 },    // avenue : presque droite
-  { lam: .65, it: 12, wob: 0, cap: 38 }];  // voie rapide : la plus droite
+  { lam: .30, it: 2, wob: 7, cap: 14 },        // chemin de terre : méandres
+  { it: 0, wob: 0, cap: 24, c: .25, zit: 6, zlam: .50 },   // route : coins nets
+  { it: 0, wob: 0, cap: 28, c: .30, zit: 10, zlam: .55 },  // avenue : arcs plus larges
+  { it: 0, wob: 0, cap: 32, c: .38, zit: 14, zlam: .60 }]; // voie rapide : les plus larges
 function buildAnchors() {
   let maxIt = 0;
   for (let i = 0; i < N; i++) {
@@ -944,6 +946,27 @@ function buildAnchors() {
       for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { sx += AT2X[j]; sy += AT2Y[j]; n++; } }
       const lam = ROAD_FEEL[R[i]].lam;
       AX[i] += (sx / n - AT2X[i]) * lam; AY[i] += (sy / n - AT2Y[i]) * lam;
+    }
+  }
+  for (let i = 0; i < N; i++) { // routes, avenues, voies rapides : on repère les coins (deux voisins non alignés)
+    ACOR[i] = 0;
+    if (AFIX[i] || R[i] < 2) continue;
+    const nbr = []; for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) nbr.push(j); }
+    if (nbr.length === 2 && (cx(nbr[0]) + cx(nbr[1]) !== 2 * cx(i) || cy(nbr[0]) + cy(nbr[1]) !== 2 * cy(i))) ACOR[i] = 1;
+  }
+  let maxZ = 0;
+  for (let i = 0; i < N; i++) if (ACOR[i] & 1) { // un coin isolé rentre un peu vers l'intérieur du virage : un arc propre ; des coins enchaînés (escalier) seront redressés
+    let stair = false; for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j] && (ACOR[j] & 1)) stair = true; }
+    if (stair) { ACOR[i] |= 2; maxZ = Math.max(maxZ, ROAD_FEEL[R[i]].zit); continue; }
+    let mx = 0, my = 0; for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { mx += cx(j); my += cy(j); } }
+    const lam = ROAD_FEEL[R[i]].c; AX[i] = cx(i) + (mx / 2 - cx(i)) * lam; AY[i] = cy(i) + (my / 2 - cy(i)) * lam;
+  }
+  for (let it = 0; it < maxZ; it++) { // un escalier tend vers la droite qui relie ses deux bouts
+    AT2X.set(AX); AT2Y.set(AY);
+    for (let i = 0; i < N; i++) if ((ACOR[i] & 2) && it < ROAD_FEEL[R[i]].zit) {
+      let sx = 0, sy = 0, n = 0;
+      for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { sx += AT2X[j]; sy += AT2Y[j]; n++; } }
+      const lam = ROAD_FEEL[R[i]].zlam; AX[i] += (sx / n - AT2X[i]) * lam; AY[i] += (sy / n - AT2Y[i]) * lam;
     }
   }
   const s1 = hash(0, 70) * 6.283, s2 = hash(0, 71) * 6.283, s3 = hash(0, 72) * 6.283, s4 = hash(0, 73) * 6.283;
@@ -1794,13 +1817,20 @@ function roadDirs(i) { const ds = []; for (let d = 0; d < 4; d++) { const j = nb
 // spline de Catmull-Rom : les escaliers deviennent des diagonales douces et les virages de larges courbes. Les véhicules
 // suivent exactement la même courbe.
 function anc(i) { return [AX[i], AY[i]]; } // point où la route traverse la case (voir buildAnchors)
-function contPrev(a, b) { // point qui précède la case a quand on va de a vers b : prolongation de la route, sinon prolongement droit (les branches d'un croisement partent à angle droit)
-  if (deg[a] === 2) for (let d = 0; d < 4; d++) { const z = nb(a, d); if (z >= 0 && R[z] && z !== b) return anc(z); }
-  const k = dirOf(a, b); return [cx(a) - DX[k] * C, cy(a) - DY[k] * C];
+function tanAt(a, o, A, O) { // tangente de la route en a, orientée vers la case voisine o
+  const len = Math.hypot(O[0] - A[0], O[1] - A[1]) || 1;
+  if (deg[a] === 2) {
+    let z = -1; for (let d = 0; d < 4; d++) { const j = nb(a, d); if (j >= 0 && R[j] && j !== o) z = j; }
+    if (z >= 0) {
+      if (R[a] === 1) { const Z = anc(z); return [(O[0] - Z[0]) / 6, (O[1] - Z[1]) / 6]; } // chemin de terre : spline libre
+      const dx = cx(o) - cx(z), dy = cy(o) - cy(z), n = Math.hypot(dx, dy) || 1; return [dx / n * len / 3, dy / n * len / 3]; // route : on suit la direction du tronçon
+    }
+  }
+  const k = dirOf(a, o); return [DX[k] * len / 3, DY[k] * len / 3]; // bout de route ou croisement : les branches partent à angle droit
 }
 function edgeBez(a, b) { // arête de a vers b : courbe de Bézier cubique [x0, y0, x1, y1, x2, y2, x3, y3]
-  const p0 = contPrev(a, b), p3 = contPrev(b, a), A = anc(a), B2 = anc(b), ax = A[0], ay = A[1], bx = B2[0], by = B2[1];
-  return [ax, ay, ax + (bx - p0[0]) / 6, ay + (by - p0[1]) / 6, bx - (p3[0] - ax) / 6, by - (p3[1] - ay) / 6, bx, by];
+  const A = anc(a), B2 = anc(b), ta = tanAt(a, b, A, B2), tb = tanAt(b, a, B2, A);
+  return [A[0], A[1], A[0] + ta[0], A[1] + ta[1], B2[0] + tb[0], B2[1] + tb[1], B2[0], B2[1]];
 }
 function halfBez(a, b) { // première moitié de l'arête (du centre de a jusqu'au milieu), pour que chaque case dessine sa part
   const [x0, y0, x1, y1, x2, y2, x3, y3] = edgeBez(a, b);
