@@ -1,5 +1,5 @@
 // Traffic : cache hors ligne. Incrémente VERSION à chaque mise à jour des fichiers.
-const VERSION = 'traffic-8';
+const VERSION = 'traffic-9';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

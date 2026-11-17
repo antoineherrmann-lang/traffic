@@ -49,35 +49,35 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .num{font-variant-numeric:tabular-nums}
 
 /* ── Barre du haut : état de la ville à gauche, temps et menus à droite ── */
-#top{position:fixed;top:10px;left:10px;right:10px;height:48px;border-radius:16px;display:flex;align-items:center;gap:6px;padding:0 8px 0 14px;white-space:nowrap}
-#left{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;flex:0 1 auto}
-#brand{display:flex;align-items:center;gap:8px;font-weight:700;margin-right:6px;flex:none}
+#top{position:fixed;top:10px;left:10px;right:10px;height:44px;border-radius:15px;display:flex;align-items:center;gap:4px;padding:0 6px 0 12px;white-space:nowrap}
+#left{display:flex;align-items:center;gap:2px;min-width:0;overflow:hidden;flex:0 1 auto}
+#brand{display:flex;align-items:center;gap:7px;font-weight:700;margin-right:4px;flex:none}
 #brand i{width:10px;height:10px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px var(--go-soft)}
 #brand span{font-weight:500;color:var(--muted)}
-.stat{flex:none;display:flex;align-items:center;gap:7px;padding:0 11px;height:32px;border-radius:10px;cursor:pointer;transition:background .15s}
+.stat{flex:none;display:flex;align-items:center;gap:6px;padding:0 9px;height:30px;border-radius:10px;cursor:pointer;transition:background .15s}
 .stat:hover{background:var(--hair)}
-.stat + .stat{margin-left:3px}
+.stat + .stat{margin-left:0}
 .stat small{color:var(--muted);font-size:12px}
 .stat b{font-weight:700}
-#st-money{color:var(--go)} #st-money b{font-size:17px;color:var(--ink);letter-spacing:-.01em}
+#st-money{color:var(--go)} #st-money b{font-size:16px;color:var(--ink);letter-spacing:-.01em}
 #st-rate{color:var(--go)} #st-rate b{color:var(--go)} #st-rate.bad{color:var(--alert)}
-.split{display:flex;flex-direction:column;line-height:1.05;font-size:11px;font-weight:600;margin-left:3px;padding-left:9px;border-left:1px solid var(--hair);text-align:right}
+.split{display:flex;flex-direction:column;line-height:1.05;font-size:11px;font-weight:600;margin-left:2px;padding-left:7px;border-left:1px solid var(--hair);text-align:right}
 .split i{font-style:normal} #rate-in{color:var(--go)} #rate-out{color:var(--alert)} #st-flu{color:var(--event)} #st-bld{color:var(--ach)}
 .stat b, .stat small{color:var(--ink)} .stat small{color:var(--muted)}
-#st-bld.bad{color:var(--alert)} #st-bld.bad b{color:var(--alert)} #st-rate.bad b{color:var(--alert)}
-.mini{width:54px;height:5px;border-radius:3px;background:var(--hair);overflow:hidden}
+#st-bld.bad,#st-bld.bad b{color:var(--alert)} #st-bld.warn,#st-bld.warn b{color:var(--event)} #st-rate.bad b{color:var(--alert)}
+.mini{width:44px;height:5px;border-radius:3px;background:var(--hair);overflow:hidden}
 .mini span{display:block;height:100%;background:var(--go);border-radius:3px;transition:width .4s,background .4s}
 .sp{flex:1}
-#clockbox{display:flex;align-items:center;gap:7px;padding:0 10px;color:var(--event)}
+#clockbox{display:flex;align-items:center;gap:6px;padding:0 8px;color:var(--event)}
 #clockbox.night{color:var(--info)}
 #clock{font-weight:700;color:var(--ink)} #phase{color:var(--muted)}
-.tb{flex:none;height:32px;min-width:32px;padding:0 9px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;color:var(--muted)}
+.tb{flex:none;height:30px;min-width:30px;padding:0 7px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;color:var(--muted)}
 .tb:hover{background:var(--hair);color:var(--ink)}
 .tb.on{background:var(--go);color:var(--go-ink)}
 .tb.warn{background:var(--event-soft);color:var(--event)}
-.sep{width:1px;height:22px;background:var(--hair);margin:0 4px}
+.sep{width:1px;height:20px;background:var(--hair);margin:0 2px}
 #speedbox{flex:none;display:flex;gap:2px;background:var(--hair);border-radius:11px;padding:2px;margin:0 2px}
-.spd{flex:none;width:30px;height:28px;border-radius:9px;display:grid;place-items:center;color:var(--muted);position:relative}
+.spd{flex:none;width:28px;height:26px;border-radius:9px;display:grid;place-items:center;color:var(--muted);position:relative}
 .spd svg.ic{width:17px;height:17px}
 .spd:hover{color:var(--ink)}
 .spd.on{background:var(--row-on);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.16)}
@@ -85,7 +85,7 @@ svg.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-wid
 .spd[data-x4]::after{content:"×4";position:absolute;right:-1px;bottom:-3px;font-size:9px;font-weight:700;background:var(--ink);color:var(--ground);border-radius:5px;padding:0 3px;line-height:12px}
 
 /* ── Fil d'actualité : objectif et évènements en cours ── */
-#strip{position:fixed;top:68px;left:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none;max-width:330px}
+#strip{position:fixed;top:62px;left:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;pointer-events:none;max-width:330px}
 .chip{display:flex;align-items:center;gap:9px;border-radius:13px;padding:7px 12px 7px 8px;position:relative;overflow:hidden;white-space:normal}
 .chip .bd{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none;background:var(--c-soft);color:var(--c)}
 .chip .bd svg.ic{width:16px;height:16px}
@@ -103,7 +103,7 @@ button.chip b::after{content:" ›";color:var(--muted)}
 @keyframes pulse{50%{opacity:.45}}
 
 /* ── Améliorations, à droite ── */
-#shop{position:fixed;top:68px;right:10px;width:236px;border-radius:16px;padding:10px 10px 6px}
+#shop{position:fixed;top:62px;right:10px;width:236px;border-radius:16px;padding:10px 10px 6px}
 #shop h2{margin:0 2px 8px;font-size:13px;font-weight:650;display:flex;align-items:center;gap:7px}
 #shop h2 button{margin-left:auto}
 #shop h2{cursor:pointer}
@@ -180,6 +180,7 @@ body.paused #paused{display:block}
 .legend .off{opacity:.45}
 .bar{height:6px;border-radius:3px;background:var(--hair);overflow:hidden;margin:6px 0 12px}
 .bar span{display:block;height:100%;background:var(--ach);border-radius:3px}
+.subh{font-size:12.5px;font-weight:650;margin:20px 0 6px}
 .big{display:block;width:100%;padding:11px;border-radius:12px;background:var(--hair);color:var(--muted);font-weight:650;text-align:center}
 .big.ok{background:var(--go);color:var(--go-ink)} .big.sure{background:var(--event);color:#2a1c00}
 .achs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -241,22 +242,24 @@ body.paused #paused{display:block}
 #sv-confirm{background:var(--info-soft);border-radius:12px;padding:10px 12px;margin-top:10px}
 @media (prefers-reduced-motion: reduce){.toast,.chip.t-alert .bd{animation:none}}
 @media (max-width:1700px){.tb .lb{display:none}}
+/* La barre se simplifie par paliers, dans cet ordre, jusqu'à ne plus rien couper (voir fitTop) */
+#top.c1 .mini,#top.c1 #ph-x{display:none}
+#top.c2 .split,#top.c2 #st-flu small{display:none}
+#top.c3 #appname,#top.c3 #st-rate small{display:none}
+#top.c4 #phase{display:none}
+#top.c5 #st-flu{display:none}
+#top.c6 #cityname{display:none}
+#top.c7 #clockbox{display:none}
+#top.c8 #brand{display:none}
+#top.c9 #st-bld.has-un #bld{display:none}
+#top.c9 #st-bld:not(.has-un){display:none}
+#top.c10 #st-rate svg,#top.c10 #st-money svg{display:none}
 @media (max-height:820px){.up .d{display:none}.up{padding:6px 8px}#shop{padding:8px 8px 4px}}
-@media (max-width:1500px){.mini{display:none}}
-@media (max-width:1430px){#ph-x{display:none}}
-@media (max-width:1280px){#brand span,#st-flu small{display:none}}
 @media (max-width:1240px){#toasts{width:270px}}
-@media (max-width:1320px){.split{display:none}}
-@media (max-width:1180px){#phase,#st-rate small{display:none}}
 @media (max-width:1680px){.tool kbd{display:none}}
 @media (max-width:1480px){.tool small{display:none}}
 @media (max-width:1180px){.tool b{font-size:12px}.tool{padding:0 7px 0 6px;gap:5px}}
-@media (max-width:1040px){#st-flu{display:none}}
 @media (max-width:1000px){#bottom{right:10px;bottom:58px}.tool b{display:none}#layers-cur{display:none}}
-@media (max-width:960px){#st-bld small{display:none}}
-@media (max-width:900px){#brand{display:none}}
-@media (max-width:840px){#clockbox{display:none}}
-@media (max-width:745px){#st-bld{display:none}}
 @media (max-width:680px){#top .tb{min-width:30px;padding:0 6px}.spd{width:26px}}
 @media (max-width:760px){#toasts{width:240px}.tool b{display:none}.tool{padding:0 9px}}
 </style>
@@ -266,11 +269,11 @@ body.paused #paused{display:block}
 
 <header id="top" class="glass">
   <div id="left">
-  <div id="brand"><i></i>Traffic<span id="cityname"></span></div>
+  <div id="brand"><i></i><b id="appname">Traffic</b><span id="cityname"></span></div>
   <button type="button" class="stat" id="st-money" data-fin="m" title="Argent disponible : ouvrir les finances"><svg class="ic"><use href="#i-coin"/></svg><b class="num" id="money">0 €</b></button>
-  <button type="button" class="stat" id="st-rate" data-fin="r" title="Solde par minute : ce que tu gagnes moins ce que tu dépenses. Clique pour le détail."><svg class="ic"><use id="rate-ic" href="#i-up"/></svg><b class="num" id="rate">0 €</b><small>par minute</small><span class="split num"><i id="rate-in">+0</i><i id="rate-out">−0</i></span></button>
+  <button type="button" class="stat" id="st-rate" data-fin="r" title="Solde par minute : ce que tu gagnes moins ce que tu dépenses. Clique pour le détail."><svg class="ic"><use id="rate-ic" href="#i-up"/></svg><b class="num" id="rate">0 €</b><small>/min</small><span class="split num"><i id="rate-in">+0</i><i id="rate-out">−0</i></span></button>
+  <button type="button" class="stat" id="st-bld" data-fin="city" title="Bâtiments reliés : ouvrir la ville"><svg class="ic"><use href="#i-home"/></svg><b class="num" id="bld">0/0</b><small id="bldl">reliés</small></button>
   <button type="button" class="stat" id="st-flu" data-fin="f" title="Fluidité : voir la courbe"><svg class="ic"><use href="#i-gauge"/></svg><small>Fluidité</small><b class="num" id="fmul">×2,0</b><div class="mini"><span id="fbar"></span></div></button>
-  <button type="button" class="stat" id="st-bld" data-fin="city" title="Bâtiments reliés : ouvrir la ville"><svg class="ic"><use href="#i-home"/></svg><b class="num" id="bld">0 sur 0</b><small id="bldl">reliés</small></button>
   </div>
   <div class="sp"></div>
   <div id="clockbox"><svg class="ic"><use id="clock-ic" href="#i-sun"/></svg><span id="clock" class="num">09:00</span><span id="phase"><span id="ph-n">Matinée</span><span id="ph-x"></span></span></div>
@@ -319,6 +322,9 @@ body.paused #paused{display:block}
         <p class="note" id="city-goal"></p>
         <div class="bar"><span id="city-bar"></span></div>
         <button class="big" id="city-go" type="button">Fonder une nouvelle ville</button>
+        <h3 class="subh">Recommencer cette ville</h3>
+        <p class="note">Repart de zéro sur cette ville : argent, routes, bâtiments, améliorations et dette sont remis à l’état initial. Les succès et les statistiques sont conservés, et une copie de secours reste récupérable dans Sauvegarde.</p>
+        <div class="btns"><button type="button" class="danger" id="city-restart" data-label="Même carte">Même carte</button><button type="button" class="danger" id="city-newmap" data-label="Nouvelle carte">Nouvelle carte</button></div>
       </section>
       <section class="sec" id="m-fin">
         <div class="seg" id="fin-tabs" role="tablist"></div>
@@ -433,7 +439,7 @@ body.paused #paused{display:block}
 'use strict';
 
 /* ───────── Constantes ───────── */
-const APP_VERSION = '1.7.1';
+const APP_VERSION = '1.8.0';
 const C = 40, GAP = 5;
 let COLS = 30, ROWS = 18, N = COLS * ROWS, W = COLS * C, H = ROWS * C; // taille de la carte, propre à chaque partie
 const SIZES = [[56, 34], [60, 36], [64, 38], [68, 40], [72, 42], [76, 44]];
@@ -636,7 +642,8 @@ function genWorld() {
     blob(rng, centre, Math.round(N / 9), 0, 1);
     blobs(7, 5, 10, 2); blobs(2, 4, 6, 3);
   } else { blob(rng, rc(), 8, 1); blobs(6, 7, 15, 2); blobs(3, 4, 8, 3); railH(); }
-  placeBuilding(0, 0); placeBuilding(1, 0); placeBuilding(1, 0);
+  seedRng = mulberry((S.seed ^ 0x5bd1e995) >>> 0);
+  try { placeBuilding(0, 0); placeBuilding(1, 0); placeBuilding(1, 0); } finally { seedRng = null; }
 }
 function landDist(src) {
   const d = new Int16Array(N).fill(-1), q = [];
@@ -658,6 +665,8 @@ function freeSpot(i) {
   }
   return land >= 2;
 }
+let seedRng = null;
+const rnd = () => seedRng ? seedRng() : Math.random();
 function placeBuilding(h, k) {
   const src = B.map(b => b.c);
   for (let i = 0; i < N; i++) if (R[i]) src.push(i);
@@ -665,7 +674,7 @@ function placeBuilding(h, k) {
   if (!src.length) {
     for (let i = 0; i < N; i++) if (freeSpot(i) && Math.abs(i % COLS - COLS / 2) < 7 && Math.abs(((i / COLS) | 0) - ROWS / 2) < 4) cand.push(i);
   } else {
-    const ld = landDist(src), far = Math.random() < .12;
+    const ld = landDist(src), far = rnd() < .12;
     for (const [lo, hi] of [[2, far ? 8 : 5], [2, 9], [2, 99]]) {
       for (let i = 0; i < N; i++) if (freeSpot(i) && ld[i] >= lo && ld[i] <= hi) cand.push(i);
       if (cand.length) break;
@@ -673,7 +682,7 @@ function placeBuilding(h, k) {
   }
   if (!cand.length) for (let i = 0; i < N; i++) if (freeSpot(i)) cand.push(i);
   if (!cand.length) return null;
-  const b = { h, k, c: rand(cand), s: 0, t: 2 + Math.random() * 6, conn: false, door: -1, born: time, vis: [0, 0, 0, 0], rel: 0 };
+  const b = { h, k, c: cand[(rnd() * cand.length) | 0], s: 0, t: 2 + rnd() * 6, conn: false, door: -1, born: time, vis: [0, 0, 0, 0], rel: 0 };
   BL[b.c] = B.length; B.push(b); netDirty = true;
   return b;
 }
@@ -1371,16 +1380,26 @@ function resetCam() { // vue de référence, centrée sur la ville plutôt que s
   for (const b of B) { sx += cx(b.c); sy += cy(b.c); }
   cam.x = B.length ? sx / B.length : W / 2; cam.y = B.length ? sy / B.length : H / 2; applyCam();
 }
+const FIT_MAX = 10; let fitSig = '', fitT = 0;
+function fitTop(force) { // simplifie la barre du haut, palier après palier, tant qu'un élément est rogné ou déborde
+  const t = $('top'), l = $('left'), sig = l.textContent.length + '|' + $('clockbox').textContent.length + '|' + window.innerWidth, now = performance.now();
+  if (!force && sig === fitSig && now - fitT < 3000) return;
+  fitSig = sig; fitT = now;
+  for (let k = 0; k <= FIT_MAX; k++) {
+    for (let q = 1; q <= FIT_MAX; q++) t.classList.toggle('c' + q, q <= k);
+    if (l.scrollWidth <= l.clientWidth && t.scrollWidth <= t.clientWidth) return;
+  }
+}
 function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   cw = window.innerWidth; ch = window.innerHeight;
   cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
-  const x0 = 10, x1 = cw - (S.shop && cw > 900 ? 256 : 10), y0 = 66, y1 = ch - 100;
+  const x0 = 10, x1 = cw - (S.shop && cw > 900 ? 256 : 10), y0 = 62, y1 = ch - 100;
   const fitAll = Math.max(.12, Math.min((x1 - x0) / (W + 30), (y1 - y0) / (H + 30)));
   fit = Math.max(.85, Math.min(1.25, (x1 - x0) / 1250)); // échelle de référence : environ trente cases de large, lisible sur un 13 pouces
   zmin = Math.max(.12, Math.min(1, fitAll * .92 / fit)); // on peut toujours dézoomer jusqu'à voir toute la carte
   vcx = (x0 + x1) / 2; vcy = (y0 + y1) / 2; Object.assign(view, { x0, x1, y0, y1 });
-  applyCam(); cache.valid = false;
+  applyCam(); cache.valid = false; fitTop(true);
 }
 
 /* ───────── Rendu ───────── */
@@ -1438,12 +1457,45 @@ function blobCell(g, i, pred, grow, rad) { // une case d'une nappe (eau, forêt)
       [!no && !w ? rad : 0, !no && !e ? rad : 0, !s && !e ? rad : 0, !s && !w ? rad : 0]);
 }
 function roadDirs(i) { const ds = []; for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) ds.push(d); } return ds; }
-function roadCellPath(g, i) { // la chaussée d'une case : droite, virage courbe ou branches d'un croisement
-  const x = cx(i), y = cy(i), ds = roadDirs(i), h = C / 2;
-  if (ds.length === 2 && ((ds[0] ^ ds[1]) & 1)) { g.moveTo(x + DX[ds[0]] * h, y + DY[ds[0]] * h); g.quadraticCurveTo(x, y, x + DX[ds[1]] * h, y + DY[ds[1]] * h); }
-  else if (ds.length === 2) { g.moveTo(x + DX[ds[0]] * h, y + DY[ds[0]] * h); g.lineTo(x + DX[ds[1]] * h, y + DY[ds[1]] * h); }
-  else if (!ds.length) { g.moveTo(x - .01, y); g.lineTo(x + .01, y); }
-  else for (const d of ds) { g.moveTo(x, y); g.lineTo(x + DX[d] * h, y + DY[d] * h); }
+// Les routes passent toujours par le centre des cases (la simulation reste sur la grille), mais elles sont lissées par une
+// spline de Catmull-Rom : les escaliers deviennent des diagonales douces et les virages de larges courbes. Les véhicules
+// suivent exactement la même courbe.
+const CUT = .42; // à quel point un coude est « arrondi » vers l'intérieur
+function anc(i) { // point d'ancrage de la route dans la case : le centre, rapproché de l'intérieur du virage pour adoucir les angles
+  const x = cx(i), y = cy(i);
+  if (!R[i] || deg[i] !== 2) return [x, y];
+  let nx = 0, ny = 0, n = 0;
+  for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { nx += cx(j); ny += cy(j); n++; } }
+  return [x + (nx / n - x) * CUT, y + (ny / n - y) * CUT];
+}
+function contPrev(a, b) { // point qui précède la case a quand on va de a vers b : prolongation de la route, sinon prolongement droit (les branches d'un croisement partent à angle droit)
+  if (deg[a] === 2) for (let d = 0; d < 4; d++) { const z = nb(a, d); if (z >= 0 && R[z] && z !== b) return anc(z); }
+  const k = dirOf(a, b); return [cx(a) - DX[k] * C, cy(a) - DY[k] * C];
+}
+function edgeBez(a, b) { // arête de a vers b : courbe de Bézier cubique [x0, y0, x1, y1, x2, y2, x3, y3]
+  const p0 = contPrev(a, b), p3 = contPrev(b, a), A = anc(a), B2 = anc(b), ax = A[0], ay = A[1], bx = B2[0], by = B2[1];
+  return [ax, ay, ax + (bx - p0[0]) / 6, ay + (by - p0[1]) / 6, bx - (p3[0] - ax) / 6, by - (p3[1] - ay) / 6, bx, by];
+}
+function halfBez(a, b) { // première moitié de l'arête (du centre de a jusqu'au milieu), pour que chaque case dessine sa part
+  const [x0, y0, x1, y1, x2, y2, x3, y3] = edgeBez(a, b);
+  return [x0, y0, (x0 + x1) / 2, (y0 + y1) / 2, (x0 + 2 * x1 + x2) / 4, (y0 + 2 * y1 + y2) / 4, (x0 + 3 * x1 + 3 * x2 + x3) / 8, (y0 + 3 * y1 + 3 * y2 + y3) / 8];
+}
+function roadCellPath(g, i) { // la chaussée d'une case : branches reliées deux à deux à travers le centre
+  const ds = roadDirs(i);
+  if (!ds.length) { g.moveTo(cx(i) - .01, cy(i)); g.lineTo(cx(i) + .01, cy(i)); return; }
+  if (ds.length === 1) { const H = halfBez(i, nb(i, ds[0])); g.moveTo(H[0], H[1]); g.bezierCurveTo(H[2], H[3], H[4], H[5], H[6], H[7]); return; }
+  for (let k = 0; k < ds.length; k += 2) {
+    const A = halfBez(i, nb(i, ds[k])), Bq = halfBez(i, nb(i, ds[k + 1 < ds.length ? k + 1 : 0]));
+    g.moveTo(A[6], A[7]); g.bezierCurveTo(A[4], A[5], A[2], A[3], A[0], A[1]); g.bezierCurveTo(Bq[2], Bq[3], Bq[4], Bq[5], Bq[6], Bq[7]);
+  }
+}
+function smoothThrough(g, pts) { // même spline, à travers une suite de points (aperçu de tracé, trajets surlignés)
+  const n = pts.length; if (n < 2) return;
+  g.moveTo(pts[0][0], pts[0][1]);
+  for (let k = 0; k < n - 1; k++) {
+    const p1 = pts[k], p2 = pts[k + 1], p0 = k > 0 ? pts[k - 1] : [2 * p1[0] - p2[0], 2 * p1[1] - p2[1]], p3 = k + 2 < n ? pts[k + 2] : [2 * p2[0] - p1[0], 2 * p2[1] - p1[1]];
+    g.bezierCurveTo(p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6, p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6, p2[0], p2[1]);
+  }
 }
 function tree(g, x, y, r, p, c) {
   g.fillStyle = p.shadow; g.beginPath(); g.ellipse(x + r * .4, y + r * .5, r, r * .9, 0, 0, 7); g.fill();
@@ -1629,8 +1681,10 @@ function drawStatic(canvas, p, night) {
   g.fillStyle = p.arrow;
   for (const i of roads) for (let d = 0; d < 4; d++) {
     const j = nb(i, d); if (j < 0 || !R[j] || !(OW[j] & (1 << ((d + 2) & 3)))) continue;
-    const x = cx(i) + DX[d] * 20, y = cy(i) + DY[d] * 20, px = -DY[d], py = DX[d];
-    g.beginPath(); g.moveTo(x + DX[d] * 5.5, y + DY[d] * 5.5); g.lineTo(x - DX[d] * 3 + px * 4.6, y - DY[d] * 3 + py * 4.6); g.lineTo(x - DX[d] * .6, y - DY[d] * .6); g.lineTo(x - DX[d] * 3 - px * 4.6, y - DY[d] * 3 - py * 4.6); g.closePath(); g.fill();
+    const bz = edgeBez(i, j), x = (bz[0] + 3 * bz[2] + 3 * bz[4] + bz[6]) / 8, y = (bz[1] + 3 * bz[3] + 3 * bz[5] + bz[7]) / 8; // milieu de la courbe
+    let tx = bz[6] + bz[4] - bz[2] - bz[0], ty = bz[7] + bz[5] - bz[3] - bz[1]; const tn = Math.hypot(tx, ty) || 1; tx /= tn; ty /= tn;
+    const px = -ty, py = tx;
+    g.beginPath(); g.moveTo(x + tx * 5.5, y + ty * 5.5); g.lineTo(x - tx * 3 + px * 4.6, y - ty * 3 + py * 4.6); g.lineTo(x - tx * .6, y - ty * .6); g.lineTo(x - tx * 3 - px * 4.6, y - ty * 3 - py * 4.6); g.closePath(); g.fill();
   }
   // Croisements : passages piétons ou rond-point
   for (const i of roads) if (jn[i] && R[i] < 4) {
@@ -1721,30 +1775,26 @@ function turnPose(n, dIn, dOut, t, off, h) {
   const tx = u * (qx - ax) + t * (bx - qx), ty = u * (qy - ay) + t * (by - qy);
   return [u * u * ax + 2 * u * t * qx + t * t * bx, u * u * ay + 2 * u * t * qy + t * t * by, Math.atan2(ty, tx)];
 }
-function carPose(c) { // position et cap exacts : en ligne droite, le long d'un virage, ou autour d'un rond-point
-  const dir = c.dir, first = c.d < C / 2, cell = first ? c.a : c.b, via = first ? dir : (dir + 2) % 4;
+function carPose(c) { // position et cap : sur la courbe lissée de l'arête, avec un arc propre dans les ronds-points et aux virages de croisement
+  const dir = c.dir, first = c.d < C / 2, cell = first ? c.a : c.b, via = first ? dir : (dir + 2) % 4, off = ROADS[R[cell] || 1].off;
+  const bz = edgeBez(c.a, c.b), t = c.d / C, u = 1 - t;
+  const x = u * u * u * bz[0] + 3 * u * u * t * bz[2] + 3 * u * t * t * bz[4] + t * t * t * bz[6], y = u * u * u * bz[1] + 3 * u * u * t * bz[3] + 3 * u * t * t * bz[5] + t * t * t * bz[7];
+  let tx = 3 * u * u * (bz[2] - bz[0]) + 6 * u * t * (bz[4] - bz[2]) + 3 * t * t * (bz[6] - bz[4]), ty = 3 * u * u * (bz[3] - bz[1]) + 6 * u * t * (bz[5] - bz[3]) + 3 * t * t * (bz[7] - bz[5]);
+  const tn = Math.hypot(tx, ty) || 1; tx /= tn; ty /= tn;
+  let sp = null, w = 0;
   if (J[cell] === 1 && jn[cell]) {
-    const off = ROADS[R[cell] || 1].off;
-    if (!first && c.nn >= 0 && c.d > C - REACH) return ringPose(cell, via, dirOf(cell, c.nn), (c.d - (C - REACH)) / (2 * REACH), off);
-    if (first && c.prev >= 0 && c.d < REACH && c.prev !== c.b) return ringPose(cell, dirOf(cell, c.prev), dir, .5 + c.d / (2 * REACH), off);
-    if (first && c.prev >= 0 && c.d < REACH) return ringPose(cell, dir, dir, .5 + c.d / (2 * REACH), off); // demi-tour
+    if (!first && c.nn >= 0 && c.d > C - REACH) { sp = ringPose(cell, via, dirOf(cell, c.nn), (c.d - (C - REACH)) / (2 * REACH), off); w = (c.d - (C - REACH)) / 7; }
+    else if (first && c.prev >= 0 && c.d < REACH) { sp = ringPose(cell, c.prev !== c.b ? dirOf(cell, c.prev) : dir, dir, .5 + c.d / (2 * REACH), off); w = (REACH - c.d) / 7; }
   } else if (deg[cell] >= 3) { // croisement ordinaire : on tourne en arc de sa voie à la voie d'arrivée
-    const off = ROADS[R[cell] || 1].off, h = 13;
-    if (!first && c.nn >= 0 && c.d > C - h) { const o = dirOf(cell, c.nn); if ((o ^ via) & 1) return turnPose(cell, via, o, (c.d - (C - h)) / (2 * h), off, h); }
-    if (first && c.prev >= 0 && c.d < h) { const i = dirOf(cell, c.prev); if ((i ^ dir) & 1) return turnPose(cell, i, dir, .5 + c.d / (2 * h), off, h); }
+    const h = 13;
+    if (!first && c.nn >= 0 && c.d > C - h) { const o = dirOf(cell, c.nn); if ((o ^ via) & 1) { sp = turnPose(cell, via, o, (c.d - (C - h)) / (2 * h), off, h); w = (c.d - (C - h)) / 5; } }
+    else if (first && c.prev >= 0 && c.d < h) { const i = dirOf(cell, c.prev); if ((i ^ dir) & 1) { sp = turnPose(cell, i, dir, .5 + c.d / (2 * h), off, h); w = (h - c.d) / 5; } }
   }
-  let o = -1;
-  if (deg[cell] === 2) for (let d = 0; d < 4; d++) if (d !== via) { const j = nb(cell, d); if (j >= 0 && R[j]) o = d; }
-  let x, y, tx, ty;
-  if (o >= 0 && ((o ^ via) & 1)) {
-    const from = first ? o : via, to = first ? via : o, t = first ? .5 + c.d / C : (c.d - C / 2) / C, h = C / 2, X = cx(cell), Y = cy(cell);
-    const ax = X + DX[from] * h, ay = Y + DY[from] * h, bx = X + DX[to] * h, by = Y + DY[to] * h, u = 1 - t;
-    x = u * u * ax + 2 * u * t * X + t * t * bx; y = u * u * ay + 2 * u * t * Y + t * t * by;
-    tx = u * (X - ax) + t * (bx - X); ty = u * (Y - ay) + t * (by - Y);
-    const n = Math.hypot(tx, ty) || 1; tx /= n; ty /= n;
-  } else { x = cx(c.a) + DX[dir] * c.d; y = cy(c.a) + DY[dir] * c.d; tx = DX[dir]; ty = DY[dir]; }
-  const off = ROADS[R[cell] || 1].off;
-  return [x - ty * off, y + tx * off, Math.atan2(ty, tx)];
+  const px = x - ty * off, py = y + tx * off, pa = Math.atan2(ty, tx);
+  if (!sp) return [px, py, pa];
+  w = Math.min(1, Math.max(0, w)); w = w * w * (3 - 2 * w); // on fond l'arc spécial dans la courbe, sans à-coup
+  let da = sp[2] - pa; while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI;
+  return [px + (sp[0] - px) * w, py + (sp[1] - py) * w, pa + da * w];
 }
 function placeCars(dt) {
   const k = 1 - Math.exp(-dt * 22);
@@ -1906,9 +1956,7 @@ function draw(dt) {
     for (let q = 0; q < 8; q++) if (tiers[q].length) for (let L = 1; L <= 4; L++) {
       ctx.strokeStyle = heatColor((q + .5) / 8); ctx.lineWidth = ROADS[L].w - 2; ctx.beginPath();
       for (const i of tiers[q]) if (R[i] === L) {
-        const ds = roadDirs(i), x = cx(i), y = cy(i), h = C / 2;
-        if (ds.length < 3) roadCellPath(ctx, i);
-        else for (let a = 0; a < ds.length; a += 2) { const d1 = ds[a], d2 = ds[a + 1 < ds.length ? a + 1 : 0]; ctx.moveTo(x + DX[d1] * h, y + DY[d1] * h); ctx.lineTo(x, y); ctx.lineTo(x + DX[d2] * h, y + DY[d2] * h); }
+        roadCellPath(ctx, i);
       }
       ctx.stroke();
     }
@@ -2006,24 +2054,24 @@ function draw(dt) {
   { // noms des lieux et signalement des bâtiments non reliés, à taille d'écran constante
     const rects = [], hit = (x, y, w, h) => { for (const r of rects) if (x < r[0] + r[2] + 6 && x + w + 6 > r[0] && y < r[1] + r[3] + 4 && y + h + 4 > r[1]) return true; rects.push([x, y, w, h]); return false; };
     ctx.lineCap = 'round';
+    const roadTool = tool[0] === 'r' && tool !== 'rond';
     for (const b of B) if (!b.conn) {
-      const x = cx(b.c), y = cy(b.c), lx = b.link >= 0 ? cx(b.link) : x, ly = b.link >= 0 ? cy(b.link) : y;
-      if (!seen(x, y) && !seen(lx, ly)) continue;
-      const rs = Math.max(b.h ? 24 : 28, 31 / sc) * (1 + .05 * Math.sin(time * 5));
-      if (b.link >= 0 && Math.hypot(lx - x, ly - y) > 34) { // le trait pointe vers l'endroit où raccorder
-        ctx.strokeStyle = p.stop; ctx.globalAlpha = .9; ctx.lineWidth = 3 / sc; ctx.setLineDash([7 / sc, 8 / sc]); ctx.lineDashOffset = -time * 26 / sc;
-        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(lx, ly); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0; ctx.globalAlpha = 1;
-        ctx.strokeStyle = p.stop; ctx.lineWidth = 2.6 / sc; ctx.beginPath(); ctx.arc(lx, ly, 12 / sc, 0, 7); ctx.stroke();
-        ctx.fillStyle = p.stop; ctx.beginPath(); ctx.arc(lx, ly, 3.6 / sc, 0, 7); ctx.fill();
+      const x = cx(b.c), y = cy(b.c), lx = b.link >= 0 ? cx(b.link) : x, ly = b.link >= 0 ? cy(b.link) : y, focus = hover === b.c || roadTool;
+      if (!seen(x, y) && !(focus && seen(lx, ly))) continue;
+      const rs = Math.max(b.h ? 21 : 25, 26 / sc);
+      if (focus && b.link >= 0 && Math.hypot(lx - x, ly - y) > 34) { // le trait n'apparaît que lorsqu'on s'apprête à relier
+        ctx.strokeStyle = p.stop; ctx.globalAlpha = .6; ctx.lineWidth = 2.2 / sc; ctx.setLineDash([6 / sc, 8 / sc]); ctx.lineDashOffset = -time * 18 / sc;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(lx, ly); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+        ctx.lineWidth = 2 / sc; ctx.beginPath(); ctx.arc(lx, ly, 10 / sc, 0, 7); ctx.stroke(); ctx.globalAlpha = 1;
       }
-      ctx.fillStyle = 'rgba(239,90,76,.17)'; ctx.beginPath(); ctx.arc(x, y, rs, 0, 7); ctx.fill();
-      ctx.strokeStyle = p.stop; ctx.lineWidth = 3.4 / sc; ctx.setLineDash([9 / sc, 6 / sc]); ctx.lineDashOffset = -time * 22 / sc; ctx.beginPath(); ctx.arc(x, y, rs, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+      ctx.strokeStyle = p.stop; ctx.globalAlpha = .62; ctx.lineWidth = 2 / sc; ctx.setLineDash([7 / sc, 7 / sc]); ctx.lineDashOffset = -time * 8 / sc;
+      ctx.beginPath(); ctx.arc(x, y, rs, 0, 7); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0; ctx.globalAlpha = 1;
       ctx.save(); ctx.translate(x + rs * .72, y - rs * .72); ctx.scale(1 / sc, 1 / sc);
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 13, 0, 7); ctx.fill(); ctx.fillStyle = p.stop; ctx.beginPath(); ctx.arc(0, 0, 11, 0, 7); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font = '800 15px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', 0, .8); ctx.restore();
-      if (sc >= .45) {
-        ctx.font = '600 13.5px ' + FONT; const w = ctx.measureText(b.why).width + 20, sx = ox + x * sc, sy = oy + (y + rs) * sc + 5;
-        hit(sx - w / 2, sy, w, 26); tag(b.why, x, y + rs + 18 / sc, p.stop, '#fff');
+      ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.beginPath(); ctx.arc(0, 0, 9.5, 0, 7); ctx.fill(); ctx.fillStyle = p.stop; ctx.beginPath(); ctx.arc(0, 0, 8, 0, 7); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = '800 11.5px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', 0, .7); ctx.restore();
+      if (roadTool && sc >= .45) { // la raison s'affiche quand on trace une route, ou au survol du bâtiment
+        ctx.font = '600 13.5px ' + FONT; const w = ctx.measureText(b.why).width + 20, sx = ox + x * sc, sy = oy + (y + rs) * sc + 4;
+        hit(sx - w / 2, sy, w, 26); tag(b.why, x, y + rs + 16 / sc, p.glass, p.amber);
       }
     }
     if (layer === 'normal' && sc >= .5) for (const b of B) if (!b.h && b.conn) {
@@ -2070,7 +2118,7 @@ function draw(dt) {
       rr(ctx, x + 4, y + 4, C - 8, C - 8, 9); ctx.fill();
     }
     ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 3; ctx.setLineDash([2, 7]); ctx.lineDashOffset = -time * 20; ctx.beginPath();
-    plan.cells.forEach((i, q) => { if (q) ctx.lineTo(cx(i), cy(i)); else ctx.moveTo(cx(i), cy(i)); }); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+    smoothThrough(ctx, plan.cells.map(i => [cx(i), cy(i)])); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
     const last = plan.cells[plan.cells.length - 1], can = canPay(plan.cost), s = 26 / Math.max(.6, cam.z);
     const l1 = plan.n ? plan.n + ' tronçon' + (plan.n > 1 ? 's' : '') + ', ' + fmt(plan.cost) + ' €' + (can ? '' : ' (il te manque ' + fmt(plan.cost - S.money) + ' €)') : plan.bad ? 'Impossible ici' : 'Déjà construit';
     const bits = []; if (plan.n && plan.up > .05 && !god()) bits.push('entretien +' + fmt(plan.up) + ' € par minute'); if (plan.gained) bits.push(plan.gained + ' maison' + (plan.gained > 1 ? 's' : '') + ' reliée' + (plan.gained > 1 ? 's' : '')); if (plan.pct <= -1) bits.push('trajets ' + plan.pct + ' %'); else if (plan.pct >= 1) bits.push('trajets +' + plan.pct + ' %');
@@ -2102,9 +2150,10 @@ function draw(dt) {
       if (pass) { ctx.setLineDash([5, 7]); ctx.lineDashOffset = -time * 22; }
       ctx.beginPath();
       for (const h of list) if (h.conn && h.door >= 0) {
-        ctx.moveTo(cx(h.c), cy(h.c)); let cur = h.door, from = -1; ctx.lineTo(cx(cur), cy(cur));
-        for (let n = 0; n < 220 && !DEST[h.k][cur]; n++) { const nx = chooseNext(cur, from, h.k); if (nx < 0) break; from = cur; cur = nx; ctx.lineTo(cx(cur), cy(cur)); }
-        const d = adjacentBuilding(cur, 0, h.k); if (d) ctx.lineTo(cx(d.c), cy(d.c));
+        const pts = [[cx(h.c), cy(h.c)]]; let cur = h.door, from = -1; pts.push([cx(cur), cy(cur)]);
+        for (let n = 0; n < 220 && !DEST[h.k][cur]; n++) { const nx = chooseNext(cur, from, h.k); if (nx < 0) break; from = cur; cur = nx; pts.push([cx(cur), cy(cur)]); }
+        const d = adjacentBuilding(cur, 0, h.k); if (d) pts.push([cx(d.c), cy(d.c)]);
+        smoothThrough(ctx, pts);
       }
       ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0; ctx.globalAlpha = 1;
     }
@@ -2131,10 +2180,10 @@ function draw(dt) {
       const sx = ox + cx(b.c) * sc, sy = oy + cy(b.c) * sc;
       if (sx > view.x0 + 6 && sx < view.x1 - 6 && sy > view.y0 + 6 && sy < view.y1 - 6) continue;
       const dx = sx - mx, dy = sy - my, t = Math.min(hw / Math.max(1e-6, Math.abs(dx)), hh / Math.max(1e-6, Math.abs(dy))), px = mx + dx * t, py = my + dy * t, a = Math.atan2(dy, dx);
-      ctx.save(); ctx.translate(px, py); ctx.globalAlpha = .82 + .18 * Math.sin(time * 6);
-      ctx.fillStyle = p.stop; ctx.beginPath(); ctx.moveTo(Math.cos(a) * 27, Math.sin(a) * 27); ctx.lineTo(Math.cos(a + 1.5) * 15, Math.sin(a + 1.5) * 15); ctx.lineTo(Math.cos(a - 1.5) * 15, Math.sin(a - 1.5) * 15); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 17, 0, 7); ctx.fill(); ctx.fillStyle = p.stop; ctx.beginPath(); ctx.arc(0, 0, 14.5, 0, 7); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font = '800 17px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', 0, 1); ctx.restore();
+      ctx.save(); ctx.translate(px, py); ctx.globalAlpha = .88;
+      ctx.fillStyle = p.stop; ctx.beginPath(); ctx.moveTo(Math.cos(a) * 21, Math.sin(a) * 21); ctx.lineTo(Math.cos(a + 1.6) * 12, Math.sin(a + 1.6) * 12); ctx.lineTo(Math.cos(a - 1.6) * 12, Math.sin(a - 1.6) * 12); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.beginPath(); ctx.arc(0, 0, 13, 0, 7); ctx.fill(); ctx.fillStyle = p.stop; ctx.beginPath(); ctx.arc(0, 0, 11, 0, 7); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = '800 13px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', 0, .8); ctx.restore();
       edgeMarks.push({ x: px, y: py, c: b.c });
     }
   }
@@ -2417,7 +2466,7 @@ function openSheet(id) {
   $('sheet').classList.toggle('wide', id === 'fin');
   renderSheet(); $('sh-x').focus();
 }
-function closeSheet() { sheet = null; $('veil').hidden = true; pending = null; $('sv-confirm').hidden = true; }
+function closeSheet() { resetRestartButtons(); sheet = null; $('veil').hidden = true; pending = null; $('sv-confirm').hidden = true; }
 for (const b of document.querySelectorAll('[data-open]')) b.addEventListener('click', () => openSheet(b.dataset.open));
 for (const b of document.querySelectorAll('[data-fin]')) b.addEventListener('click', () => { if (b.dataset.fin === 'city') openSheet('city'); else { finTab = b.dataset.fin; finHover = -1; openSheet('fin'); } });
 
@@ -2569,6 +2618,21 @@ $('city-go').addEventListener('click', () => {
   toast('event', 'Bienvenue dans ' + MAP_NAME[mapType()], 'Revenus ×' + nf1.format(cityMult()) + ' pour toujours.', 7000, 'city');
 });
 
+function restartCity(newMap) {
+  backup();
+  const next = fresh(S.city);
+  Object.assign(next, { ach: S.ach, st: S.st, clock: S.clock, day: S.day, notif: S.notif, shop: S.shop, set: S.set });
+  if (!newMap) next.seed = S.seed; // même carte : le terrain et les bâtiments de départ sont les mêmes
+  applyState(next); closeSheet();
+  toast('info', 'Ville recommencée', (newMap ? 'Nouvelle carte' : 'Même carte') + ', 150 € en caisse. L’ancienne partie reste dans la copie de secours.', 6500, 'city');
+}
+let restartT = 0;
+function resetRestartButtons() { clearTimeout(restartT); for (const id of ['city-restart', 'city-newmap']) { const b = $(id); b.classList.remove('sure'); b.textContent = b.dataset.label; } }
+for (const id of ['city-restart', 'city-newmap']) $(id).addEventListener('click', () => {
+  const b = $(id);
+  if (!b.classList.contains('sure')) { resetRestartButtons(); b.classList.add('sure'); b.textContent = 'Confirmer : tout effacer'; restartT = setTimeout(resetRestartButtons, 4000); return; }
+  resetRestartButtons(); restartCity(id === 'city-newmap');
+});
 // Fil d'actualité : l'objectif, puis ce qui se passe en ce moment
 function chip(type, icon, title, sub, pg, go) { // go : case de la carte où un clic emmène la caméra
   const tag = go >= 0 ? 'button type="button" data-go="' + go + '"' : 'div';
@@ -2597,7 +2661,7 @@ function renderStrip() {
   if (ev.fest && B[ev.fest.i]) out.push(chip('event', 'star', 'Jour de fête : ' + KINDS[B[ev.fest.i].k].name, 'Trajets doublés, encore ' + Math.ceil(ev.fest.t) + ' s', ev.fest.t / 30));
   if (ev.rain > 0) out.push(chip('info', 'rain', 'Averse', 'Revenus ×1,25, encore ' + Math.ceil(ev.rain) + ' s', ev.rain / 40));
   if (isPeak(S.clock)) out.push(chip('event', 'clock', S.clock < 12 ? 'Pointe du matin' : 'Pointe du soir', (S.clock < 12 ? 'Les habitants partent' : 'Les habitants rentrent') + ', revenus ×1,5'));
-  if (nUn > 0 && !(m && m.id === 'connect')) { const u = B.find(b => !b.conn); out.push(chip('alert', 'home', nUn + (nUn > 1 ? ' bâtiments à relier' : ' bâtiment à relier'), nUn > 3 ? 'La ville ne grandit plus tant qu’ils sont isolés' : 'Clique pour y aller, puis trace une route', null, u ? u.c : -1)); }
+  if (nUn > 0 && !(m && m.id === 'connect')) { const u = B.find(b => !b.conn); out.push(chip(nUn > 3 ? 'alert' : 'event', 'home', nUn + (nUn > 1 ? ' bâtiments à relier' : ' bâtiment à relier'), nUn > 3 ? 'La ville ne grandit plus tant qu’ils sont isolés' : 'Clique pour y aller, puis trace une route', null, u ? u.c : -1)); }
   const html = out.slice(0, ch < 860 ? 3 : ch < 1000 ? 4 : 6).join(''); // sur un petit écran, on garde l'essentiel
   if (html !== stripSig) { stripSig = html; $('strip').innerHTML = html; }
 }
@@ -2611,8 +2675,8 @@ function refreshUI() {
   $('fmul').textContent = '×' + fluMult().toFixed(1).replace('.', ',');
   const fb = $('fbar'); fb.style.width = Math.round(S.F * 100) + '%';
   fb.style.background = S.F > .6 ? 'var(--go)' : S.F > .35 ? 'var(--event)' : 'var(--alert)';
-  $('bld').textContent = nConn + ' sur ' + B.length; $('st-bld').classList.toggle('bad', nUn > 0);
-  $('bldl').textContent = nUn ? (nUn > 1 ? nUn + ' isolés' : '1 isolé') : 'reliés';
+  $('bld').textContent = nConn + '/' + B.length; $('st-bld').classList.toggle('bad', nUn > 3); $('st-bld').classList.toggle('warn', nUn > 0 && nUn <= 3); $('st-bld').classList.toggle('has-un', nUn > 0);
+  $('bldl').textContent = nUn ? nUn + ' à relier' : 'reliés';
   const h = Math.floor(S.clock), mi = Math.floor((S.clock - h) * 60), night = darkness(S.clock) > .5;
   $('money').textContent = god() ? '∞' : fmtMoney(S.money) + ' €';
   $('clock').textContent = String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
@@ -2633,6 +2697,7 @@ function refreshUI() {
   const title = (alert ? '● ' : '') + 'Traffic : ' + fmtMoney(S.money) + ' €';
   if (title !== lastTitle) { document.title = title; lastTitle = title; }
   if (sheet && sheet !== 'ach') renderSheet();
+  fitTop();
 }
 $('set-notif').addEventListener('click', async () => {
   if (!canNotify()) { toast('info', 'Notifications indisponibles', 'Ce navigateur n’en propose pas pour cette page.'); return; }
@@ -2856,7 +2921,7 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigat
 window.__feuVert = { get S() { return S; }, get B() { return B; }, get R() { return R; }, get T() { return T; }, get J() { return J; }, get OW() { return OW; }, get D() { return D; }, get DEST() { return DEST; },
   get deg() { return deg; }, get jn() { return jn; }, get E() { return E; }, get heat() { return heat; }, get flow() { return flow; }, get COLS() { return COLS; }, get ROWS() { return ROWS; }, get rails() { return rails; }, get closed() { return closed; },
   get nCars() { return nCars; }, get edgeMarks() { return edgeMarks; }, view, resize, get nConn() { return nConn; }, get nUn() { return nUn; }, get upkeep() { return upkeepMin; }, get tax() { return taxMin; }, get net() { return netPerMin(); }, borrow, repay, get plan() { return plan; }, get undoN() { return undoStack.length; }, get layer() { return layer; },
-  ev, live, ND, C, step, paint, erase, setJunction, setOneWay, clearOneWay, line, grow, rebuildNet, applyState, fresh, normalize, chooseNext, startEvent, undoLast, beginAct, endAct, setLayer, goTo, lvOf, cap, cityGoal, season,
+  ev, live, ND, C, step, paint, erase, setJunction, setOneWay, clearOneWay, line, grow, rebuildNet, applyState, fresh, normalize, chooseNext, startEvent, restartCity, fitTop, edgeBez, undoLast, beginAct, endAct, setLayer, goTo, lvOf, cap, cityGoal, season,
   redraw() { bgDirty = true; }, sample, view: () => ({ sc, ox, oy }), cam, zoomAt, panBy, resetCam, refreshUI, setTool, carPose, ringPose, APP_VERSION };
 })();
 </script>
