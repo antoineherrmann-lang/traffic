@@ -146,7 +146,7 @@ button.chip b::after{content:" ›";color:var(--muted)}
 .lyr:hover{background:var(--hair)} .lyr.on{background:var(--ink);color:var(--ground)}
 .lyr svg.ic{width:20px;height:20px;color:var(--muted)} .lyr.on svg.ic{color:inherit}
 .lyr b{display:block;font-weight:650} .lyr small{display:block;color:var(--muted);font-size:12px;line-height:1.3} .lyr.on small{color:inherit;opacity:.72}
-#hint{border-radius:999px;padding:5px 14px;color:var(--muted);font-size:12px;pointer-events:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#hint{border-radius:16px;padding:5px 14px;color:var(--muted);font-size:12px;line-height:1.35;pointer-events:none;max-width:100%;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 #hint:empty{display:none}
 
 /* ── Notifications : une couleur et un pictogramme par nature ── */
@@ -240,6 +240,20 @@ body.paused #paused{display:block}
   font:11px/1.4 ui-monospace,Menlo,monospace;padding:8px;resize:vertical;user-select:text;-webkit-user-select:text;word-break:break-all}
 #sv-text[hidden],#sv-confirm[hidden]{display:none}
 #sv-confirm{background:var(--info-soft);border-radius:12px;padding:10px 12px;margin-top:10px}
+#b-jam.hot{color:var(--alert)} #b-jam.hot svg{animation:pulse 1.2s infinite}
+#b-freeze.on{background:var(--event);color:#2a1c00}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 12px}
+.kpi{background:var(--row);border:1px solid var(--hair);border-radius:13px;padding:10px 12px}
+.kpi span{display:block;color:var(--muted);font-size:12px} .kpi b{display:block;font-size:19px;font-weight:700;letter-spacing:-.01em;margin-top:2px} .kpi small{display:block;font-size:11.5px;margin-top:1px;color:var(--muted)}
+.kpi b.plus{color:var(--go)} .kpi b.minus{color:var(--alert)}
+.repnav{display:flex;align-items:center;gap:10px;margin-bottom:10px} .repnav > div{flex:1;text-align:center} .repnav b{display:block;font-size:15px} .repnav span{color:var(--muted);font-size:12.5px}
+.repnav .tb:disabled{opacity:.3;cursor:default}
+#rep-chart{display:block;width:100%;height:104px;margin:2px 0 10px}
+.watch{display:flex;align-items:center;gap:10px;background:var(--row);border:1px solid var(--hair);border-radius:12px;padding:8px 12px;margin-bottom:6px}
+.watch > div{flex:1} .watch b{display:block;font-weight:600} .watch span{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
+.watch .pill{padding:5px 12px}
+.watch.ok{color:var(--muted)}
+@media (max-width:1360px){.tool:not(.on) b{display:none}.tool:not(.on){padding:0 8px}}
 @media (prefers-reduced-motion: reduce){.toast,.chip.t-alert .bd{animation:none}}
 @media (max-width:1700px){.tb .lb{display:none}}
 /* La barre se simplifie par paliers, dans cet ordre, jusqu'à ne plus rien couper (voir fitTop) */
@@ -254,6 +268,7 @@ body.paused #paused{display:block}
 #top.c9 #st-bld.has-un #bld{display:none}
 #top.c9 #st-bld:not(.has-un){display:none}
 #top.c10 #st-rate svg,#top.c10 #st-money svg{display:none}
+#top.c11 #st-bld{display:none}
 @media (max-height:820px){.up .d{display:none}.up{padding:6px 8px}#shop{padding:8px 8px 4px}}
 @media (max-width:1240px){#toasts{width:270px}}
 @media (max-width:1680px){.tool kbd{display:none}}
@@ -283,6 +298,8 @@ body.paused #paused{display:block}
     <button class="spd on" id="b-normal" type="button" data-s="1" title="Normal, ×1 (V : vitesse suivante)" aria-label="Vitesse normale"><svg class="ic"><use href="#i-normal"/></svg></button>
     <button class="spd" id="b-fast" type="button" data-s="2" title="Rapide, ×2 (V : vitesse suivante)" aria-label="Avance rapide"><svg class="ic"><use href="#i-fast"/></svg></button>
   </div>
+  <button class="tb" id="b-jam" type="button" title="Aller au pire bouchon (B)" aria-label="Aller au pire bouchon"><svg class="ic"><use href="#i-jam"/></svg><span class="lb">Bouchon</span></button>
+  <button class="tb" id="b-freeze" type="button" title="Geler l’arrivée de nouveaux bâtiments (G)" aria-label="Geler l’urbanisme"><svg class="ic"><use href="#i-block"/></svg><span class="lb">Gel</span></button>
   <div class="sep"></div>
   <button class="tb" data-open="city" type="button" title="Ville"><svg class="ic"><use href="#i-city"/></svg><span class="lb">Ville</span></button>
   <button class="tb" data-open="ach" type="button" title="Succès"><svg class="ic"><use href="#i-trophy"/></svg><span class="lb">Succès</span></button>
@@ -304,6 +321,8 @@ body.paused #paused{display:block}
     <button type="button" class="lyr" role="menuitemradio" data-l="traffic"><svg class="ic"><use href="#i-jam"/></svg><span><b>Trafic</b><small>Où ça bouchonne, du vert au rouge</small></span></button>
     <button type="button" class="lyr" role="menuitemradio" data-l="flow"><svg class="ic"><use href="#i-flow"/></svg><span><b>Flux</b><small>Quel lieu emprunte quelle route</small></span></button>
     <button type="button" class="lyr" role="menuitemradio" data-l="cost"><svg class="ic"><use href="#i-coin"/></svg><span><b>Coûts</b><small>L’entretien face au trafic</small></span></button>
+    <button type="button" class="lyr" role="menuitemradio" data-l="wear"><svg class="ic"><use href="#i-wrench"/></svg><span><b>Usure</b><small>L’état de chaque tronçon</small></span></button>
+    <button type="button" class="lyr" role="menuitemradio" data-l="under"><svg class="ic"><use href="#i-tunnel"/></svg><span><b>Souterrain</b><small>Les tunnels et ce qui y roule</small></span></button>
   </div>
   <button type="button" id="layers-btn" class="glass" aria-haspopup="menu" aria-expanded="false" title="Calques (touche L)"><svg class="ic"><use href="#i-layers"/></svg><span id="layers-cur">Carte</span><svg class="ic chev"><use href="#i-chev"/></svg></button>
 </div>
@@ -319,6 +338,11 @@ body.paused #paused{display:block}
       <section class="sec" id="m-city">
         <p class="note" id="city-note"></p>
         <div class="legend" id="legend"></div>
+        <h3 class="subh">Quartiers spécialisés</h3>
+        <p class="note" id="zones-note"></p>
+        <div class="legend" id="zones"></div>
+        <h3 class="subh">Urbanisme</h3>
+        <div class="setrow" style="border-top:0;padding-top:2px"><div><b>Geler l’arrivée de bâtiments</b><span id="fz-info"></span></div><button type="button" class="sw" id="set-fz" role="switch" aria-label="Geler l’urbanisme"></button></div>
         <p class="note" id="city-goal"></p>
         <div class="bar"><span id="city-bar"></span></div>
         <button class="big" id="city-go" type="button">Fonder une nouvelle ville</button>
@@ -349,12 +373,22 @@ body.paused #paused{display:block}
         </div>
         <div class="setrow"><div><b>Toujours afficher de jour</b><span>La carte reste claire la nuit. Les heures de pointe continuent normalement.</span></div><button type="button" class="sw" id="set-day" role="switch" aria-label="Toujours afficher de jour"></button></div>
         <div class="setrow"><div><b>Effets météo</b><span>Pluie, neige et ombres de nuages à l’écran.</span></div><button type="button" class="sw" id="set-fx" role="switch" aria-label="Effets météo"></button></div>
+        <div class="setrow"><div><b>Rapport de fin de journée</b><span>Un bilan à chaque minuit : gains, dépenses, pire bouchon, usure, quartiers.</span></div><div class="seg small" id="set-report"><button type="button" data-v="auto">Fenêtre</button><button type="button" data-v="chip">Bandeau</button><button type="button" data-v="off">Aucun</button></div></div>
         <div class="setrow"><div><b>Notifications</b><span id="notif-info"></span></div><button type="button" class="sw" id="set-notif" role="switch" aria-label="Notifications"></button></div>
         <div class="setrow"><div><b>Molette et glissement à deux doigts</b><span>Le pincement zoome toujours.</span></div><div class="seg small" id="set-scroll"><button type="button" data-v="zoom">Zoomer</button><button type="button" data-v="pan">Déplacer</button></div></div>
         <div class="setrow"><div><b>Mise à jour</b><span id="upd-info"></span></div><button type="button" class="pill" id="upd-btn">Rechercher</button></div>
       </section>
+      <section class="sec" id="m-rep">
+        <div class="repnav"><button class="tb" id="rep-prev" type="button" aria-label="Rapport précédent"><svg class="ic" style="transform:rotate(180deg)"><use href="#i-chev"/></svg></button><div><b id="rep-title"></b><span id="rep-sub"></span></div><button class="tb" id="rep-next" type="button" aria-label="Rapport suivant"><svg class="ic"><use href="#i-chev"/></svg></button></div>
+        <div class="kpis" id="rep-kpis"></div>
+        <canvas id="rep-chart" aria-label="Solde des dernières journées"></canvas>
+        <div id="rep-lines"></div>
+        <h3 class="subh">À surveiller</h3>
+        <div id="rep-watch"></div>
+      </section>
       <section class="sec" id="m-ach"><p class="note" id="ach-note"></p><div class="achs" id="achs"></div></section>
       <section class="sec" id="m-stat">
+        <button class="big ok" id="open-rep" type="button" style="margin-bottom:12px">Ouvrir le rapport de la dernière journée</button>
         <canvas id="spark" width="1000" height="140" aria-label="Revenu par minute sur les dix dernières minutes"></canvas>
         <div id="stats"></div>
       </section>
@@ -425,6 +459,10 @@ body.paused #paused{display:block}
   <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 20.500V4M6 5h11.500l-2.500 4 2.500 4H6"/></symbol>
   <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 9c2.200-2.500 4.300-2.500 6.500 0s4.300 2.500 6.500 0 4.300-2.500 5 0M3 15c2.200-2.500 4.300-2.500 6.500 0s4.300 2.500 6.500 0 4.300-2.500 5 0"/></symbol>
   <symbol id="i-jam" viewBox="0 0 24 24"><path d="M4 16.500v-4l2-5h12l2 5v4zM4 12.500h16"/><circle cx="7.500" cy="16.500" r="1.600"/><circle cx="16.500" cy="16.500" r="1.600"/></symbol>
+  <symbol id="i-tunnel" viewBox="0 0 24 24"><path d="M4 20v-8.500a8 8 0 0 1 16 0V20"/><path d="M8.500 20v-8a3.500 3.500 0 0 1 7 0v8"/><path d="M3 20h18"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M15.500 4.500a4 4 0 0 0-4.800 5.200L4.300 16.100a1.900 1.900 0 0 0 2.700 2.700l6.400-6.400a4 4 0 0 0 5.200-4.800l-2.600 2.600-2.600-.7-.7-2.600z"/></symbol>
+  <symbol id="i-block" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.500"/><path d="M6 6l12 12"/></symbol>
+  <symbol id="i-report" viewBox="0 0 24 24"><path d="M6 4.500h8.500L18 8v11.500H6z"/><path d="M14.500 4.500V8H18M9 12.500h6M9 15.500h6"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.500 6.500l11 11M17.500 6.500l-11 11"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9.500 6l6 6-6 6"/></symbol>
   <symbol id="i-amb" viewBox="0 0 24 24"><path d="M3.500 7.500h11v9h-11zM14.500 10.500H18l2.500 3v3h-6"/><circle cx="7.500" cy="17.500" r="1.700"/><circle cx="16.500" cy="17.500" r="1.700"/><path d="M9 9.800v4M7 11.800h4"/></symbol>
@@ -439,7 +477,7 @@ body.paused #paused{display:block}
 'use strict';
 
 /* ───────── Constantes ───────── */
-const APP_VERSION = '1.8.0';
+const APP_VERSION = '1.9.0';
 const C = 40, GAP = 5;
 let COLS = 30, ROWS = 18, N = COLS * ROWS, W = COLS * C, H = ROWS * C; // taille de la carte, propre à chaque partie
 const SIZES = [[56, 34], [60, 36], [64, 38], [68, 40], [72, 42], [76, 44]];
@@ -460,8 +498,12 @@ const ROADS = [null,
   { name: 'Route',       sp: 80,  cost: 20,  w: 21, off: 5.2, up: .5 },
   { name: 'Avenue',      sp: 125, cost: 60,  w: 27, off: 6.8, up: 2 },
   { name: 'Voie rapide', sp: 190, cost: 150, w: 30, off: 7.6, up: 6 }];
-const BRIDGE = 60, TUNNEL = 80, CROSSING = 15, ROND = 150, FEU = 120, MAX_CARS = 520;
-const UP_BRIDGE = 3, UP_TUNNEL = 4, UP_ROND = 3, UP_FEU = 4; // entretien des ouvrages et des croisements équipés, par minute
+const BRIDGE = 60, HILL = 45, CROSSING = 15, ROND = 150, FEU = 120, MAX_CARS = 520;
+const UP_BRIDGE = 3, UP_HILL = 1, UP_ROND = 3, UP_FEU = 4, HILL_SLOW = .65; // une route par-dessus une colline : moins chère qu'un tunnel, mais lente
+// Tunnels : une circulation souterraine, séparée de celle de la surface (rien ne s'y croise)
+const TUN_CELL = 70, UP_TUN_CELL = 4, TUN_SP = 130, TUN_BASE = 4, TUN_STEP = 2; // coût et entretien par case sous terre, vitesse, longueur de base et gain par amélioration
+// Usure des routes : le trafic abîme la chaussée, surtout sur les chemins ; une route usée est plus lente
+const W_LEVEL = [0, 2.5, 1.2, .6, .35], W_TYPE = { car: 1, bike: .05, truck: 3, bus: 2, amb: 1, gold: 1.5 }, W_BASE = .08, WCH = '0123456789abcdefghijklmnopqrstuv'; // entretien des ouvrages et des croisements équipés, par minute
 const TAX_HOME = .5, TAX_DEST = 1.5, LOAN_RATE = .008; // impôts locaux par bâtiment relié et par minute ; intérêts par minute
 const SEASONS = [{ name: 'printemps', ic: 'sprout' }, { name: 'été', ic: 'sun' }, { name: 'automne', ic: 'leaf' }, { name: 'hiver', ic: 'snow' }];
 const VEH = {
@@ -476,18 +518,22 @@ const UP = {
   value:    { name: 'Valeur',         ic: 'coin',   base: 60,  g: 1.6, max: 30 },
   freq:     { name: 'Fréquence',      ic: 'clock',  base: 80,  g: 1.7, max: 8 },
   attract:  { name: 'Attractivité',   ic: 'sprout', base: 100, g: 1.8, max: 6 },
-  discount: { name: 'Remise travaux', ic: 'tag',    base: 150, g: 2,   max: 5 }
+  discount: { name: 'Remise travaux', ic: 'tag',    base: 150, g: 2,   max: 5 },
+  tunnel:   { name: 'Tunnels',        ic: 'tunnel', base: 250, g: 1.9, max: 6 },
+  crews:    { name: 'Voirie',         ic: 'wrench', base: 180, g: 1.8, max: 5 }
 };
 const TOOLS = [
-  { id: 'main',  name: 'Main',        ic: 'hand',    hint: 'Glisse pour déplacer la carte, molette pour zoomer. Survole un bâtiment pour voir ses trajets.' },
-  { id: 'r1',    name: 'Chemin',      ic: 'path',    hint: 'Glisse pour dessiner le tracé, relâche pour construire, Échap pour annuler. Lent, mais presque gratuit.' },
-  { id: 'r2',    name: 'Route',       ic: 'road',    hint: 'Glisse pour dessiner le tracé, relâche pour construire. Repasse sur un chemin pour le goudronner.' },
-  { id: 'r3',    name: 'Avenue',      ic: 'avenue',  hint: 'Rapide et large. Glisse pour dessiner, relâche pour construire, repasse sur une route pour l’élargir.' },
-  { id: 'r4',    name: 'Voie rapide', ic: 'highway', hint: 'La plus rapide, sans arrêt aux croisements et par-dessus les voies ferrées. Les bâtiments ne s’y raccordent pas : prévois des bretelles.' },
-  { id: 'ow',    name: 'Sens unique', ic: 'oneway',  hint: 'Glisse le long d’une route dans le sens voulu : +25 % de vitesse. Un clic sur une case rétablit le double sens.' },
-  { id: 'rond',  name: 'Rond-point',  ic: 'round',   hint: 'Clique sur un croisement cerclé : trois véhicules y passent en même temps, sans s’arrêter.' },
-  { id: 'feu',   name: 'Feu',         ic: 'light',   hint: 'Clique sur un croisement cerclé : le feu fait passer des files entières, idéal sur un grand axe.' },
-  { id: 'erase', name: 'Gomme',       ic: 'erase',   hint: 'Clique et glisse pour retirer des tronçons (la moitié du prix est rendue). Cmd + Z annule la dernière action.' }
+  { id: 'main',  key: '1', name: 'Main',        ic: 'hand',    hint: 'Glisse pour déplacer la carte, molette pour zoomer. Survole un bâtiment pour voir ses trajets.' },
+  { id: 'r1',    key: '2', name: 'Chemin',      ic: 'path',    hint: 'Glisse pour dessiner le tracé, relâche pour construire, Échap pour annuler. Lent, presque gratuit, serpente, mais s’use vite.' },
+  { id: 'r2',    key: '3', name: 'Route',       ic: 'road',    hint: 'Glisse pour dessiner le tracé, relâche pour construire. Repasse sur un chemin pour le goudronner.' },
+  { id: 'r3',    key: '4', name: 'Avenue',      ic: 'avenue',  hint: 'Rapide, large et presque droite. Glisse pour dessiner, relâche pour construire, repasse sur une route pour l’élargir.' },
+  { id: 'r4',    key: '5', name: 'Voie rapide', ic: 'highway', hint: 'La plus rapide, sans arrêt aux croisements et par-dessus les voies ferrées. Les bâtiments ne s’y raccordent pas : prévois des bretelles.' },
+  { id: 'ow',    key: '6', name: 'Sens unique', ic: 'oneway',  hint: 'Glisse le long d’une route dans le sens voulu : +25 % de vitesse. Un clic sur une case rétablit le double sens.' },
+  { id: 'tun',   key: '7', name: 'Tunnel',      ic: 'tunnel',  hint: () => 'Glisse d’un portail à l’autre : jusqu’à ' + maxTun() + ' cases sous terre' + (S.lv.tunnel < UP.tunnel.max ? ' (améliorable)' : '') + ', sous routes, bâtiments et eau. Tu peux construire par-dessus. Clic droit : démolir.' },
+  { id: 'rond',  key: '8', name: 'Rond-point',  ic: 'round',   hint: 'Clique sur un croisement cerclé : trois véhicules y passent en même temps, sans s’arrêter.' },
+  { id: 'feu',   key: '9', name: 'Feu',         ic: 'light',   hint: 'Clique sur un croisement cerclé : le feu fait passer des files entières, idéal sur un grand axe.' },
+  { id: 'fix',   key: 'R', name: 'Réparer',     ic: 'wrench',  hint: 'Clique ou glisse sur les routes usées pour les remettre à neuf : le prix dépend de l’usure et du type de route. L’amélioration « Voirie » le fait toute seule.' },
+  { id: 'erase', key: 'X', name: 'Gomme',       ic: 'erase',   hint: 'Clique et glisse pour retirer des tronçons (la moitié du prix est rendue). Dans le calque Souterrain, elle démolit les tunnels. Cmd + Z annule.' }
 ];
 const ACH = [
   ['road', 'Premier tracé', 'Pose ton premier tronçon'],
@@ -500,6 +546,8 @@ const ACH = [
   ['oneway', 'Sens interdit', 'Crée un sens unique'],
   ['bridge', 'D’une rive à l’autre', 'Construis un pont'],
   ['tunnel', 'Sous la colline', 'Perce un tunnel'],
+  ['repair', 'Atelier de voirie', 'Répare un tronçon usé'],
+  ['district', 'Quartier de spécialité', 'Fais émerger un quartier spécialisé'],
   ['round', 'Tourner en rond', 'Aménage un rond-point'],
   ['light', 'Feu vert', 'Installe un feu'],
   ['b10', 'Village', '10 bâtiments reliés'],
@@ -545,14 +593,27 @@ const store = {
 };
 function fresh(city = 0) {
   const [cols, rows] = SIZES[Math.min(city, SIZES.length - 1)];
-  return { v: 3, money: 150, total: 0, trips: 0, lv: { value: 0, freq: 0, attract: 0, discount: 0 }, F: 1, rate: 0,
+  return { v: 3, money: 150, total: 0, trips: 0, lv: { value: 0, freq: 0, attract: 0, discount: 0, tunnel: 0, crews: 0 }, F: 1, rate: 0,
            seen: Date.now(), clock: 9, day: 1, city, seed: (Math.random() * 1e9) | 0, growT: 25, ach: {}, streak: 0,
            mission: null, hist: [], hx: { m: [], r: [], f: [], t: [] }, notif: false, shop: window.innerWidth >= 1500,
-           debt: 0, cols, rows, terr: '', road: '', junc: '', ow: '', blds: [],
-           set: { god: false, day: false, fx: true, scroll: 'zoom' },
-           st: { trips: 0, total: 0, play: 0, bestRate: 0, bestStreak: 0, tiles: 0, gold: 0, amb: 0, k0: 0, k1: 0, k2: 0, k3: 0, sRoad: 0, sJunc: 0, sUp: 0, sKeep: 0, sInt: 0, tax: 0, lost: 0 } };
+           debt: 0, cols, rows, terr: '', road: '', junc: '', ow: '', wr: '', tun: [], blds: [], fz: { on: false, t: 0 }, dr: null, rep: [],
+           set: { god: false, day: false, fx: true, scroll: 'zoom', report: 'chip' },
+           st: { trips: 0, total: 0, play: 0, bestRate: 0, bestStreak: 0, tiles: 0, gold: 0, amb: 0, k0: 0, k1: 0, k2: 0, k3: 0, sRoad: 0, sJunc: 0, sUp: 0, sKeep: 0, sInt: 0, sRep: 0, tax: 0, lost: 0 } };
 }
 // Remet n'importe quelle sauvegarde (ancienne, importée, abîmée) dans un état jouable.
+function cleanTunnels(list, cols, rows) { // un tunnel = un portail, des cases sous terre contiguës, un autre portail
+  if (!Array.isArray(list)) return [];
+  const n = cols * rows, out = [];
+  for (const t of list.slice(0, 40)) {
+    if (!t || !Array.isArray(t.u)) continue;
+    const u = t.u.map(v => Math.floor(+v)), a = Math.floor(+t.a), b = Math.floor(+t.b), all = [a, ...u, b];
+    if (u.length < 1 || u.length > 40 || all.some(v => !(v >= 0 && v < n)) || new Set(all).size !== all.length) continue;
+    let ok = true;
+    for (let q = 1; q < all.length && ok; q++) if (Math.abs(all[q] % cols - all[q - 1] % cols) + Math.abs(((all[q] / cols) | 0) - ((all[q - 1] / cols) | 0)) !== 1) ok = false;
+    if (ok) out.push({ a, b, u, c: Math.floor(Math.max(0, Math.min(1e6, +t.c || 0))) });
+  }
+  return out;
+}
 function normalize(s) {
   const obj = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
   const num = (v, d, lo = 0, hi = Infinity) => { v = +v; return isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d; };
@@ -573,7 +634,12 @@ function normalize(s) {
   const hn = Math.min(r.hx.m.length, r.hx.r.length, r.hx.f.length, r.hx.t.length); for (const k in r.hx) r.hx[k] = r.hx[k].slice(-hn || r.hx[k].length);
   r.seen = num(r.seen, Date.now(), 0, Date.now());
   r.notif = !!r.notif; r.shop = r.shop !== false;
-  const st = obj(r.set); r.set = { god: !!st.god, day: !!st.day, fx: st.fx !== false, scroll: st.scroll === 'pan' ? 'pan' : 'zoom' };
+  const st = obj(r.set); r.set = { god: !!st.god, day: !!st.day, fx: st.fx !== false, scroll: st.scroll === 'pan' ? 'pan' : 'zoom', report: ['auto', 'chip', 'off'].includes(st.report) ? st.report : 'chip' };
+  const fzr = obj(r.fz); r.fz = { on: !!fzr.on, t: num(fzr.t, 0, 0, 36000) };
+  const DR = ['total0', 'trips0', 'lost0', 'spent0', 'tax0', 'rep0', 'blds0', 'sF', 'tF', 'wh', 'peak', 'peakAt', 'fz'];
+  r.dr = r.dr && typeof r.dr === 'object' ? Object.fromEntries(DR.map(k => [k, num(r.dr[k], 0)]).concat([['wc', Math.floor(num(r.dr.wc, -1, -1, 1e6))]])) : null;
+  const RP = ['day', 'se', 'gain', 'spent', 'net', 'trips', 'lost', 'avgF', 'blds', 'nUn', 'tax', 'rep', 'wearAvg', 'wornN', 'peak', 'peakAt', 'wh', 'dist', 'noisy', 'fz'];
+  r.rep = (Array.isArray(r.rep) ? r.rep : []).slice(-7).filter(x => x && typeof x === 'object').map(x => Object.fromEntries(RP.map(k => [k, num(x[k], 0, -1e12, 1e12)]).concat([['wc', Math.floor(num(x.wc, -1, -1, 1e6))]])));
   const m = r.mission;
   r.mission = m && typeof m === 'object' && typeof m.id === 'string' ? { id: m.id, goal: num(m.goal, 1, 1), prog: num(m.prog, 0) } : null;
   // La carte : sa taille, quatre chaînes d'une lettre par case et la liste des bâtiments. Au moindre défaut, on régénère.
@@ -587,7 +653,11 @@ function normalize(s) {
     r.blds = r.blds.map(b => ({ h: b && b.h ? 1 : 0, k: Math.floor(num(b && b.k, -1, -1, 3)), c: Math.floor(num(b && b.c, -1, -1, n - 1)), s: Math.floor(num(b && b.s, 0, 0, 1e7)) }));
     for (const b of r.blds) { if (b.k < 0 || b.c < 0 || seen.has(b.c) || r.terr[b.c] === '1' || r.road[b.c] !== '0') okGrid = false; seen.add(b.c); }
   }
-  if (!okGrid) { r.cols = f.cols; r.rows = f.rows; r.terr = r.road = r.junc = r.ow = ''; r.blds = []; r.money = Math.max(r.money, f.money); }
+  r.wr = typeof r.wr === 'string' && r.wr.length === n && /^[0-9a-v]+$/.test(r.wr) ? r.wr : '';
+  r.tun = cleanTunnels(r.tun, r.cols, r.rows);
+  if (!okGrid) { r.cols = f.cols; r.rows = f.rows; r.terr = r.road = r.junc = r.ow = r.wr = ''; r.blds = []; r.tun = []; r.dr = null; r.money = Math.max(r.money, f.money); }
+  if (r.dr && r.dr.wc >= r.cols * r.rows) r.dr.wc = -1;
+  for (const x of r.rep) if (x.wc >= r.cols * r.rows) x.wc = -1;
   return r;
 }
 let S = normalize(store.get(KEY));
@@ -595,6 +665,8 @@ const god = () => S.set.god;
 
 /* ───────── Carte ───────── */
 let T, R, J, OW, BL, closed, railClosed, deg, jn, D, DEST, E, heat, slowN, jamT, flow, tmpD, hpD, hpI, hpN = 0;
+let WEAR, TP, TW, TUNP, tunnels = []; // usure de chaque case ; portail → portail opposé du tunnel, durée, index du tunnel
+let AX, AY, AFIX, AT2X, AT2Y; // points d'ancrage des routes (voir buildAnchors)
 let B = [], rails = [];
 const live = new Set(), ND = new Map();
 function setSize(cols, rows) { // (ré)alloue tout ce qui dépend de la taille de la carte
@@ -603,6 +675,8 @@ function setSize(cols, rows) { // (ré)alloue tout ce qui dépend de la taille d
   closed = new Uint8Array(N); railClosed = new Uint8Array(N); deg = new Uint8Array(N); jn = new Uint8Array(N);
   D = Array.from({ length: 9 }, () => new Float32Array(N).fill(Infinity)); DEST = Array.from({ length: 9 }, () => new Uint8Array(N));
   tmpD = Array.from({ length: 4 }, () => new Float32Array(N));
+  WEAR = new Float32Array(N); TP = new Int32Array(N).fill(-1); TW = new Float32Array(N); TUNP = new Int16Array(N).fill(-1); tunnels = [];
+  AX = new Float32Array(N); AY = new Float32Array(N); AFIX = new Uint8Array(N).fill(1); AT2X = new Float32Array(N); AT2Y = new Float32Array(N);
   E = new Array(N * 4); live.clear(); ND.clear();
   heat = new Float32Array(N); slowN = new Uint8Array(N); jamT = new Float32Array(N); flow = new Float32Array(4 * N);
   hpD = new Float32Array(5 * N + 64); hpI = new Int32Array(5 * N + 64);
@@ -682,9 +756,40 @@ function placeBuilding(h, k) {
   }
   if (!cand.length) for (let i = 0; i < N; i++) if (freeSpot(i)) cand.push(i);
   if (!cand.length) return null;
-  const b = { h, k, c: cand[(rnd() * cand.length) | 0], s: 0, t: 2 + rnd() * 6, conn: false, door: -1, born: time, vis: [0, 0, 0, 0], rel: 0 };
+  const b = { h, k, c: cand[(rnd() * cand.length) | 0], s: 0, t: 2 + rnd() * 6, conn: false, door: -1, born: time, vis: [0, 0, 0, 0], rel: 0, zk: '', zm: 1, zn: '', zt: 0 };
   BL[b.c] = B.length; B.push(b); netDirty = true;
   return b;
+}
+const ZONES = { hub: ['pôle commercial', 1.25, 1], calm: ['campus calme', 1.2, 1], biz: ['quartier d’affaires', 1.3, 1], ind: ['zone industrielle', 1.3, 1], res: ['résidentiel', 1.4, 1], noisy: ['bruyant', .85, -1], nuis: ['nuisances', .9, -1], hnoisy: ['bruyant', .6, -1] };
+const ZONE_SHORT = { hub: 'pôle', calm: 'calme', biz: 'affaires', ind: 'industrie', noisy: 'bruyant', nuis: 'nuisances' };
+let nDist = 0, nNoisy = 0;
+function computeZones() { // un lieu prend la spécialité que lui donne son voisinage : routes rapides, calme, industrie, autres lieux
+  nDist = 0; nNoisy = 0;
+  for (const b of B) {
+    b.zk = ''; b.zm = 1; b.zn = ''; b.zt = 0;
+    const bx = b.c % COLS, by = (b.c / COLS) | 0;
+    let fast = 0, hw = 0, rail = 0, forest = 0;
+    for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+      const x = bx + dx, y = by + dy; if (x < 0 || y < 0 || x >= COLS || y >= ROWS) continue;
+      const j = y * COLS + x, d = Math.abs(dx) + Math.abs(dy);
+      if (d <= 4 && T[j] === 4) rail++;
+      if (Math.abs(dx) <= 3 && Math.abs(dy) <= 3) { if (R[j] >= 3) fast++; if (R[j] === 4) hw++; if (T[j] === 2) forest++; }
+    }
+    let homes3 = 0, homes6 = 0, usine3 = 0, usine4 = 0, biz6 = 0, ecole5 = 0;
+    for (const o of B) {
+      if (o === b) continue;
+      const d = Math.abs(o.c % COLS - bx) + Math.abs(((o.c / COLS) | 0) - by);
+      if (o.h) { if (d <= 3) homes3++; if (d <= 6) homes6++; }
+      else { if (o.k === 1 && d <= 5) ecole5++; if (o.k === 3 && d <= 3) usine3++; if (o.k === 3 && d <= 4) usine4++; if ((o.k === 2 || o.k === 0) && d <= 6) biz6++; }
+    }
+    let z = '';
+    if (b.h) z = (hw > 0 || usine4 > 0) ? 'hnoisy' : (fast === 0 && (forest >= 4 || ecole5 > 0) ? 'res' : '');
+    else if (b.k === 0) z = fast >= 6 && homes6 >= 3 ? 'hub' : '';
+    else if (b.k === 1) z = (fast >= 8 || usine3 > 0) ? 'noisy' : (fast === 0 && usine4 === 0 ? 'calm' : '');
+    else if (b.k === 2) z = fast >= 6 && biz6 >= 1 ? 'biz' : '';
+    else z = homes3 >= 2 ? 'nuis' : ((hw >= 4 || rail >= 3) && homes3 === 0 ? 'ind' : '');
+    if (z) { b.zk = z; b.zn = ZONES[z][0]; b.zm = ZONES[z][1]; b.zt = ZONES[z][2]; if (b.zt > 0) nDist++; else nNoisy++; }
+  }
 }
 const lvOf = b => b.s >= LV_AT[2] ? 3 : b.s >= LV_AT[1] ? 2 : 1;
 const hex = '0123456789abcdef';
@@ -693,6 +798,8 @@ function syncGrid() {
   S.terr = Array.from(T).join(''); S.road = Array.from(R).join(''); S.junc = Array.from(J).join('');
   let o = ''; for (let i = 0; i < N; i++) o += hex[OW[i] & 15]; S.ow = o;
   S.blds = B.map(b => ({ h: b.h, k: b.k, c: b.c, s: b.s }));
+  let w = ''; for (let i = 0; i < N; i++) w += WCH[Math.min(31, Math.round(WEAR[i] / 100 * 31))]; S.wr = w;
+  S.tun = tunnels.map(t => ({ a: t.a, b: t.b, u: t.cells.slice(), c: t.cost }));
 }
 function findRails() { // les voies ferrées se déduisent du terrain : une ligne ou une colonne entière de rails
   rails = [];
@@ -703,8 +810,9 @@ function loadGrid() {
   setSize(S.cols, S.rows);
   genDecor();
   if (!S.terr) { genWorld(); syncGrid(); findRails(); return; }
-  for (let i = 0; i < N; i++) { T[i] = +S.terr[i]; R[i] = +S.road[i]; J[i] = +S.junc[i]; OW[i] = parseInt(S.ow[i], 16) || 0; }
-  B = S.blds.map((b, q) => { BL[b.c] = q; return { h: b.h, k: b.k, c: b.c, s: b.s || 0, t: Math.random() * 6, conn: false, door: -1, born: -9, vis: [0, 0, 0, 0], rel: 0 }; });
+  for (let i = 0; i < N; i++) { T[i] = +S.terr[i]; R[i] = +S.road[i]; J[i] = +S.junc[i]; OW[i] = parseInt(S.ow[i], 16) || 0; if (S.wr) WEAR[i] = (parseInt(S.wr[i], 32) || 0) * 100 / 31; }
+  tunnels = (S.tun || []).map(t => ({ a: t.a, b: t.b, cells: t.u.slice(), cost: t.c || 0, on: false, lane: [[], []] }));
+  B = S.blds.map((b, q) => { BL[b.c] = q; return { h: b.h, k: b.k, c: b.c, s: b.s || 0, t: Math.random() * 6, conn: false, door: -1, born: -9, vis: [0, 0, 0, 0], rel: 0, zk: '', zm: 1, zn: '', zt: 0 }; });
   findRails();
 }
 
@@ -722,10 +830,10 @@ const upCost = k => Math.round(UP[k].base * Math.pow(UP[k].g, S.lv[k]));
 const price = n => Math.max(1, Math.round(n * discount()));
 const bonus = (sec, min) => Math.max(min * carValue() * cityMult(), S.rate * sec);
 const canPay = c => god() || S.money >= c;
-let upkeepMin = 0, taxMin = 0, broke = false; // entretien du réseau et impôts locaux, en euros par minute
-let upParts = [0, 0, 0, 0, 0, 0, 0]; // entretien détaillé : [—, chemins, routes, avenues, voies rapides, ponts et tunnels, croisements équipés]
+let upkeepMin = 0, taxMin = 0, taxBase = 0, broke = false; // entretien du réseau et impôts locaux, en euros par minute
+let upParts = [0, 0, 0, 0, 0, 0, 0, 0]; // entretien détaillé : [—, chemins, routes, avenues, voies rapides, ponts et collines, croisements équipés, tunnels]
 const upkeepScale = () => (1 + 0.35 * S.lv.value) * cityMult();
-const tileUp = (i, level = R[i]) => level ? ROADS[level].up + (T[i] === 1 || (T[i] === 4 && level === 4) ? UP_BRIDGE : T[i] === 3 ? UP_TUNNEL : 0) : 0;
+const tileUp = (i, level = R[i]) => level ? ROADS[level].up + (T[i] === 1 || (T[i] === 4 && level === 4) ? UP_BRIDGE : T[i] === 3 ? UP_HILL : 0) : 0;
 const interestMin = () => S.debt * LOAN_RATE;
 const gainsMin = () => S.rate * 60 + taxMin;                                  // ce qui rentre : trajets et impôts locaux
 const costsMin = () => god() ? 0 : upkeepMin + interestMin();                 // ce qui sort : entretien et intérêts
@@ -769,7 +877,8 @@ function phaseName(h) {
 /* ───────── Réseau : degrés, plus courts chemins, raccordements ───────── */
 // Cartes de distance : 0 à 3 vers les lieux de chaque type, 4 vers la cible de l'ambulance, 5 à 8 vers les maisons de chaque type.
 let netDirty = true, bgDirty = true, time = 0, nConn = 0, nUn = 0, nCars = 0;
-const speedAt = i => ROADS[R[i] || 1].sp * (ev.works && ev.works.cell === i ? .25 : 1);
+const wearK = i => { const w = WEAR[i]; return w < 1 ? 1 : 1 - .5 * Math.pow(w * .01, 1.4); }; // une route usée à 100 % roule deux fois moins vite
+const speedAt = i => ROADS[R[i] || 1].sp * (ev.works && ev.works.cell === i ? .25 : 1) * (T[i] === 3 ? HILL_SLOW : 1) * wearK(i);
 function hpPush(d, i) { let q = hpN++; while (q > 0) { const p = (q - 1) >> 1; if (hpD[p] <= d) break; hpD[q] = hpD[p]; hpI[q] = hpI[p]; q = p; } hpD[q] = d; hpI[q] = i; }
 function hpPop() {
   const top = hpI[0], d = hpD[--hpN], i = hpI[hpN];
@@ -778,6 +887,10 @@ function hpPop() {
   hpD[q] = d; hpI[q] = i;
   return top;
 }
+const tunnelAt = cell => { const q = cell >= 0 ? TUNP[cell] : -1; return q >= 0 ? tunnels[q] : null; };
+const tunLen = tn => (tn.cells.length + 1) * C; // distance entre les centres des deux portails
+const tunLane = node => { const tn = tunnelAt(node); return tn ? tn.lane[tn.a === node ? 0 : 1] : null; };
+const laneOf = (node, nn) => TP[node] === nn ? tunLane(node) : E[node * 4 + dirOf(node, nn)];
 function dijkstra(dist, src) { // src : [case, distance de départ, case, distance…] ; on remonte les routes à contresens
   dist.fill(Infinity); hpN = 0;
   for (let q = 0; q < src.length; q += 2) if (!closed[src[q]] && src[q + 1] < dist[src[q]]) { dist[src[q]] = src[q + 1]; hpPush(src[q + 1], src[q]); }
@@ -793,6 +906,8 @@ function dijkstra(dist, src) { // src : [case, distance de départ, case, distan
       const v = d + w;
       if (v < dist[j] && hpN < hpD.length - 1) { dist[j] = v; hpPush(v, j); }
     }
+    const pj = TP[u]; // le tunnel : un lien direct vers l'autre portail
+    if (pj >= 0 && !closed[pj]) { const v = d + TW[u]; if (v < dist[pj] && hpN < hpD.length - 1) { dist[pj] = v; hpPush(v, pj); } }
   }
 }
 function doorsOf(b) { const out = []; for (let d = 0; d < 4; d++) { const j = nb(b.c, d); if (j >= 0 && R[j] && R[j] < 4) out.push(j); } return out; }
@@ -801,11 +916,62 @@ function sourcesFor(k) { // portes des lieux (0 à 3) ou des maisons (5 à 8) ; 
   for (const b of B) if (k < 4 ? (!b.h && b.k === k) : (b.h && b.k === k - 5)) for (const j of doorsOf(b)) src.push(j, k < 4 ? (3 - lvOf(b)) * 3 : 0);
   return src;
 }
+// Plus la route est grosse, plus elle est droite : les chemins de terre serpentent librement, les routes se redressent un peu,
+// les avenues et les voies rapides tendent vers des lignes droites et de larges arcs. Seuls les points de passage dans les cases
+// changent (de 14 px au plus) : la simulation, elle, reste sur la grille.
+const ROAD_FEEL = [null,
+  { lam: .30, it: 2, wob: 7, cap: 14 },    // chemin de terre : méandres
+  { lam: .50, it: 4, wob: 0, cap: 20 },    // route : courbes douces
+  { lam: .60, it: 8, wob: 0, cap: 30 },    // avenue : presque droite
+  { lam: .65, it: 12, wob: 0, cap: 38 }];  // voie rapide : la plus droite
+function buildAnchors() {
+  let maxIt = 0;
+  for (let i = 0; i < N; i++) {
+    AX[i] = cx(i); AY[i] = cy(i); AFIX[i] = 1;
+    if (!R[i] || deg[i] !== 2 || TUNP[i] >= 0 || T[i] === 1 || T[i] === 3 || T[i] === 4) continue; // croisements, bouts de route, portails de tunnel, ponts, collines, passages à niveau : on ne bouge pas
+    let fixed = false; // on reste sur le centre des cases voisines d'un bâtiment, d'un plan d'eau, d'une colline ou d'une voie ferrée, pour ne jamais mordre dessus
+    for (let dy = -1; dy <= 1 && !fixed; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const gx = i % COLS + dx, gy = ((i / COLS) | 0) + dy; if (gx < 0 || gy < 0 || gx >= COLS || gy >= ROWS) continue;
+      const j = gy * COLS + gx; if (BL[j] >= 0 || T[j] === 1 || T[j] === 3 || T[j] === 4) { fixed = true; break; }
+    }
+    if (fixed) continue;
+    AFIX[i] = 0; maxIt = Math.max(maxIt, ROAD_FEEL[R[i]].it);
+  }
+  for (let it = 0; it < maxIt; it++) { // lissage : chaque point se rapproche du milieu de ses deux voisins
+    AT2X.set(AX); AT2Y.set(AY);
+    for (let i = 0; i < N; i++) if (!AFIX[i] && it < ROAD_FEEL[R[i]].it) {
+      let sx = 0, sy = 0, n = 0;
+      for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { sx += AT2X[j]; sy += AT2Y[j]; n++; } }
+      const lam = ROAD_FEEL[R[i]].lam;
+      AX[i] += (sx / n - AT2X[i]) * lam; AY[i] += (sy / n - AT2Y[i]) * lam;
+    }
+  }
+  const s1 = hash(0, 70) * 6.283, s2 = hash(0, 71) * 6.283, s3 = hash(0, 72) * 6.283, s4 = hash(0, 73) * 6.283;
+  for (let i = 0; i < N; i++) if (!AFIX[i]) {
+    const w = ROAD_FEEL[R[i]].wob;
+    if (w) { // méandre de terre : un bruit doux, qui varie lentement d'une case à l'autre
+      const gx = i % COLS, gy = (i / COLS) | 0;
+      AX[i] += w * (Math.sin(gx * .63 + gy * .41 + s1) + .6 * Math.sin(gx * 1.27 - gy * .83 + s2)) / 1.6;
+      AY[i] += w * (Math.sin(gx * .47 - gy * .71 + s3) + .6 * Math.sin(gx * .91 + gy * 1.19 + s4)) / 1.6;
+    }
+    const dx = AX[i] - cx(i), dy = AY[i] - cy(i), m = Math.hypot(dx, dy);
+    const cap = ROAD_FEEL[R[i]].cap;
+    if (m > cap) { AX[i] = cx(i) + dx / m * cap; AY[i] = cy(i) + dy / m * cap; }
+  }
+}
 function rebuildNet() {
   netDirty = false; bgDirty = true;
   for (let i = 0; i < N; i++) { let n = 0; if (R[i]) for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) n++; } deg[i] = n; }
   // Un vrai croisement a au moins trois branches qui mènent quelque part : une allée d'une case vers une maison n'en fait pas un.
   for (let i = 0; i < N; i++) { let n = 0; if (R[i]) for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j] && deg[j] >= 2) n++; } jn[i] = n >= 3 ? 1 : 0; }
+  TP.fill(-1); TUNP.fill(-1); // tunnels : un portail ne sert qu'à un tunnel, et il faut une route à chaque bout
+  for (let q = 0; q < tunnels.length; q++) {
+    const tn = tunnels[q]; tn.on = false;
+    if (TUNP[tn.a] >= 0 || TUNP[tn.b] >= 0) continue;
+    TUNP[tn.a] = q; TUNP[tn.b] = q;
+    if (R[tn.a] > 0 && R[tn.b] > 0 && !closed[tn.a] && !closed[tn.b]) { tn.on = true; TP[tn.a] = tn.b; TP[tn.b] = tn.a; TW[tn.a] = TW[tn.b] = tunLen(tn) / TUN_SP + .6; }
+  }
+  buildAnchors();
   for (const cell of [...ND.keys()]) if (!jn[cell]) ND.delete(cell);
   for (const k of [0, 1, 2, 3, 5, 6, 7, 8]) {
     const src = sourcesFor(k); DEST[k].fill(0);
@@ -822,14 +988,16 @@ function rebuildNet() {
     else b.conn = doors.length > 0;
     if (b.conn) nConn++; else nUn++;
   }
-  const sc2 = upkeepScale(); upParts = [0, 0, 0, 0, 0, 0, 0];
+  const sc2 = upkeepScale(); upParts = [0, 0, 0, 0, 0, 0, 0, 0];
   for (let i = 0; i < N; i++) if (R[i]) {
     upParts[R[i]] += ROADS[R[i]].up * sc2; upParts[5] += (tileUp(i) - ROADS[R[i]].up) * sc2;
     if (jn[i] && J[i] && R[i] < 4) upParts[6] += (J[i] === 1 ? UP_ROND : UP_FEU) * sc2;
   }
+  for (const tn of tunnels) upParts[7] += UP_TUN_CELL * tn.cells.length * sc2;
   upkeepMin = upParts.reduce((a, b) => a + b, 0);
-  let tax = 0; for (const b of B) if (b.conn) tax += b.h ? TAX_HOME : TAX_DEST * lvOf(b);
-  taxMin = tax * sc2;
+  computeZones();
+  let tax = 0; for (const b of B) if (b.conn) tax += (b.h ? TAX_HOME : TAX_DEST * lvOf(b)) * b.zm;
+  taxBase = tax * sc2; taxMin = taxBase * (1 - fzMalus());
   // Pourquoi un bâtiment n'est pas relié, et vers quoi tracer pour le relier
   for (const b of B) {
     b.why = ''; b.link = -1;
@@ -849,15 +1017,20 @@ function rebuildNet() {
     }
   }
   for (const key of live) for (const c of E[key]) { c.nn = undefined; if (!R[c.a] || !R[c.b]) kill(c); }
+  for (const tn of tunnels) for (const L of tn.lane) { // un tunnel sans route à un bout se vide ; sinon les véhicules reprennent le calcul de leur sortie
+    if (!tn.on) { for (const c of L) kill(c); L.length = 0; } else for (const c of L) c.nn = undefined;
+  }
 }
 function chooseNext(cell, from, k) {
   let best = -1, bv = Infinity;
   for (let d = 0; d < 4; d++) {
     const j = nb(cell, d);
     if (j < 0 || !R[j] || closed[j] || (OW[cell] & (1 << d)) || !(D[k][j] < Infinity)) continue;
-    const v = D[k][j] + (j === from ? 60 : 0);
+    const v = D[k][j] + C * .5 / speedAt(j) + C * .5 / speedAt(cell) + (j === from ? 60 : 0);
     if (v < bv) { bv = v; best = j; }
   }
+  const pj = TP[cell]; // le portail d'un tunnel est un voisin de plus, à l'autre bout
+  if (pj >= 0 && !closed[pj] && D[k][pj] < Infinity) { const v = D[k][pj] + TW[cell] + (pj === from ? 60 : 0); if (v < bv) { bv = v; best = pj; } }
   return best;
 }
 
@@ -874,13 +1047,14 @@ const fx = []; // véhicules qui se garent
 function launch(a, k, type, src, from, k0 = -1) {
   const nn = chooseNext(a, -1, k);
   if (nn < 0) return null;
-  const dir = dirOf(a, nn), L = E[a * 4 + dir], tail = L && L.length ? L[L.length - 1] : null, V = VEH[type];
+  const tun = TP[a] === nn, dir = tun ? 0 : dirOf(a, nn), L = laneOf(a, nn), tail = L && L.length ? L[L.length - 1] : null, V = VEH[type];
   if (tail && tail.d - VEH[tail.type].len / 2 - V.len / 2 - GAP < 0) return null; // pas de place pour sortir
   const off = ROADS[R[a] || 1].off;
   const c = { a, b: nn, dir, d: 0, v: 0, k, k0, type, prev: -1, wait: 0, t0: time, src, lock: -1, lockT: 0, nodeWait: 0, nn: undefined, dead: false, pay: 1,
               color: type === 'bus' ? rand(['#2a9d8f', '#e08a2b', '#4a6fd8']) : rand(CAR_COLORS),
               rx: from >= 0 ? cx(from) : cx(a) - DY[dir] * off, ry: from >= 0 ? cy(from) : cy(a) + DX[dir] * off, ra: from >= 0 ? Math.atan2(cy(a) - cy(from), cx(a) - cx(from)) : Math.atan2(DY[dir], DX[dir]) };
-  putOnEdge(c); nCars++;
+  if (tun) { const tn = tunnelAt(a); c.tn = tn; c.td = tn.a === a ? 0 : 1; tn.lane[c.td].push(c); } else putOnEdge(c);
+  nCars++;
   return c;
 }
 function typeFor(k) {
@@ -914,7 +1088,7 @@ function stepCars(dt) {
         if (c.nn === undefined) c.nn = DEST[c.k][c.b] ? -2 : chooseNext(c.b, c.a, c.k);
         nn = c.nn;
         if (nn >= 0) {
-          const node = c.b, L2 = E[node * 4 + dirOf(node, nn)], tail = L2 && L2.length ? L2[L2.length - 1] : null;
+          const node = c.b, L2 = laneOf(node, nn), tail = L2 && L2.length ? L2[L2.length - 1] : null;
           const beyond = tail ? C + tail.d - VEH[tail.type].len / 2 - V.len / 2 - gapK : Infinity;
           if (!jn[node] || R[node] === 4) obs = beyond; // sur une voie rapide, on s'insère sans s'arrêter
           else {
@@ -947,9 +1121,17 @@ function stepCars(dt) {
         else if (c.d >= C - .01 && nn === -2) { arrive(c); kill(c); L.splice(q, 1); q--; }
         else if (c.d >= C - .01 && nn >= 0) {
           L.splice(q, 1); q--;
-          c.d -= C; c.prev = c.a; c.a = c.b; c.b = nn; c.dir = dirOf(c.a, c.b); c.nn = undefined; c.nodeWait = 0;
-          if (c.k0 >= 0) flow[c.k0 * N + c.a] += 1;
-          putOnEdge(c);
+          if (TP[c.b] === nn) { // le véhicule s'engage sous terre : il quitte la surface jusqu'au portail d'en face
+            const tn = tunnelAt(c.b); c.tn = tn; c.td = tn.a === c.b ? 0 : 1;
+            c.a = c.b; c.b = nn; c.d = 0; c.prev = -1; c.nn = undefined; c.nodeWait = 0; c.lock = -1; c.stuck = 0;
+            if (c.k0 >= 0) flow[c.k0 * N + c.a] += 1;
+            tn.lane[c.td].push(c);
+          } else {
+            c.d -= C; c.prev = c.a; c.a = c.b; c.b = nn; c.dir = dirOf(c.a, c.b); c.nn = undefined; c.nodeWait = 0;
+            if (c.k0 >= 0) flow[c.k0 * N + c.a] += 1;
+            const lw = W_LEVEL[R[c.a]]; if (lw) { WEAR[c.a] = Math.min(100, WEAR[c.a] + W_BASE * (W_TYPE[c.type] || 1) * lw * (ev.rain > 0 ? 1.25 : ev.snow > 0 ? 1.3 : 1)); wearMoved = true; } // la chaussée s'abîme
+            putOnEdge(c);
+          }
         }
       }
     }
@@ -963,10 +1145,48 @@ function stepCars(dt) {
     if (!r || r.dead || r.lock >= 0 || nd.occ.length >= (J[cell] === 1 ? 3 : 1)) continue;
     let free = true;
     if (r.nn >= 0) {
-      const L2 = E[cell * 4 + dirOf(cell, r.nn)], tail = L2 && L2.length ? L2[L2.length - 1] : null;
+      const L2 = laneOf(cell, r.nn), tail = L2 && L2.length ? L2[L2.length - 1] : null;
       if (tail && tail.d - VEH[tail.type].len / 2 - VEH[r.type].len - GAP < 13) free = false; // ne pas s'engager si la sortie est pleine
     }
     if (free) { nd.occ.push(r); r.lock = cell; r.lockT = 0; } // jamais de passage en force : il bloquerait le croisement
+  }
+}
+let wearMoved = false, wearT = 0, crewT = 0;
+function stepTunnels(dt) { // sous terre : une file par sens, sans rien à croiser ; les véhicules ressortent au portail d'en face
+  const gK = (ev.rain > 0 ? .8 : 1) * (season() === 3 ? .93 : 1) * (broke ? .75 : 1), gapK = ev.rain > 0 || ev.snow > 0 ? GAP * 1.7 : GAP;
+  for (const tn of tunnels) {
+    const Lt = tunLen(tn);
+    for (let td = 0; td < 2; td++) {
+      const L = tn.lane[td], entry = td === 0 ? tn.a : tn.b, exit = td === 0 ? tn.b : tn.a;
+      for (let q = 0; q < L.length; q++) {
+        const c = L[q], V = VEH[c.type];
+        if (c.dead) { L.splice(q, 1); q--; continue; }
+        let obs = Infinity, nn = -3;
+        if (q > 0) { const a = L[q - 1]; obs = a.d - VEH[a.type].len / 2 - V.len / 2 - gapK; }
+        else {
+          if (c.nn === undefined) c.nn = DEST[c.k][exit] ? -2 : chooseNext(exit, entry, c.k);
+          nn = c.nn; // comme sur route, la limite d'avance est au-delà du portail, sinon la voiture de tête s'arrêterait juste avant
+          if (nn >= 0) { const L2 = laneOf(exit, nn), tail = L2 && L2.length ? L2[L2.length - 1] : null; if (tail) obs = Lt + tail.d - VEH[tail.type].len / 2 - V.len / 2 - gapK; }
+          else if (nn === -1) obs = Lt - 1;
+        }
+        const vm = TUN_SP * V.sp * gK, gap = obs - c.d, vt = gap <= .5 ? 0 : Math.min(vm, gap * 4);
+        c.v = vt < c.v ? vt : Math.min(vt, c.v + 150 * dt);
+        let nd2 = c.d + c.v * dt; if (nd2 > obs) nd2 = Math.max(c.d, obs);
+        c.d = nd2;
+        if (c.v < 8) c.wait += dt;
+        if (c.v < 1) { c.stuck = (c.stuck || 0) + dt; if (c.stuck > 35) { giveUp(c); L.splice(q, 1); q--; continue; } } else c.stuck = 0;
+        if (q === 0 && nn !== -3) {
+          if (nn === -1 && c.d >= Lt - 2.5) { kill(c); L.splice(q, 1); q--; }
+          else if (c.d >= Lt - .01 && nn === -2) { c.rx = cx(exit); c.ry = cy(exit); c.a = entry; c.b = exit; arrive(c); kill(c); L.splice(q, 1); q--; }
+          else if (c.d >= Lt - .01 && nn >= 0) {
+            L.splice(q, 1); q--;
+            c.a = exit; c.b = nn; c.d = 0; c.prev = -1; c.nn = undefined; c.nodeWait = 0; c.lock = -1; c.stuck = 0; c.rx = cx(exit); c.ry = cy(exit);
+            if (TP[exit] === nn) { c.td = 1 - td; tn.lane[c.td].push(c); } // demi-tour : retour par l'autre file du tunnel
+            else { c.tn = null; c.dir = dirOf(c.a, c.b); c.ra = Math.atan2(DY[c.dir], DX[c.dir]); putOnEdge(c); }
+          }
+        }
+      }
+    }
   }
 }
 const puffs = [];
@@ -983,7 +1203,7 @@ function payTrip(k, type, score, at, mult = 1) { // k : type de lieu concerné, 
   S.trips++; S.st.trips++;
   if (score > .6) { S.streak++; if (S.streak > S.st.bestStreak) S.st.bestStreak = S.streak; } else S.streak = 0;
   const fest = ev.fest && B[ev.fest.i] && B[ev.fest.i].k === k ? 2 : 1;
-  const v = mult * KINDS[k].val * VEH[type].val * carValue() * fluMult() * (isPeak(S.clock) ? 1.5 : 1) * (ev.rain > 0 ? 1.25 : 1) * (ev.snow > 0 ? 1.3 : 1) * fest * cityMult() * achMult();
+  const v = mult * (1 - fzMalus() * .5) * KINDS[k].val * VEH[type].val * carValue() * fluMult() * (isPeak(S.clock) ? 1.5 : 1) * (ev.rain > 0 ? 1.25 : 1) * (ev.snow > 0 ? 1.3 : 1) * fest * cityMult() * achMult();
   earn(v); S.st['k' + k] += v; tripsWin++; missionHit('trips', 1);
   if (floats.length < 8 && (type !== 'car' || Math.random() < .3)) floatText(cx(at), cy(at), '+' + fmt(v) + ' €', 'gain', true);
 }
@@ -1001,6 +1221,7 @@ function arrive(c) {
   if (home) { payTrip(c.k - 5, c.type, score, c.b, .5); return; } // retour à la maison
   let mult = c.pay;
   if (b) {
+    mult *= b.zm; // la spécialité du quartier
     const was = lvOf(b); b.s++; mult *= 1 + .3 * (was - 1);
     if (lvOf(b) > was) { // le lieu grossit : il rapporte plus et attire de plus loin
       netDirty = true;
@@ -1062,7 +1283,15 @@ function grow(silent) {
   if (b && !silent) toast('build', b.h ? 'Une maison s’installe' : 'Nouveau lieu : ' + KINDS[k].name, b.h ? 'Relie-la au réseau pour qu’elle rapporte.' : 'Relie-le au réseau pour qu’il rapporte.');
   return b;
 }
+const fzMalus = () => S.fz.on ? Math.min(.4, .1 + .03 * S.fz.t / 60) : 0; // le malus du gel grandit avec sa durée
+function toggleFreeze(on) {
+  S.fz.on = on === undefined ? !S.fz.on : !!on;
+  taxMin = taxBase * (1 - fzMalus());
+  if (S.fz.on) toast('info', 'Urbanisme gelé', 'Plus aucun nouveau bâtiment tant que tu ne reprends pas. Malus : impôts et trajets en baisse, de plus en plus la durée du gel.', 6500, 'block');
+  else toast('info', 'Urbanisme repris', 'Les nouveaux bâtiments arrivent de nouveau.', 4500, 'block');
+}
 function stepGrowth(dt) {
+  if (S.fz.on) return; // gel : on ne fait pas non plus avancer le compte à rebours
   S.growT -= dt;
   if (S.growT > 0) return;
   S.growT = growEvery();
@@ -1160,7 +1389,7 @@ function stepEvents(dt) {
   if (homes.length) { if (!ev.gold) opts.push('gold', 'gold'); if (!ev.fest) opts.push('fest'); }
   if (!ev.works && nConn >= 4) opts.push('works');
   if (!ev.amb && homes.length >= 3) opts.push('amb');
-  if (B.length < cap() - 3 && nUn === 0 && B.length >= 6) opts.push('quartier');
+  if (!S.fz.on && B.length < cap() - 3 && nUn === 0 && B.length >= 6) opts.push('quartier');
   if (!ev.marathon && nConn >= 10) opts.push('marathon');
   if (!ev.flood && nConn >= 8) opts.push('flood');
   if (!opts.length) return;
@@ -1168,9 +1397,36 @@ function stepEvents(dt) {
   if (ev.force && opts.includes(ev.force)) { pick = ev.force; ev.force = null; }
   startEvent(pick);
 }
+const spentTotal = () => S.st.sRoad + S.st.sJunc + S.st.sUp + S.st.sKeep + S.st.sInt + S.st.sRep;
+const makeDr = () => ({ total0: S.st.total, trips0: S.st.trips, lost0: S.st.lost, spent0: spentTotal(), tax0: S.st.tax, rep0: S.st.sRep, blds0: B.length, sF: 0, tF: 0, wc: -1, wh: 0, peak: 0, peakAt: 0, fz: 0 });
+let repChip = null; // le dernier rapport, proposé dans le fil d'actualité
+function endDay() { // appelé quand une journée se termine : on fige le bilan de celle qui vient de finir
+  if (!S.dr) S.dr = makeDr();
+  const d = S.dr, gain = S.st.total - d.total0, spent = spentTotal() - d.spent0;
+  const r = { day: S.day - 1, se: ((Math.floor((S.day - 2) / 2) % 4) + 4) % 4, gain, spent, net: gain - spent, trips: S.st.trips - d.trips0, lost: S.st.lost - d.lost0, avgF: d.tF ? d.sF / d.tF : S.F,
+    blds: B.length - d.blds0, nUn, tax: S.st.tax - d.tax0, rep: S.st.sRep - d.rep0, wearAvg, wornN, peak: d.peak, peakAt: d.peakAt, wc: d.wc, wh: d.wh, dist: nDist, noisy: nNoisy, fz: d.fz };
+  S.rep.push(r); if (S.rep.length > 7) S.rep.shift();
+  S.dr = makeDr();
+  deliverReport(r);
+}
+function deliverReport(r) {
+  const mode = S.set.report; if (mode === 'off') return;
+  repChip = { day: r.day, until: performance.now() + 150000 };
+  if (mode === 'auto' && $('veil').hidden) { openSheet('rep', S.rep.length - 1); return; }
+  toast('info', 'Rapport du jour ' + r.day, (r.net >= 0 ? '+' : '−') + fmt(Math.abs(r.net)) + ' € de solde, ' + nf0.format(r.trips) + ' trajets. Clique sur le bandeau pour le lire.', 7000, 'report');
+}
 function watchJams() { // une fois par seconde : un bouchon qui dure déclenche une alerte ciblée
   let worst = -1;
-  for (let i = 0; i < N; i++) { if (heat[i] > .8) { jamT[i] += 1; if (jamT[i] > 20 && (worst < 0 || jamT[i] > jamT[worst])) worst = i; } else if (jamT[i] > 0) jamT[i] = Math.max(0, jamT[i] - 2); }
+  let wn = 0, ws = 0, wc = 0, wmax = -1, wbest = -1;
+  for (let i = 0; i < N; i++) {
+    if (heat[i] > .8) { jamT[i] += 1; if (jamT[i] > 20 && (worst < 0 || jamT[i] > jamT[worst])) worst = i; } else if (jamT[i] > 0) jamT[i] = Math.max(0, jamT[i] - 2);
+    if (R[i]) {
+      wc++; ws += WEAR[i]; if (WEAR[i] >= 80) wn++; if (WEAR[i] > wmax) { wmax = WEAR[i]; wbest = i; }
+      const sc = heat[i] + jamT[i] / 60; if (S.dr && sc > S.dr.wh) { S.dr.wh = sc; S.dr.wc = i; } // le pire point noir de la journée, pour le rapport
+    }
+  }
+  wornN = wn; wearAvg = wc ? ws / wc : 0; worstWear = wmax >= 25 ? wbest : -1;
+  if (S.dr) { S.dr.sF += S.F; S.dr.tF += 1; const rr = S.rate * 60; if (rr > S.dr.peak) { S.dr.peak = rr; S.dr.peakAt = S.clock; } }
   for (let q = 0; q < flow.length; q++) flow[q] *= .975;
   if (worst >= 0 && !ev.jam && time - ev.lastJam > 90) {
     ev.jam = { cell: worst, t: 75 }; ev.lastJam = time;
@@ -1222,6 +1478,7 @@ function checkAch() {
   if (S.st.total >= 1e6) unlock('million');
   if (S.city >= 1) unlock('city');
   if (S.day > 8) unlock('year');
+  if (nDist >= 1) unlock('district');
   if (S.mission && S.mission.id === 'connect' && nUn === 0 && B.length >= 3 && nConn === B.length) missionHit('connect', 1);
   if (S.mission && S.mission.id !== 'connect' && nUn > 2) { S.mission = null; newMission(); }
 }
@@ -1234,24 +1491,63 @@ function warnMoney(cost) {
   lastWarn = performance.now();
   toast('alert', 'Pas assez d’argent', 'Il faut ' + fmt(cost) + ' € pour continuer.', 2500, 'coin');
 }
-function beginAct() { act = { cells: new Map(), money: 0, stats: {} }; }
-function endAct() { if (act && (act.cells.size || act.money)) { undoStack.push(act); if (undoStack.length > 40) undoStack.shift(); } act = null; }
+function beginAct() { act = { cells: new Map(), money: 0, stats: {}, tun: tunnels.map(t => ({ a: t.a, b: t.b, cells: t.cells.slice(), cost: t.cost })), tc: false }; }
+function endAct() { if (act && (act.cells.size || act.money || act.tc)) { undoStack.push(act); if (undoStack.length > 40) undoStack.shift(); } act = null; }
 function record(i) { if (act && !act.cells.has(i)) act.cells.set(i, [R[i], J[i], T[i], OW[i]]); }
 function spend(cost, cat) { if (god()) return; S.money -= cost; S.st[cat] += cost; if (act) { act.money -= cost; act.stats[cat] = (act.stats[cat] || 0) + cost; } }
 function undoLast() {
   const a = undoStack.pop();
   if (!a) { toast('info', 'Rien à annuler', 'Les 40 dernières actions de construction sont annulables.', 2500, 'undo'); return; }
   for (const [i, v] of a.cells) { R[i] = v[0]; J[i] = v[1]; T[i] = v[2]; OW[i] = v[3]; ND.delete(i); }
+  if (a.tc) restoreTunnels(a.tun);
   S.money = Math.max(0, S.money - a.money);
   for (const k in a.stats) S.st[k] = Math.max(0, S.st[k] - a.stats[k]);
   netDirty = true;
   toast('info', 'Action annulée', a.money < 0 ? fmt(-a.money) + ' € rendus.' : a.money > 0 ? fmt(a.money) + ' € repris.' : '', 2500, 'undo');
 }
+const maxTun = () => TUN_BASE + TUN_STEP * S.lv.tunnel;
+function restoreTunnels(list) {
+  for (const t of tunnels) for (const L of t.lane) { for (const c of L) kill(c); L.length = 0; }
+  tunnels = list.map(t => ({ a: t.a, b: t.b, cells: t.cells.slice(), cost: t.cost, on: false, lane: [[], []] })); netDirty = true;
+}
+const tunnelHit = cell => tunnels.find(t => t.a === cell || t.b === cell || t.cells.includes(cell)) || null;
+function tunnelCheck(cells) { // cells : portail de départ, cases sous terre…, portail d'arrivée
+  const n = cells.length - 2, a = cells[0], b = cells[cells.length - 1];
+  const out = { ok: false, why: '', short: '', n: Math.max(0, n), cost: 0, up: 0, roads: 0, blds: 0, water: 0 };
+  if (cells.length < 3) { out.why = 'Glisse jusqu’à l’autre portail : il faut au moins une case sous terre.'; out.short = 'Glisse jusqu’à l’autre portail'; return out; }
+  if (n > maxTun()) { out.short = 'Trop long : ' + maxTun() + ' cases au maximum'; out.why = 'Trop long : ' + maxTun() + ' cases sous terre au maximum' + (S.lv.tunnel < UP.tunnel.max ? ' (améliore « Tunnels »).' : '.'); return out; }
+  const okP = c => (T[c] === 0 || T[c] === 2) && BL[c] < 0 && TUNP[c] < 0;
+  if (!okP(a) || !okP(b)) { out.short = 'Portail impossible ici'; out.why = 'Un portail doit s’ouvrir sur un terrain libre : ni eau, ni colline, ni voie ferrée, ni bâtiment, ni portail existant.'; return out; }
+  for (let q = 1; q < cells.length - 1; q++) { const c = cells[q]; if (R[c]) out.roads++; if (BL[c] >= 0) out.blds++; if (T[c] === 1) out.water++; }
+  out.cost = price(n * TUN_CELL) + (R[a] ? 0 : tileCost(a, 1)) + (R[b] ? 0 : tileCost(b, 1));
+  out.up = n * UP_TUN_CELL * upkeepScale();
+  out.ok = true; return out;
+}
+function buildTunnel(cells) {
+  const info = tunnelCheck(cells);
+  if (!info.ok) { toast('alert', 'Tunnel impossible', info.why, 6000, 'tunnel'); return null; }
+  if (!canPay(info.cost)) { warnMoney(info.cost); return null; }
+  const a = cells[0], b = cells[cells.length - 1];
+  beginAct();
+  for (const c of [a, b]) if (!R[c]) paint(c, 1); // les portails s'ouvrent sur un chemin au moins
+  const own = price(info.n * TUN_CELL); spend(own, 'sRoad');
+  tunnels.push({ a, b, cells: cells.slice(1, -1), cost: own, on: false, lane: [[], []] });
+  act.tc = true; endAct(); netDirty = true; unlock('tunnel');
+  return info;
+}
+function removeTunnel(tn) {
+  const i = tunnels.indexOf(tn); if (i < 0) return false;
+  for (const L of tn.lane) { for (const c of L) kill(c); L.length = 0; }
+  tunnels.splice(i, 1); if (act) act.tc = true;
+  const back = god() ? 0 : Math.round(tn.cost * .5);
+  if (back) { S.money += back; S.st.sRoad = Math.max(0, S.st.sRoad - back); if (act) { act.money += back; act.stats.sRoad = (act.stats.sRoad || 0) - back; } }
+  netDirty = true; return true;
+}
 function tileCost(i, level) {
   if (i < 0 || BL[i] >= 0) return -1;
   if (R[i] >= level) return 0;
   let c = ROADS[level].cost - (R[i] ? ROADS[R[i]].cost : 0);
-  if (!R[i]) { if (T[i] === 1) c += BRIDGE; else if (T[i] === 2) c *= 2; else if (T[i] === 3) c += TUNNEL; else if (T[i] === 4) c += level === 4 ? BRIDGE : CROSSING; }
+  if (!R[i]) { if (T[i] === 1) c += BRIDGE; else if (T[i] === 2) c *= 2; else if (T[i] === 3) c += HILL; else if (T[i] === 4) c += level === 4 ? BRIDGE : CROSSING; }
   return price(c);
 }
 function paint(i, level) {
@@ -1261,7 +1557,6 @@ function paint(i, level) {
   if (!canPay(cost)) { warnMoney(cost); return false; }
   record(i); spend(cost, 'sRoad');
   if (!R[i] && T[i] === 1) unlock('bridge');
-  if (!R[i] && T[i] === 3) unlock('tunnel');
   if (T[i] === 2) T[i] = 0;
   R[i] = level; S.st.tiles++; netDirty = true;
   unlock('road'); if (level === 2) unlock('route'); if (level === 3) unlock('avenue'); if (level === 4) unlock('highway');
@@ -1273,9 +1568,15 @@ function erase(i) {
   record(i);
   const back = Math.round(ROADS[R[i]].cost * .5);
   if (!god()) { S.money += back; S.st.sRoad = Math.max(0, S.st.sRoad - back); if (act) { act.money += back; act.stats.sRoad = (act.stats.sRoad || 0) - back; } }
-  R[i] = 0; J[i] = 0; OW[i] = 0;
+  const wasPortal = TUNP[i] >= 0;
+  R[i] = 0; J[i] = 0; OW[i] = 0; WEAR[i] = 0;
+  if (wasPortal && performance.now() - lastWarn > 1500) { lastWarn = performance.now(); toast('alert', 'Portail de tunnel coupé', 'Le tunnel ne sert plus tant que son portail n’est pas relié à une route.', 5000, 'tunnel'); }
   for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && (OW[j] & (1 << ((d + 2) & 3)))) { record(j); OW[j] &= ~(1 << ((d + 2) & 3)); } }
   netDirty = true;
+}
+function eraseAt(i) { // dans le calque Souterrain ou avec l'outil Tunnel, on démolit les tunnels ; sinon, les routes
+  if (layer === 'under' || tool === 'tun') { const tn = tunnelHit(i); if (tn) removeTunnel(tn); return; }
+  erase(i);
 }
 function setJunction(i, type) {
   if (i < 0 || !R[i] || !jn[i] || R[i] === 4 || J[i] === type) return;
@@ -1298,6 +1599,20 @@ function clearOneWay(i) {
   for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && (OW[j] & (1 << ((d + 2) & 3)))) { record(j); OW[j] &= ~(1 << ((d + 2) & 3)); } }
   netDirty = true;
 }
+let wornN = 0, wearAvg = 0, worstWear = -1;
+const repairCost = i => R[i] ? Math.max(1, Math.round(price(ROADS[R[i]].cost * .5 * WEAR[i] / 100))) : 0;
+function repairCell(i) { // remet une case à neuf ; faux si elle n'en a pas besoin ou si la caisse ne suit pas
+  if (i < 0 || !R[i] || WEAR[i] < 4) return false;
+  const cost = repairCost(i); if (!canPay(cost)) { warnMoney(cost); return false; }
+  if (!god()) { S.money -= cost; S.st.sRep += cost; }
+  WEAR[i] = 0; netDirty = true; wearMoved = true; unlock('repair');
+  return true;
+}
+function crewWork(n) { // l'amélioration « Voirie » : des équipes réparent seules les cases les plus usées
+  const worn = []; for (let i = 0; i < N; i++) if (R[i] && WEAR[i] >= 35) worn.push(i);
+  worn.sort((a, b) => WEAR[b] - WEAR[a]);
+  for (let q = 0; q < Math.min(n, worn.length); q++) { const i = worn[q]; if (S.money >= repairCost(i) + 25 || god()) repairCell(i); }
+}
 function line(a, b, fn) { // relie deux cases en escalier pour ne jamais sauter de tronçon
   let x = a % COLS, y = (a / COLS) | 0; const x1 = b % COLS, y1 = (b / COLS) | 0;
   while (x !== x1 || y !== y1) {
@@ -1308,8 +1623,25 @@ function line(a, b, fn) { // relie deux cases en escalier pour ne jamais sauter 
 }
 // Aperçu : on dessine d'abord le tracé, avec son coût et ce qu'il changerait ; rien n'est construit avant de relâcher.
 let plan = null;
+function tunInfo() { // aperçu d'un tunnel : validité, coût, ce qu'il traverse, ce qu'il change aux trajets
+  const info = tunnelCheck(plan.cells);
+  Object.assign(plan, { cost: info.cost, n: info.n, bad: info.ok ? 0 : 1, why: info.why, short: info.short, up: info.up, roads: info.roads, blds: info.blds, water: info.water, gained: 0, pct: 0 });
+  if (!info.ok) return;
+  const a = plan.cells[0], b = plan.cells[plan.cells.length - 1], ra = R[a], rb = R[b], pa = TP[a], pb = TP[b], wa = TW[a], wb = TW[b], w = (info.n + 1) * C / TUN_SP + .6;
+  if (!ra) R[a] = 1; if (!rb) R[b] = 1; TP[a] = b; TP[b] = a; TW[a] = TW[b] = w; // on pose le tunnel pour de faux, on recalcule les distances, on remet tout en place
+  let gained = 0, tOld = 0, tNew = 0, both = 0;
+  for (let k = 0; k < 4; k++) dijkstra(tmpD[k], sourcesFor(k));
+  for (const bd of B) if (bd.h) {
+    let before = Infinity, after = Infinity;
+    for (const j of doorsOf(bd)) { if (tmpD[bd.k][j] < after) after = tmpD[bd.k][j]; if (D[bd.k][j] < before) before = D[bd.k][j]; }
+    if (after < Infinity && before === Infinity) gained++; else if (after < Infinity && before < Infinity) { tOld += before; tNew += after; both++; }
+  }
+  R[a] = ra; R[b] = rb; TP[a] = pa; TP[b] = pb; TW[a] = wa; TW[b] = wb;
+  plan.gained = gained; plan.pct = both && tOld > 0 ? Math.round((tNew - tOld) / tOld * 100) : 0;
+}
 function planInfo() {
   if (!plan) return;
+  if (plan.kind === 'tun') { tunInfo(); return; }
   let cost = 0, n = 0, bad = 0;
   for (const i of plan.cells) { const c = tileCost(i, plan.level); if (c < 0) bad++; else if (c > 0) { cost += c; n++; } }
   plan.cost = cost; plan.n = n; plan.bad = bad;
@@ -1332,6 +1664,7 @@ function planInfo() {
 function commitPlan() {
   const p = plan; plan = null;
   if (!p) return;
+  if (p.kind === 'tun') { if (p.cells.length >= 2) buildTunnel(p.cells); save(); return; }
   beginAct();
   for (const i of p.cells) if (!paint(i, p.level)) { if (tileCost(i, p.level) > 0) break; }
   endAct(); save();
@@ -1380,7 +1713,7 @@ function resetCam() { // vue de référence, centrée sur la ville plutôt que s
   for (const b of B) { sx += cx(b.c); sy += cy(b.c); }
   cam.x = B.length ? sx / B.length : W / 2; cam.y = B.length ? sy / B.length : H / 2; applyCam();
 }
-const FIT_MAX = 10; let fitSig = '', fitT = 0;
+const FIT_MAX = 11; let fitSig = '', fitT = 0;
 function fitTop(force) { // simplifie la barre du haut, palier après palier, tant qu'un élément est rogné ou déborde
   const t = $('top'), l = $('left'), sig = l.textContent.length + '|' + $('clockbox').textContent.length + '|' + window.innerWidth, now = performance.now();
   if (!force && sig === fitSig && now - fitT < 3000) return;
@@ -1460,14 +1793,7 @@ function roadDirs(i) { const ds = []; for (let d = 0; d < 4; d++) { const j = nb
 // Les routes passent toujours par le centre des cases (la simulation reste sur la grille), mais elles sont lissées par une
 // spline de Catmull-Rom : les escaliers deviennent des diagonales douces et les virages de larges courbes. Les véhicules
 // suivent exactement la même courbe.
-const CUT = .42; // à quel point un coude est « arrondi » vers l'intérieur
-function anc(i) { // point d'ancrage de la route dans la case : le centre, rapproché de l'intérieur du virage pour adoucir les angles
-  const x = cx(i), y = cy(i);
-  if (!R[i] || deg[i] !== 2) return [x, y];
-  let nx = 0, ny = 0, n = 0;
-  for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { nx += cx(j); ny += cy(j); n++; } }
-  return [x + (nx / n - x) * CUT, y + (ny / n - y) * CUT];
-}
+function anc(i) { return [AX[i], AY[i]]; } // point où la route traverse la case (voir buildAnchors)
 function contPrev(a, b) { // point qui précède la case a quand on va de a vers b : prolongation de la route, sinon prolongement droit (les branches d'un croisement partent à angle droit)
   if (deg[a] === 2) for (let d = 0; d < 4; d++) { const z = nb(a, d); if (z >= 0 && R[z] && z !== b) return anc(z); }
   const k = dirOf(a, b); return [cx(a) - DX[k] * C, cy(a) - DY[k] * C];
@@ -1654,7 +1980,7 @@ function drawStatic(canvas, p, night) {
   }
   // Routes à l'air libre
   g.lineCap = 'round'; g.lineJoin = 'round';
-  const all = cells.filter(i => R[i]), roads = all.filter(i => T[i] !== 3), tunnels = all.filter(i => T[i] === 3);
+  const all = cells.filter(i => R[i]), roads = all;
   const strokeLevel = (L, w, col, list = roads) => { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); for (const i of list) if (R[i] === L) roadCellPath(g, i); g.stroke(); };
   const bridges = roads.filter(i => T[i] === 1 || (T[i] === 4 && R[i] === 4));
   if (bridges.length) {
@@ -1664,18 +1990,24 @@ function drawStatic(canvas, p, night) {
   }
   for (let L = 1; L <= 4; L++) strokeLevel(L, ROADS[L].w + (L === 1 ? 3.5 : L === 4 ? 5 : 6), p.edge[L]);
   for (let L = 1; L <= 4; L++) strokeLevel(L, ROADS[L].w, p.road[L]);
-  strokeLevel(1, 6, night ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.22)');
+  strokeLevel(1, 7, night ? 'rgba(0,0,0,.14)' : 'rgba(120,92,50,.16)'); // la piste battue au milieu du chemin
   g.lineCap = 'butt';
   const plain = roads.filter(i => !jn[i]);
   g.setLineDash([5.5, 6.5]); strokeLevel(2, 1.4, p.mark, plain); g.setLineDash([]);
   strokeLevel(3, 3.6, p.mark, plain); strokeLevel(3, 1.3, p.road[3], plain);
   strokeLevel(4, 5, p.barrier); strokeLevel(4, 2.2, p.road[4]); // terre-plein central de la voie rapide
-  // Tunnels : un pointillé sous la colline et une bouche à chaque entrée
-  g.setLineDash([6, 6]); for (let L = 1; L <= 4; L++) strokeLevel(L, 5, p.tunnel, tunnels); g.setLineDash([]);
-  for (const i of tunnels) for (const d of roadDirs(i)) { const j = nb(i, d); if (T[j] === 3) continue;
-    const x = cx(i) + DX[d] * 22, y = cy(i) + DY[d] * 22, w = ROADS[R[j]].w / 2;
-    g.fillStyle = p.portal; g.beginPath(); g.arc(x, y, w + 2.2, 0, 7); g.fill();
-    g.fillStyle = night ? '#1c2328' : '#3a4148'; g.beginPath(); g.arc(x, y, w - .5, 0, 7); g.fill();
+  // Tunnels : chaque portail s'ouvre par une bouche sombre au bout de la route ; le parcours souterrain est tracé à part, par-dessus
+  for (const tn of tunnels) for (const [pc, uc] of [[tn.a, tn.cells[0]], [tn.b, tn.cells[tn.cells.length - 1]]]) {
+    if (!seen(cx(pc), cy(pc), 60)) continue;
+    const d = dirOf(pc, uc), x = cx(pc), y = cy(pc), L = R[pc] || 1, w = ROADS[L].w / 2;
+    if (R[pc]) {
+      g.lineCap = 'butt'; g.strokeStyle = p.edge[L]; g.lineWidth = ROADS[L].w + 5; g.beginPath(); g.moveTo(x, y); g.lineTo(x + DX[d] * 19, y + DY[d] * 19); g.stroke();
+      g.strokeStyle = p.road[L]; g.lineWidth = ROADS[L].w; g.beginPath(); g.moveTo(x, y); g.lineTo(x + DX[d] * 19, y + DY[d] * 19); g.stroke();
+    }
+    g.save(); g.translate(x + DX[d] * 20, y + DY[d] * 20); g.rotate(Math.atan2(DY[d], DX[d]));
+    g.fillStyle = p.portal; rr(g, -5, -w - 5, 10, 2 * w + 10, 3.5); g.fill();
+    g.fillStyle = night ? '#0f1519' : '#2b3137'; rr(g, -2, -w - 2, 8, 2 * w + 4, 2.5); g.fill();
+    g.restore();
   }
   // Sens uniques : un chevron sur chaque tronçon concerné
   g.fillStyle = p.arrow;
@@ -1781,13 +2113,14 @@ function carPose(c) { // position et cap : sur la courbe lissée de l'arête, av
   const x = u * u * u * bz[0] + 3 * u * u * t * bz[2] + 3 * u * t * t * bz[4] + t * t * t * bz[6], y = u * u * u * bz[1] + 3 * u * u * t * bz[3] + 3 * u * t * t * bz[5] + t * t * t * bz[7];
   let tx = 3 * u * u * (bz[2] - bz[0]) + 6 * u * t * (bz[4] - bz[2]) + 3 * t * t * (bz[6] - bz[4]), ty = 3 * u * u * (bz[3] - bz[1]) + 6 * u * t * (bz[5] - bz[3]) + 3 * t * t * (bz[7] - bz[5]);
   const tn = Math.hypot(tx, ty) || 1; tx /= tn; ty /= tn;
+  const tunNext = c.nn >= 0 && TP[c.b] === c.nn;
   let sp = null, w = 0;
   if (J[cell] === 1 && jn[cell]) {
-    if (!first && c.nn >= 0 && c.d > C - REACH) { sp = ringPose(cell, via, dirOf(cell, c.nn), (c.d - (C - REACH)) / (2 * REACH), off); w = (c.d - (C - REACH)) / 7; }
+    if (!first && c.nn >= 0 && !tunNext && c.d > C - REACH) { sp = ringPose(cell, via, dirOf(cell, c.nn), (c.d - (C - REACH)) / (2 * REACH), off); w = (c.d - (C - REACH)) / 7; }
     else if (first && c.prev >= 0 && c.d < REACH) { sp = ringPose(cell, c.prev !== c.b ? dirOf(cell, c.prev) : dir, dir, .5 + c.d / (2 * REACH), off); w = (REACH - c.d) / 7; }
   } else if (deg[cell] >= 3) { // croisement ordinaire : on tourne en arc de sa voie à la voie d'arrivée
     const h = 13;
-    if (!first && c.nn >= 0 && c.d > C - h) { const o = dirOf(cell, c.nn); if ((o ^ via) & 1) { sp = turnPose(cell, via, o, (c.d - (C - h)) / (2 * h), off, h); w = (c.d - (C - h)) / 5; } }
+    if (!first && c.nn >= 0 && !tunNext && c.d > C - h) { const o = dirOf(cell, c.nn); if ((o ^ via) & 1) { sp = turnPose(cell, via, o, (c.d - (C - h)) / (2 * h), off, h); w = (c.d - (C - h)) / 5; } }
     else if (first && c.prev >= 0 && c.d < h) { const i = dirOf(cell, c.prev); if ((i ^ dir) & 1) { sp = turnPose(cell, i, dir, .5 + c.d / (2 * h), off, h); w = (h - c.d) / 5; } }
   }
   const px = x - ty * off, py = y + tx * off, pa = Math.atan2(ty, tx);
@@ -1870,8 +2203,55 @@ function heatColor(h) { // du jaune au rouge à mesure que le bouchon s'installe
   const g = Math.round(205 - 165 * h), b = Math.round(60 - 30 * h);
   return 'rgba(255,' + g + ',' + b + ',' + (.3 + .55 * h).toFixed(2) + ')';
 }
-let hover = -1, hoverXY = [0, 0], dragging = null, layer = 'normal', flowMax = 1, edgeHover = false;
+let hover = -1, hoverXY = [0, 0], dragging = null, layer = 'normal', flowMax = 1, edgeHover = false, focusRing = null;
 const edgeMarks = [];
+function tunnelPts(tn, rev) { const pts = [[cx(tn.a), cy(tn.a)]]; for (const c of tn.cells) pts.push([cx(c), cy(c)]); pts.push([cx(tn.b), cy(tn.b)]); return rev ? pts.reverse() : pts; }
+function drawTunnels(p, night, seen) { // le parcours souterrain, par-dessus la surface : en filigrane, ou en surbrillance quand on s'en occupe
+  if (!tunnels.length) return;
+  const focus = layer === 'under' || tool === 'tun';
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  for (const tn of tunnels) {
+    const pts = tunnelPts(tn), last = pts[pts.length - 1];
+    if (!seen(pts[0][0], pts[0][1]) && !seen(last[0], last[1]) && !seen(pts[1][0], pts[1][1])) continue;
+    ctx.beginPath(); pts.forEach((q, k) => k ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]));
+    ctx.strokeStyle = night ? 'rgba(0,0,0,.45)' : 'rgba(25,32,38,.32)'; ctx.lineWidth = focus ? 8 : 5.5; ctx.stroke();
+    ctx.strokeStyle = !tn.on ? p.stop : focus ? '#f0b02e' : night ? 'rgba(255,255,255,.6)' : 'rgba(255,255,255,.72)'; ctx.lineWidth = focus ? 3.6 : 2.2;
+    ctx.setLineDash([6, 7]); ctx.lineDashOffset = tn.on ? -time * 12 : 0; ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+    const mid = pts[pts.length >> 1];
+    if (!tn.on) badge(mid[0], mid[1], p.stop, '!', true);
+    else if (focus) tag('Tunnel · ' + tn.cells.length + ' case' + (tn.cells.length > 1 ? 's' : ''), mid[0], mid[1] - 16, p.glass, '#fff');
+    if (layer === 'under') for (let td = 0; td < 2; td++) { // les véhicules sous terre
+      const P = tunnelPts(tn, td === 1);
+      for (const c of tn.lane[td]) {
+        if (c.dead) continue;
+        const idx = Math.min(P.length - 2, Math.floor(c.d / C)), f = Math.max(0, Math.min(1, (c.d - idx * C) / C));
+        const x = P[idx][0] + (P[idx + 1][0] - P[idx][0]) * f, y = P[idx][1] + (P[idx + 1][1] - P[idx][1]) * f;
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, 4.8, 0, 7); ctx.fill(); ctx.fillStyle = c.color; ctx.beginPath(); ctx.arc(x, y, 3.4, 0, 7); ctx.fill();
+      }
+    }
+  }
+}
+function drawTunnelPlan(p) { // aperçu d'un tunnel : portails, cases sous terre, coût et conséquences
+  const cs = plan.cells, n = cs.length, ok = !plan.bad;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  cs.forEach((i, q) => {
+    const x = (i % COLS) * C, y = ((i / COLS) | 0) * C, portal = q === 0 || q === n - 1;
+    ctx.fillStyle = portal ? (ok ? 'rgba(47,199,125,.42)' : 'rgba(239,90,76,.42)') : 'rgba(80,130,220,.34)'; rr(ctx, x + 4, y + 4, C - 8, C - 8, 9); ctx.fill();
+    if (!portal) { ctx.strokeStyle = 'rgba(90,140,235,.85)'; ctx.lineWidth = 1.6; ctx.setLineDash([4, 4]); rr(ctx, x + 4, y + 4, C - 8, C - 8, 9); ctx.stroke(); ctx.setLineDash([]); }
+  });
+  ctx.strokeStyle = '#f0b02e'; ctx.lineWidth = 3.4; ctx.setLineDash([6, 7]); ctx.lineDashOffset = -time * 20; ctx.beginPath();
+  cs.forEach((i, q) => q ? ctx.lineTo(cx(i), cy(i)) : ctx.moveTo(cx(i), cy(i))); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+  const last = cs[n - 1], can = canPay(plan.cost), s = 28 / sc;
+  if (!ok) { tag(plan.short || 'Impossible', cx(last), cy(last) - 30, p.glass, p.amber); return; }
+  const l1 = 'Tunnel · ' + plan.n + ' / ' + maxTun() + ' cases' + (plan.n >= maxTun() ? ' (maximum)' : '') + ' · ' + fmt(plan.cost) + ' €' + (can ? '' : ' (il te manque ' + fmt(plan.cost - S.money) + ' €)');
+  const bits = [];
+  if (!god()) bits.push('entretien +' + fmt(plan.up) + ' € par minute');
+  const under = []; if (plan.roads) under.push(plan.roads + ' route' + (plan.roads > 1 ? 's' : '')); if (plan.blds) under.push(plan.blds + ' bâtiment' + (plan.blds > 1 ? 's' : '')); if (plan.water) under.push('l’eau');
+  if (under.length) bits.push('passe sous ' + under.join(', '));
+  if (plan.gained) bits.push(plan.gained + ' maison' + (plan.gained > 1 ? 's' : '') + ' reliée' + (plan.gained > 1 ? 's' : '')); if (plan.pct <= -1) bits.push('trajets ' + plan.pct + ' %'); else if (plan.pct >= 1) bits.push('trajets +' + plan.pct + ' %');
+  tag(l1, cx(last), cy(last) - 30 - s, p.glass, can ? '#fff' : p.amber);
+  tag(bits.join(', ').replace('-', '−'), cx(last), cy(last) - 30, p.glass, plan.gained || plan.pct <= -1 ? p.go : p.amber);
+}
 function draw(dt) {
   if (netDirty) rebuildNet();
   const dk = S.set.day ? 0 : darkness(S.clock), night = dk > .5, p = pal(night), now = performance.now(), se = season();
@@ -1910,6 +2290,16 @@ function draw(dt) {
         ctx.strokeStyle = q === 0 ? (night ? '#2f9d64' : '#3fb876') : heatColor((q - .5) / 8).replace(/[\d.]+\)$/, '1)'); ctx.lineWidth = q === 0 ? 7 : 9 + q * .8;
         ctx.beginPath(); for (const i of tiers[q]) roadCellPath(ctx, i); ctx.stroke();
       }
+    } else if (layer === 'wear') {
+      const tiers = [[], [], [], [], [], [], [], [], []];
+      for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) tiers[WEAR[i] < 6 ? 0 : 1 + Math.min(7, (WEAR[i] / 12.6) | 0)].push(i);
+      for (let q = 0; q < 9; q++) if (tiers[q].length) {
+        ctx.strokeStyle = q === 0 ? (night ? '#2f9d64' : '#3fb876') : heatColor((q - .5) / 8).replace(/[\d.]+\)$/, '1)'); ctx.lineWidth = q === 0 ? 7 : 9 + q * .8;
+        ctx.beginPath(); for (const i of tiers[q]) roadCellPath(ctx, i); ctx.stroke();
+      }
+    } else if (layer === 'under') { // la surface s'efface : seuls les tunnels comptent
+      ctx.strokeStyle = night ? 'rgba(150,165,172,.5)' : 'rgba(110,122,128,.5)'; ctx.lineWidth = 3.5; ctx.beginPath();
+      for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) roadCellPath(ctx, i); ctx.stroke();
     } else if (layer === 'cost') {
       const need = [0, .02, .1, .32, .65]; // part du trafic maximal qu'il faut pour justifier chaque type de route
       for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) {
@@ -1947,7 +2337,7 @@ function draw(dt) {
   if (layer === 'normal') {
     ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
     const tiers = [[], [], [], [], [], [], [], []];
-    for (let i = 0; i < N; i++) if (R[i] && T[i] !== 3 && seen(cx(i), cy(i))) {
+    for (let i = 0; i < N; i++) if (R[i] && seen(cx(i), cy(i))) {
       let sum = 0, n = 0;
       for (let d = 0; d < 4; d++) { const j = nb(i, d); if (j >= 0 && R[j]) { sum += heat[j]; n++; } }
       const h = Math.min(1, n ? heat[i] * .55 + sum / n * .45 : heat[i]);
@@ -1962,6 +2352,19 @@ function draw(dt) {
     }
   }
 
+  drawTunnels(p, night, seen);
+  if (layer === 'normal') { // usure : la chaussée se tache, puis se piquette de nids-de-poule
+    ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
+    const wt = [[], [], [], []];
+    for (let i = 0; i < N; i++) if (R[i] && WEAR[i] >= 30 && seen(cx(i), cy(i))) wt[WEAR[i] >= 85 ? 3 : WEAR[i] >= 65 ? 2 : WEAR[i] >= 45 ? 1 : 0].push(i);
+    const wa = [.12, .22, .33, .45];
+    for (let q = 0; q < 4; q++) if (wt[q].length) for (let L = 1; L <= 4; L++) {
+      ctx.strokeStyle = night ? 'rgba(20,12,4,' + wa[q] + ')' : 'rgba(96,66,30,' + wa[q] + ')'; ctx.lineWidth = ROADS[L].w - 3; ctx.beginPath();
+      for (const i of wt[q]) if (R[i] === L) roadCellPath(ctx, i); ctx.stroke();
+    }
+    ctx.fillStyle = night ? 'rgba(0,0,0,.45)' : 'rgba(20,14,8,.4)';
+    for (let q = 2; q < 4; q++) for (const i of wt[q]) if (hash(i, 90) < .8) { ctx.beginPath(); ctx.ellipse(cx(i) + (hash(i, 91) - .5) * 10, cy(i) + (hash(i, 92) - .5) * 10, 2.6, 1.8, hash(i, 93) * 3, 0, 7); ctx.fill(); }
+  }
   // Routes fermées : marathon, crue ; chantier ralenti
   const barrier = (x, y, horiz) => { for (let q = 0; q < 4; q++) { ctx.fillStyle = q % 2 ? '#f4f4ef' : '#e8503f'; if (horiz) ctx.fillRect(x - 14 + q * 7, y - 2, 7, 4); else ctx.fillRect(x - 2, y - 14 + q * 7, 4, 7); } };
   if (ev.marathon) {
@@ -2000,13 +2403,13 @@ function draw(dt) {
   }
   // Véhicules (invisibles dans les tunnels)
   placeCars(dt);
-  if (layer !== 'flow' && layer !== 'cost') for (const key of live) for (const c of E[key]) if (!c.dead && T[c.d < C / 2 ? c.a : c.b] !== 3 && seen(c.rx, c.ry)) drawVehicle(c, p, night);
+  if (layer === 'normal' || layer === 'traffic') for (const key of live) for (const c of E[key]) if (!c.dead && seen(c.rx, c.ry)) drawVehicle(c, p, night);
   for (let q = fx.length - 1; q >= 0; q--) {
     const f = fx[q]; f.t += dt / .45;
     if (f.t >= 1) { fx.splice(q, 1); continue; }
     const e = f.t * f.t * (3 - 2 * f.t), c = f.c, sx = c.rx, sy = c.ry, sa = c.ra;
     c.rx = f.x0 + (f.x1 - f.x0) * e; c.ry = f.y0 + (f.y1 - f.y0) * e; c.ra = Math.atan2(f.y1 - f.y0, f.x1 - f.x0);
-    if (layer !== 'flow' && layer !== 'cost') { ctx.globalAlpha = 1 - e * e; drawVehicle(c, p, night); ctx.globalAlpha = 1; }
+    if (layer === 'normal' || layer === 'traffic') { ctx.globalAlpha = 1 - e * e; drawVehicle(c, p, night); ctx.globalAlpha = 1; }
     c.rx = sx; c.ry = sy; c.ra = sa;
   }
   for (let q = puffs.length - 1; q >= 0; q--) { // un conducteur a renoncé
@@ -2076,16 +2479,21 @@ function draw(dt) {
     }
     if (layer === 'normal' && sc >= .5) for (const b of B) if (!b.h && b.conn) {
       const x = cx(b.c), y = cy(b.c); if (!seen(x, y)) continue;
-      const text = KINDS[b.k].lv[lvOf(b) - 1], s = 1 / sc;
+      const text = KINDS[b.k].lv[lvOf(b) - 1] + (b.zk && ZONE_SHORT[b.zk] ? ' · ' + ZONE_SHORT[b.zk] : ''), s = 1 / sc;
       ctx.font = '650 13px ' + FONT; const w = ctx.measureText(text).width + 30, sx = ox + x * sc - w / 2, sy = oy + (y + 29) * sc;
       if (hit(sx, sy, w, 24)) continue;
       ctx.save(); ctx.translate(x, y + 29); ctx.scale(s, s); ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
       ctx.fillStyle = night ? 'rgba(14,20,24,.8)' : 'rgba(255,255,255,.88)'; rr(ctx, -w / 2, 0, w, 24, 12); ctx.fill();
       ctx.fillStyle = KINDS[b.k].col; ctx.beginPath(); ctx.arc(-w / 2 + 13, 12, 4.8, 0, 7); ctx.fill();
-      ctx.fillStyle = night ? '#e9edf0' : '#1b2024'; ctx.fillText(text, -w / 2 + 23, 12.5); ctx.restore();
+      ctx.fillStyle = b.zt < 0 ? (night ? '#ffc13d' : '#9a5e00') : night ? '#e9edf0' : '#1b2024'; ctx.fillText(text, -w / 2 + 23, 12.5); ctx.restore();
     }
   }
   if (ev.amb && ev.amb.target) { const b = ev.amb.target; ctx.strokeStyle = p.stop; ctx.lineWidth = 2.5; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(cx(b.c), cy(b.c), 25 + 2 * Math.sin(time * 5), 0, 7); ctx.stroke(); ctx.setLineDash([]); }
+  if (focusRing) { // le bouton « pire bouchon » : trois ondes rouges autour du point noir
+    const k = (performance.now() / 1000 - focusRing.t0) / 4;
+    if (k >= 1) focusRing = null;
+    else for (let q = 0; q < 3; q++) { const kk = (k * 3 + q / 3) % 1; ctx.strokeStyle = p.stop; ctx.globalAlpha = (1 - kk) * (1 - k); ctx.lineWidth = 3.5 / sc; ctx.beginPath(); ctx.arc(cx(focusRing.cell), cy(focusRing.cell), 22 + kk * 64, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
+  }
   if (ev.jam) { const i = ev.jam.cell, kk = (time * .9) % 1; ctx.strokeStyle = p.stop; ctx.lineWidth = 3 / Math.max(.7, cam.z); ctx.globalAlpha = 1 - kk; ctx.beginPath(); ctx.arc(cx(i), cy(i), 26 + kk * 44, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
 
   // Ombres de nuages, de jour
@@ -2108,7 +2516,8 @@ function draw(dt) {
   }
   ctx.lineDashOffset = 0;
   // Aide des outils
-  if (plan) { // aperçu du tracé : rien n'est construit avant de relâcher
+  if (plan && plan.kind === 'tun') drawTunnelPlan(p);
+  else if (plan) { // aperçu du tracé : rien n'est construit avant de relâcher
     let left = god() ? Infinity : S.money;
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     for (const i of plan.cells) {
@@ -2134,7 +2543,17 @@ function draw(dt) {
   } else if (hover >= 0 && tool !== 'main') {
     const x = (hover % COLS) * C, y = ((hover / COLS) | 0) * C;
     if (tool === 'erase' || tool === 'ow') { if (R[hover]) { ctx.strokeStyle = tool === 'ow' ? p.go : p.stop; ctx.lineWidth = 2.5; rr(ctx, x + 3, y + 3, C - 6, C - 6, 9); ctx.stroke(); } }
-    else {
+    else if (tool === 'fix') {
+      if (R[hover]) {
+        const w = WEAR[hover], needs = w >= 4;
+        ctx.strokeStyle = needs ? p.go : 'rgba(255,255,255,.7)'; ctx.lineWidth = 2.5; rr(ctx, x + 3, y + 3, C - 6, C - 6, 9); ctx.stroke();
+        tag(needs ? Math.round(w) + ' % d’usure · réparer ' + fmt(repairCost(hover)) + ' €' : 'En bon état', x + C / 2, y - 14, p.glass, needs ? '#fff' : p.go);
+      }
+    } else if (tool === 'tun') {
+      const th = tunnelHit(hover), okp = (T[hover] === 0 || T[hover] === 2) && BL[hover] < 0 && TUNP[hover] < 0;
+      ctx.strokeStyle = th ? p.amber : okp ? p.go : p.stop; ctx.lineWidth = 2.5; rr(ctx, x + 3, y + 3, C - 6, C - 6, 9); ctx.stroke();
+      tag(th ? 'Tunnel de ' + th.cells.length + ' case' + (th.cells.length > 1 ? 's' : '') + ' · clic droit pour le démolir' : okp ? 'Portail possible' : 'Pas de portail ici', x + C / 2, y - 14, p.glass, th ? p.amber : okp ? p.go : p.amber);
+    } else {
       const cost = tileCost(hover, +tool[1]), ok = cost >= 0 && canPay(cost);
       ctx.fillStyle = cost < 0 ? 'rgba(239,90,76,.18)' : ok ? 'rgba(47,199,125,.18)' : 'rgba(245,182,46,.2)'; rr(ctx, x + 3, y + 3, C - 6, C - 6, 9); ctx.fill();
       ctx.strokeStyle = cost < 0 ? p.stop : ok ? p.go : p.amber; ctx.lineWidth = 2.5; ctx.stroke();
@@ -2160,7 +2579,7 @@ function draw(dt) {
     for (const h of list) { ctx.strokeStyle = KINDS[b.k].col; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx(h.c), cy(h.c), 22, 0, 7); ctx.stroke(); }
     const lv = lvOf(b), nx = LV_AT[lv];
     const label = b.h ? 'Maison, va vers : ' + KINDS[b.k].name : KINDS[b.k].lv[lv - 1] + ', niveau ' + lv + (lv < 3 ? ' (' + b.s + ' visites sur ' + nx + ')' : '');
-    tag(label + (b.conn ? '' : ' : ' + b.why.toLowerCase()), cx(b.c), cy(b.c) - 36, p.glass, b.conn ? '#fff' : p.amber);
+    tag(label + (b.zn ? ' · ' + b.zn + ' (' + (b.h ? 'impôts ' : 'trajets ') + (b.zm >= 1 ? '+' : '−') + Math.round(Math.abs(b.zm - 1) * 100) + ' %)' : '') + (b.conn ? '' : ' : ' + b.why.toLowerCase()), cx(b.c), cy(b.c) - 36, p.glass, b.conn ? (b.zt < 0 ? p.amber : '#fff') : p.amber);
   }
 
   // Textes flottants
@@ -2249,9 +2668,11 @@ cv.addEventListener('pointerdown', e => {
   const mode = e.button === 2 || tool === 'erase' ? 'erase' : tool;
   if (mode === 'main') return;
   if (mode === 'rond' || mode === 'feu') { setJunction(i, mode === 'rond' ? 1 : 2); return; }
+  if (mode === 'tun') { plan = { kind: 'tun', level: 0, cells: [i] }; planInfo(); return; }
+  if (mode === 'fix') { dragging = { mode, last: i, moved: false }; repairCell(i); return; }
   if (mode[0] === 'r') { plan = { level: +mode[1], cells: [i] }; planInfo(); return; }
   beginAct(); dragging = { mode, last: i, moved: false };
-  if (mode === 'erase') erase(i);
+  if (mode === 'erase') eraseAt(i);
 });
 cv.addEventListener('pointermove', e => {
   const pt = ptrs.get(e.pointerId);
@@ -2272,11 +2693,11 @@ cv.addEventListener('pointermove', e => {
   if (plan && i >= 0 && i !== plan.cells[plan.cells.length - 1]) { // on allonge le tracé, ou on revient en arrière en repassant dessus
     const at = plan.cells.indexOf(i);
     if (at >= 0) plan.cells.length = at + 1;
-    else line(plan.cells[plan.cells.length - 1], i, j => { const q = plan.cells.indexOf(j); if (q >= 0) plan.cells.length = q + 1; else if (plan.cells.length < 90) plan.cells.push(j); });
+    else line(plan.cells[plan.cells.length - 1], i, j => { const q = plan.cells.indexOf(j); if (q >= 0) plan.cells.length = q + 1; else if (plan.cells.length < (plan.kind === 'tun' ? maxTun() + 2 : 90)) plan.cells.push(j); });
     planInfo();
   } else if (dragging && i >= 0 && i !== dragging.last) {
     let prev = dragging.last;
-    line(dragging.last, i, j => { if (dragging.mode === 'erase') erase(j); else setOneWay(prev, j); prev = j; });
+    line(dragging.last, i, j => { if (dragging.mode === 'erase') eraseAt(j); else if (dragging.mode === 'fix') repairCell(j); else setOneWay(prev, j); prev = j; });
     dragging.last = i; dragging.moved = true;
   }
   setCursor(i);
@@ -2306,14 +2727,16 @@ function stepCam(dt) {
   cam.x = camGo.x0 + (camGo.x - camGo.x0) * e; cam.y = camGo.y0 + (camGo.y - camGo.y0) * e; cam.z = camGo.z0 + (camGo.z - camGo.z0) * e;
   applyCam(); if (camGo.t >= 1) camGo = null;
 }
-const LAYERS = ['normal', 'traffic', 'flow', 'cost'], LAYER_NAME = { normal: 'Carte', traffic: 'Trafic', flow: 'Flux', cost: 'Coûts' };
+const LAYERS = ['normal', 'traffic', 'flow', 'cost', 'wear', 'under'], LAYER_NAME = { normal: 'Carte', traffic: 'Trafic', flow: 'Flux', cost: 'Coûts', wear: 'Usure', under: 'Souterrain' };
 const LAYER_HINT = { traffic: 'Calque Trafic : du vert au rouge selon l’encombrement de chaque tronçon.', flow: 'Calque Flux : la couleur du lieu qui emprunte le plus chaque route, d’autant plus épaisse qu’elle est fréquentée.',
+  wear: 'Calque Usure : l’état de chaque tronçon, du vert (neuf) au rouge (à réparer). L’outil Réparer (R) les remet à neuf.',
+  under: 'Calque Souterrain : les tunnels en surbrillance, les véhicules qui y roulent, le réseau de surface en filigrane. La Gomme y démolit les tunnels.',
   cost: 'Calque Coûts : en vert les tronçons que leur trafic justifie, en rouge ceux qui coûtent cher pour presque personne. L’épaisseur suit le prix d’entretien.' };
 function setLayer(id) {
   layer = id;
   for (const b of $('layers-pop').children) b.classList.toggle('on', b.dataset.l === id);
   $('layers-cur').textContent = LAYER_NAME[id]; $('layers-btn').classList.toggle('active', id !== 'normal');
-  $('hint').textContent = LAYER_HINT[id] || TOOLS.find(t => t.id === tool).hint;
+  const th = TOOLS.find(t => t.id === tool).hint; $('hint').textContent = LAYER_HINT[id] || (typeof th === 'function' ? th() : th);
 }
 function toggleLayers(open) { const o = open === undefined ? $('layers-pop').hidden : open; $('layers-pop').hidden = !o; $('layers-btn').setAttribute('aria-expanded', o); }
 $('layers-btn').addEventListener('click', () => toggleLayers());
@@ -2335,9 +2758,9 @@ const nextSpeed = () => { const L = god() ? [.5, 1, 2, 4] : [.5, 1, 2]; setSpeed
 function setTool(id) {
   tool = id; plan = null;
   for (const b of $('dock').querySelectorAll('.tool[data-t]')) b.classList.toggle('on', b.dataset.t === id);
-  const cost = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU }[id], t = TOOLS.find(t => t.id === id);
-  const up = id === 'rond' ? UP_ROND : id === 'feu' ? UP_FEU : id[0] === 'r' ? ROADS[+id[1]].up : 0, road = id[0] === 'r' && id !== 'rond';
-  $('hint').textContent = (cost ? t.name + ' : ' + fmt(price(cost)) + ' €' + (road ? ' la case' : '') + ', puis ' + fmt(up * upkeepScale()) + ' € d’entretien par minute. ' : '') + t.hint;
+  const cost = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU, tun: TUN_CELL }[id], t = TOOLS.find(t => t.id === id);
+  const up = id === 'rond' ? UP_ROND : id === 'feu' ? UP_FEU : id === 'tun' ? UP_TUN_CELL : id[0] === 'r' ? ROADS[+id[1]].up : 0, road = id[0] === 'r' && id !== 'rond';
+  $('hint').textContent = (cost ? t.name + ' : ' + fmt(price(cost)) + ' €' + (id === 'tun' ? ' la case sous terre' : road ? ' la case' : '') + ', puis ' + fmt(up * upkeepScale()) + ' € d’entretien par minute' + (id === 'tun' ? ' et par case' : '') + '. ' : '') + (typeof t.hint === 'function' ? t.hint() : t.hint);
 }
 $('b-pause').addEventListener('click', () => setPaused(!paused));
 for (const id of ['b-slow', 'b-normal', 'b-fast']) $(id).addEventListener('click', e => setSpeed(+e.currentTarget.dataset.s));
@@ -2351,7 +2774,9 @@ window.addEventListener('keydown', e => {
   if (e.code === 'Space') { if (tagN === 'BUTTON') return; e.preventDefault(); setPaused(!paused); return; }
   if (e.key === 'v' || e.key === 'V') { nextSpeed(); return; }
   if (e.key === 'l' || e.key === 'L') { setLayer(LAYERS[(LAYERS.indexOf(layer) + 1) % LAYERS.length]); return; }
-  if (e.key >= '1' && e.key <= '9') { setTool(TOOLS[+e.key - 1].id); return; }
+  const tk = TOOLS.find(t => t.key === e.key.toUpperCase()); if (tk) { setTool(tk.id); return; }
+  if (e.key === 'b' || e.key === 'B') { goWorstJam(); return; }
+  if (e.key === 'g' || e.key === 'G') { toggleFreeze(); save(); refreshUI(); return; }
   const arrows = { ArrowLeft: [90, 0], ArrowRight: [-90, 0], ArrowUp: [0, 90], ArrowDown: [0, -90] };
   if (arrows[e.key]) { e.preventDefault(); panBy(arrows[e.key][0], arrows[e.key][1]); }
   else if (e.key === '+' || e.key === '=') zoomAt(vcx, vcy, 1.3);
@@ -2360,8 +2785,8 @@ window.addEventListener('keydown', e => {
 });
 
 /* ───────── Interface ───────── */
-$('dock').innerHTML = TOOLS.map((t, q) => (q === 1 || q === 5 || q === 8 ? '<div class="sep"></div>' : '')
-  + '<button class="tool' + (t.id === 'erase' ? ' erase' : '') + '" type="button" data-t="' + t.id + '">' + ic(t.ic) + '<b>' + t.name + '</b><small class="num"></small><kbd>' + (q + 1) + '</kbd></button>').join('');
+$('dock').innerHTML = TOOLS.map((t, q) => (q === 1 || q === 5 || q === 7 || q === 9 ? '<div class="sep"></div>' : '')
+  + '<button class="tool' + (t.id === 'erase' ? ' erase' : '') + '" type="button" data-t="' + t.id + '" title="' + t.name + ' (' + t.key + ')">' + ic(t.ic) + '<b>' + t.name + '</b><small class="num"></small><kbd>' + t.key + '</kbd></button>').join('');
 for (const b of $('dock').querySelectorAll('.tool[data-t]')) b.addEventListener('click', () => setTool(b.dataset.t));
 const rows = {};
 for (const k in UP) {
@@ -2377,6 +2802,8 @@ function upDesc(k) {
   if (k === 'value') return fmt(carValue()) + ' € par trajet';
   if (k === 'freq') return 'un départ toutes les ' + nf1.format(tripEvery()) + ' s';
   if (k === 'attract') return 'un bâtiment toutes les ' + nf0.format(growEvery()) + ' s';
+  if (k === 'tunnel') return 'longueur max : ' + maxTun() + ' cases sous terre';
+  if (k === 'crews') return l ? l + ' tronçon' + (l > 1 ? 's' : '') + ' réparé' + (l > 1 ? 's' : '') + ' toutes les 8 s' : 'réparent seules les routes usées';
   return l ? 'travaux à −' + l * 8 + ' %' : 'travaux moins chers';
 }
 function buy(k) {
@@ -2384,6 +2811,7 @@ function buy(k) {
   if (max || !canPay(cost)) return;
   if (!god()) { S.money -= cost; S.st.sUp += cost; }
   S.lv[k]++; netDirty = true;
+  if (k === 'tunnel' && tool === 'tun') setTool('tun');
   save(); refreshUI();
 }
 function setShop(open) { // tout l'en-tête est cliquable, replié comme déplié
@@ -2404,6 +2832,7 @@ function renderSet() {
   $('set-notif').setAttribute('aria-checked', nOn);
   $('notif-info').textContent = !canNotify() ? 'Ce navigateur n’en propose pas pour cette page.' : canNotify() && Notification.permission === 'denied' ? 'Refusées par le navigateur : autorise-les dans ses réglages, ou installe le jeu.' : 'Te prévient quand la fenêtre n’est pas au premier plan : ambulance, bouchon, nouveau lieu, crue…';
   for (const b of $('set-scroll').children) b.classList.toggle('on', b.dataset.v === S.set.scroll);
+  for (const b of $('set-report').children) b.classList.toggle('on', b.dataset.v === S.set.report);
   const x4 = document.querySelector('[data-god="x4"]'); x4.classList.toggle('on', speed === 4);
   if (!$('upd-info').dataset.busy) $('upd-info').textContent = $('upd-info').dataset.msg || 'Version ' + APP_VERSION + ' installée.';
 }
@@ -2414,12 +2843,15 @@ for (const [id, key] of [['set-god', 'god'], ['set-day', 'day'], ['set-fx', 'fx'
   save(); renderSet(); refreshUI();
 });
 for (const b of $('set-scroll').children) b.addEventListener('click', () => { S.set.scroll = b.dataset.v; save(); renderSet(); });
+for (const b of $('set-report').children) b.addEventListener('click', () => { S.set.report = b.dataset.v; save(); renderSet(); });
+$('set-fz').addEventListener('click', () => { toggleFreeze(); save(); refreshUI(); });
+$('open-rep').addEventListener('click', () => { if (S.rep.length) openSheet('rep', S.rep.length - 1); else toast('info', 'Pas encore de rapport', 'Le premier arrive à la fin de la journée en cours.', 4000, 'report'); });
 for (const b of document.querySelectorAll('[data-god]')) b.addEventListener('click', () => {
   if (!god()) return;
   const a = b.dataset.god;
   if (a === 'cash') { S.money += 10000; toast('gain', '+10 000 €', 'Ajoutés à la caisse pour quand tu quitteras le mode dieu.', 3000); }
   else if (a === 'bld') { const n = grow(true); toast('build', n ? 'Bâtiment ajouté' : 'La carte est pleine', n ? 'Il attend d’être relié.' : 'Fonde une nouvelle ville pour continuer.', 3000); if (n) goTo(cx(n.c), cy(n.c), 1.6); }
-  else if (a === 'time') { S.clock = (S.clock + 6) % 24; if (S.clock < 6) S.day++; cache.valid = false; }
+  else if (a === 'time') { const wrap = S.clock + 6 >= 24; S.clock = (S.clock + 6) % 24; if (wrap) { S.day++; endDay(); } cache.valid = false; }
   else if (a === 'season') { S.day += 2; cache.valid = false; toast('event', 'Saison : ' + SEASONS[season()].name, '', 3000, SEASONS[season()].ic); }
   else if (a === 'grow') { for (const d of B) if (!d.h && lvOf(d) < 3) d.s = LV_AT[lvOf(d)]; netDirty = true; toast('event', 'Les lieux ont grossi d’un niveau', '', 3000, 'trend'); }
   else if (a === 'x4') setSpeed(speed === 4 ? 1 : 4);
@@ -2456,14 +2888,15 @@ $('upd-btn').addEventListener('click', async () => {
 });
 
 // Fenêtres
-const SHEETS = { set: ['Réglages', 'gear', 't-build'], fin: ['Finances', 'coin', 't-gain'], city: ['Ville', 'city', 't-ach'], ach: ['Succès', 'trophy', 't-ach'], stat: ['Statistiques', 'chart', 't-info'], save: ['Sauvegarde', 'save', 't-gain'] };
+const SHEETS = { set: ['Réglages', 'gear', 't-build'], fin: ['Finances', 'coin', 't-gain'], city: ['Ville', 'city', 't-ach'], ach: ['Succès', 'trophy', 't-ach'], stat: ['Statistiques', 'chart', 't-info'], rep: ['Rapport de journée', 'report', 't-info'], save: ['Sauvegarde', 'save', 't-gain'] };
 let sheet = null;
-function openSheet(id) {
-  sheet = id;
+let repIdx = -1;
+function openSheet(id, arg) {
+  sheet = id; if (id === 'rep') repIdx = arg === undefined ? S.rep.length - 1 : arg;
   $('veil').hidden = false;
   $('sh-title').textContent = SHEETS[id][0]; $('sh-ic').setAttribute('href', '#i-' + SHEETS[id][1]); $('sh-head').className = SHEETS[id][2];
   for (const s of document.querySelectorAll('.sec')) s.hidden = s.id !== 'm-' + id;
-  $('sheet').classList.toggle('wide', id === 'fin');
+  $('sheet').classList.toggle('wide', id === 'fin' || id === 'rep');
   renderSheet(); $('sh-x').focus();
 }
 function closeSheet() { resetRestartButtons(); sheet = null; $('veil').hidden = true; pending = null; $('sv-confirm').hidden = true; }
@@ -2543,10 +2976,10 @@ function renderFin() {
   drawFin();
   // Budget par minute : ce qui rentre, ce qui sort, le solde
   const bl = (label, v, cls) => '<div class="bl' + (Math.abs(v) < .05 ? ' zero' : '') + '"><span>' + label + '</span><b class="num ' + cls + '">' + (cls === 'plus' ? '+' : '−') + fmt(Math.abs(v)) + ' €</b></div>';
-  const g0 = god(), netB = netPerMin(), names = ['', 'Chemins', 'Routes', 'Avenues', 'Voies rapides', 'Ponts, tunnels', 'Ronds-points et feux'];
+  const g0 = god(), netB = netPerMin(), names = ['', 'Chemins', 'Routes', 'Avenues', 'Voies rapides', 'Ponts et collines', 'Ronds-points et feux', 'Tunnels'];
   $('fin-budget').innerHTML = '<div class="col"><h3>Ce qui rentre, par minute</h3>' + bl('Trajets', S.rate * 60, 'plus') + bl('Impôts locaux (' + nConn + ' bâtiments reliés)', taxMin, 'plus')
     + '<div class="bl tot"><span>Recettes</span><b class="num plus">+' + fmt(gainsMin()) + ' €</b></div></div>'
-    + '<div class="col"><h3>Ce qui sort, par minute' + (g0 ? ' (offert en mode dieu)' : '') + '</h3>' + [1, 2, 3, 4, 5, 6].map(q => bl(names[q], g0 ? 0 : upParts[q], 'minus')).join('') + bl('Intérêts d’emprunt', g0 ? 0 : interestMin(), 'minus')
+    + '<div class="col"><h3>Ce qui sort, par minute' + (g0 ? ' (offert en mode dieu)' : '') + '</h3>' + [1, 2, 3, 4, 5, 6, 7].map(q => bl(names[q], g0 ? 0 : upParts[q], 'minus')).join('') + bl('Intérêts d’emprunt', g0 ? 0 : interestMin(), 'minus')
     + '<div class="bl tot"><span>Dépenses</span><b class="num minus">−' + fmt(costsMin()) + ' €</b></div></div>'
     + '<div class="net"><span>Solde par minute</span><b class="num ' + (netB < 0 ? 'minus' : 'plus') + '" style="color:var(--' + (netB < 0 ? 'alert' : 'go') + ')">' + (netB < 0 ? '−' : '+') + fmt(Math.abs(netB)) + ' €</b></div>';
   $('bank-info').textContent = S.debt > 0 ? 'Dette : ' + fmt(S.debt) + ' €, soit ' + fmt(interestMin()) + ' € d’intérêts par minute. Plafond : ' + fmt(maxDebt()) + ' €.' : 'Aucune dette. Tu peux emprunter jusqu’à ' + fmt(maxDebt()) + ' €, à 0,8 % d’intérêts par minute.';
@@ -2554,7 +2987,7 @@ function renderFin() {
   const st = S.st, kinds = [0, 1, 2, 3].map(k => st['k' + k]), other = Math.max(0, st.total - kinds.reduce((a, b) => a + b, 0)), tot = Math.max(1, st.total);
   $('fin-in').innerHTML = KINDS.map((K, k) => hbar('Trajets vers : ' + K.name, fmt(kinds[k]) + ' €', kinds[k] / tot, K.col)).join('')
     + hbar('Impôts locaux', fmt(st.tax) + ' €', st.tax / tot, 'var(--go)') + hbar('Primes, objectifs et absences', fmt(Math.max(0, other - st.tax)) + ' €', Math.max(0, other - st.tax) / tot, 'var(--muted)');
-  const sp = [['Construction de routes et d’ouvrages', st.sRoad], ['Ronds-points et feux', st.sJunc], ['Améliorations', st.sUp], ['Entretien du réseau', st.sKeep], ['Intérêts d’emprunt', st.sInt]], spT = Math.max(1, sp.reduce((a, b) => a + b[1], 0));
+  const sp = [['Construction de routes et d’ouvrages', st.sRoad], ['Ronds-points et feux', st.sJunc], ['Améliorations', st.sUp], ['Entretien du réseau', st.sKeep], ['Réparations des routes', st.sRep], ['Intérêts d’emprunt', st.sInt]], spT = Math.max(1, sp.reduce((a, b) => a + b[1], 0));
   $('fin-out').innerHTML = sp.map(x => hbar(x[0], fmt(x[1]) + ' €', x[1] / spT, 'var(--alert)')).join('')
     + '<div class="hb"><span>Total gagné</span><b class="num">' + fmt(st.total) + ' €</b></div><div class="hb"><span>Total dépensé</span><b class="num">' + fmt(sp.reduce((a, b) => a + b[1], 0)) + ' €</b></div>';
   const x = v => '×' + nf1.format(Math.round(v * 100) / 100), ms = [['Valeur de base', fmt(carValue()) + ' €'], ['Fluidité', x(fluMult())]];
@@ -2568,10 +3001,61 @@ function renderFin() {
 $('sh-x').addEventListener('click', closeSheet);
 $('veil').addEventListener('pointerdown', e => { if (e.target === $('veil')) closeSheet(); });
 function fmtTime(s) { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + ' h ' + String(m).padStart(2, '0') : m + ' min'; }
+function renderRep() { // le bilan d'une journée : chiffres, comparaison avec la veille, graphique, points d'attention
+  const list = S.rep, ch = $('rep-chart');
+  if (!list.length) {
+    $('rep-title').textContent = 'Pas encore de rapport'; $('rep-sub').textContent = 'Le premier arrive à la fin de la journée en cours.';
+    $('rep-kpis').innerHTML = ''; $('rep-lines').innerHTML = ''; $('rep-watch').innerHTML = ''; ch.style.display = 'none'; $('rep-prev').disabled = $('rep-next').disabled = true; return;
+  }
+  repIdx = Math.max(0, Math.min(list.length - 1, repIdx < 0 ? list.length - 1 : repIdx));
+  const r = list[repIdx], prev = list[repIdx - 1], hh = h => String(Math.floor(h)).padStart(2, '0') + ' h ' + String(Math.floor((h % 1) * 60)).padStart(2, '0');
+  $('rep-title').textContent = 'Jour ' + nf0.format(r.day) + ' · ' + SEASONS[r.se].name.replace(/^./, c => c.toUpperCase());
+  $('rep-sub').textContent = 'Rapport ' + (repIdx + 1) + ' sur ' + list.length;
+  $('rep-prev').disabled = repIdx === 0; $('rep-next').disabled = repIdx === list.length - 1;
+  const dl = (v, pv) => prev ? (v >= pv ? '+' : '−') + fmt(Math.abs(v - pv)) + ' € vs la veille' : 'première journée suivie';
+  const kp = (label, val, cls, sub) => '<div class="kpi"><span>' + label + '</span><b class="num ' + cls + '">' + val + '</b><small>' + sub + '</small></div>';
+  $('rep-kpis').innerHTML = kp('Gains', '+' + fmt(r.gain) + ' €', 'plus', dl(r.gain, prev ? prev.gain : 0)) + kp('Dépenses', '−' + fmt(r.spent) + ' €', 'minus', dl(r.spent, prev ? prev.spent : 0)) + kp('Solde', (r.net >= 0 ? '+' : '−') + fmt(Math.abs(r.net)) + ' €', r.net >= 0 ? 'plus' : 'minus', dl(r.net, prev ? prev.net : 0));
+  const rows = [
+    ['Trajets terminés', nf0.format(r.trips) + (r.lost ? ', ' + nf0.format(r.lost) + ' abandonnés' : '')],
+    ['Fluidité moyenne', Math.round(r.avgF * 100) + ' %'],
+    ['Pic de revenu', fmt(r.peak) + ' € par minute' + (r.peak > 0 ? ' vers ' + hh(r.peakAt) : '')],
+    ['Impôts locaux', fmt(r.tax) + ' €'], ['Réparations', fmt(r.rep) + ' €'],
+    ['Nouveaux bâtiments', (r.blds >= 0 ? '+' : '−') + Math.abs(r.blds) + (r.nUn ? ', dont ' + r.nUn + ' non relié' + (r.nUn > 1 ? 's' : '') + ' en fin de journée' : '')],
+    ['Usure des routes', Math.round(r.wearAvg) + ' % en moyenne' + (r.wornN ? ', ' + r.wornN + ' tronçon' + (r.wornN > 1 ? 's' : '') + ' très usé' + (r.wornN > 1 ? 's' : '') : '')],
+    ['Quartiers spécialisés', r.dist + ' avec bonus, ' + r.noisy + ' avec malus']];
+  if (r.fz > 5) rows.push(['Urbanisme gelé', Math.round(r.fz / 60) + ' min']);
+  $('rep-lines').innerHTML = rows.map(x => '<div class="srow"><span>' + x[0] + '</span><b class="num">' + x[1] + '</b></div>').join('');
+  const W = [];
+  if (r.wc >= 0 && r.wh > .6) W.push(['jam', 'Pire point noir de la journée', 'Il a longtemps bouché. Un rond-point, un feu, une route plus large ou un tunnel peut aider.', 'Voir']);
+  if (r.nUn > 0) W.push(['un', r.nUn + ' bâtiment' + (r.nUn > 1 ? 's' : '') + ' non relié' + (r.nUn > 1 ? 's' : ''), 'Un bâtiment isolé ne rapporte rien et peut bloquer l’arrivée de nouveaux.', 'Voir']);
+  if (r.wornN > 0) W.push(['wear', r.wornN + ' tronçon' + (r.wornN > 1 ? 's' : '') + ' très usé' + (r.wornN > 1 ? 's' : ''), 'Répare-les avec l’outil Réparer, ou améliore « Voirie » pour que des équipes s’en chargent.', 'Voir']);
+  if (r.noisy > 0) W.push(['none', r.noisy + ' bâtiment' + (r.noisy > 1 ? 's' : '') + ' dans un quartier bruyant', 'Éloigne les voies rapides et l’usine des maisons et des écoles.', '']);
+  if (r.net < 0) W.push(['none', 'Journée déficitaire', 'Regarde le calque Coûts pour repérer les routes qui coûtent trop cher.', '']);
+  $('rep-watch').innerHTML = W.length ? W.map(w => '<div class="watch"><div><b>' + w[1] + '</b><span>' + w[2] + '</span></div>' + (w[3] ? '<button type="button" class="pill" data-w="' + w[0] + '">' + w[3] + '</button>' : '') + '</div>').join('') : '<div class="watch ok"><div><b>Rien d’alarmant</b><span>Une journée sans point noir ni route à bout de souffle : continue comme ça.</span></div></div>';
+  ch.style.display = list.length > 1 ? '' : 'none';
+  if (list.length > 1) {
+    const w = ch.clientWidth, h = ch.clientHeight, dp = Math.min(window.devicePixelRatio || 1, 2); ch.width = Math.round(w * dp); ch.height = Math.round(h * dp);
+    const g = ch.getContext('2d'), cs = getComputedStyle(document.documentElement), go = cs.getPropertyValue('--go').trim(), bad = cs.getPropertyValue('--alert').trim(), muted = cs.getPropertyValue('--muted').trim(), hair = cs.getPropertyValue('--hair').trim();
+    g.setTransform(dp, 0, 0, dp, 0, 0); g.clearRect(0, 0, w, h);
+    const max = Math.max(1, ...list.map(x => Math.abs(x.net))), mid = h / 2 - 6, bw = Math.min(46, (w - 20) / list.length - 10);
+    g.strokeStyle = hair; g.beginPath(); g.moveTo(0, mid + .5); g.lineTo(w, mid + .5); g.stroke();
+    list.forEach((x, q) => { const cxp = 10 + (q + .5) * (w - 20) / list.length, bh = Math.max(2, Math.abs(x.net) / max * (mid - 12)); g.globalAlpha = q === repIdx ? 1 : .45; g.fillStyle = x.net >= 0 ? go : bad; g.fillRect(cxp - bw / 2, x.net >= 0 ? mid - bh : mid, bw, bh); g.globalAlpha = 1; g.fillStyle = muted; g.font = '11px -apple-system,system-ui,sans-serif'; g.textAlign = 'center'; g.fillText('J' + x.day, cxp, h - 2); });
+  }
+}
+$('rep-prev').addEventListener('click', () => { repIdx--; renderRep(); });
+$('rep-next').addEventListener('click', () => { repIdx++; renderRep(); });
+$('rep-watch').addEventListener('click', e => {
+  const b = e.target.closest('[data-w]'); if (!b) return;
+  const r = S.rep[repIdx], k = b.dataset.w; let cell = -1;
+  if (k === 'jam') cell = r.wc; else if (k === 'un') { const u = B.find(x => !x.conn); cell = u ? u.c : -1; } else if (k === 'wear') cell = worstWear;
+  closeSheet();
+  if (cell >= 0) { goTo(cx(cell), cy(cell), 1.9); if (k === 'jam') focusRing = { cell, t0: performance.now() / 1000 }; }
+});
 function renderSheet() {
   if (!sheet) return;
   if (sheet === 'fin') { renderFin(); return; }
   if (sheet === 'set') { renderSet(); return; }
+  if (sheet === 'rep') { renderRep(); return; }
   if (sheet === 'city') {
     $('city-note').innerHTML = '<b>' + MAP_NAME[mapType()] + '</b>, ville n° ' + (S.city + 1) + '. Revenus ×' + nf1.format(cityMult()) + '. Chaque maison porte la couleur du lieu où ses habitants se rendent, puis ils rentrent le soir. Un lieu très fréquenté grossit : il rapporte plus et attire de plus loin.';
     $('legend').innerHTML = KINDS.map((k, q) => {
@@ -2579,6 +3063,17 @@ function renderSheet() {
       const top = B.filter(b => !b.h && b.k === q).reduce((m, b) => Math.max(m, lvOf(b)), 1);
       return '<div class="' + (on ? '' : 'off') + '"><i style="background:' + k.col + '"></i><div><b>' + (on ? k.lv[top - 1] : k.name) + '</b><span>' + (on ? k.homes + ', trajets ×' + nf1.format(k.val) + ', niveau ' + top + ' sur 3' : 'arrive au ' + k.at + 'e bâtiment') + '</span></div></div>';
     }).join('');
+    const ZD = [
+      ['hub', 'Pôle commercial', 'marché près des avenues et de beaucoup de maisons', 'trajets +25 %', '#e0a11b'],
+      ['calm', 'Campus calme', 'école loin des grands axes et de l’usine', 'trajets +20 %', '#df5548'],
+      ['biz', 'Quartier d’affaires', 'bureaux près des avenues et d’autres lieux', 'trajets +30 %', '#3a7be0'],
+      ['ind', 'Zone industrielle', 'usine sur voie rapide ou voie ferrée, loin des maisons', 'trajets +30 %', '#8a63d8'],
+      ['res', 'Résidentiel', 'maisons au calme, près d’arbres ou d’une école', 'impôts +40 %', '#2fae7a'],
+      ['bad', 'Bruyant, nuisances', 'maisons ou école près d’une voie rapide ou de l’usine', 'malus', '#f0b02e']];
+    $('zones').innerHTML = ZD.map(z => { const n = B.filter(b => z[0] === 'bad' ? b.zt < 0 : b.zk === z[0]).length; return '<div class="' + (n ? '' : 'off') + '"><i style="background:' + z[4] + '"></i><div><b>' + z[1] + (n ? ' · ' + n : '') + '</b><span>' + (n ? z[3] : z[2]) + '</span></div></div>'; }).join('');
+    $('zones-note').innerHTML = 'Un bâtiment prend une <b>spécialité</b> selon son voisinage : routes rapides, calme, industrie, autres lieux. ' + (nDist ? '<b>' + nDist + '</b> quartier' + (nDist > 1 ? 's' : '') + ' rapportent un bonus' : 'Aucun bonus pour l’instant') + (nNoisy ? ', ' + nNoisy + ' subissent un malus.' : '.');
+    $('set-fz').setAttribute('aria-checked', S.fz.on);
+    $('fz-info').textContent = S.fz.on ? 'Gel actif depuis ' + Math.max(1, Math.round(S.fz.t / 60)) + ' min : impôts −' + Math.round(fzMalus() * 100) + ' %, trajets −' + Math.round(fzMalus() * 50) + ' %. Reprends quand la crise est réglée.' : 'Plus aucun nouveau bâtiment tant que le gel dure. Malus dès le départ : impôts −10 %, trajets −5 %, de plus en plus lourds avec la durée.';
     const ok = cityReady();
     $('city-goal').innerHTML = ok ? 'Tu peux fonder une nouvelle ville : tu repars de zéro dans <b>' + MAP_NAME[MAPS[(S.city + 1) % MAPS.length]] + '</b> avec +50 % de revenus pour toujours.'
       : 'Relie <b>' + cityGoal() + ' bâtiments</b>, sans en laisser un seul à l’écart, pour pouvoir fonder une nouvelle ville (+50 % de revenus pour toujours). Tu en es à ' + nConn + (nUn ? ', dont ' + nUn + ' non relié' + (nUn > 1 ? 's' : '') + ' en attente' : '') + '.';
@@ -2634,11 +3129,24 @@ for (const id of ['city-restart', 'city-newmap']) $(id).addEventListener('click'
   resetRestartButtons(); restartCity(id === 'city-newmap');
 });
 // Fil d'actualité : l'objectif, puis ce qui se passe en ce moment
-function chip(type, icon, title, sub, pg, go) { // go : case de la carte où un clic emmène la caméra
-  const tag = go >= 0 ? 'button type="button" data-go="' + go + '"' : 'div';
-  return '<' + tag + ' class="chip glass t-' + type + '"><div class="bd">' + ic(icon) + '</div><div><b>' + title + '</b><span class="num">' + sub + '</span></div>' + (pg != null ? '<i class="pg" style="width:' + Math.round(pg * 100) + '%"></i>' : '') + '</' + (go >= 0 ? 'button' : 'div') + '>';
+function worstJam() { let best = -1, bs = 0; for (let i = 0; i < N; i++) if (R[i] && heat[i] > .35) { const sc = heat[i] + jamT[i] / 80; if (sc > bs) { bs = sc; best = i; } } return best; }
+function goWorstJam() { // la caméra file vers le point noir le plus sévère et l'entoure d'ondes rouges
+  const i = worstJam();
+  if (i < 0) { toast('info', 'Aucun bouchon sérieux', 'Tout circule à peu près normalement pour l’instant.', 3500, 'jam'); return; }
+  goTo(cx(i), cy(i), Math.max(cam.z, 1.9)); focusRing = { cell: i, t0: performance.now() / 1000 };
+  toast('alert', 'Pire bouchon', jamT[i] > 5 ? 'Saturé depuis ' + nf0.format(jamT[i]) + ' s. Un rond-point, un feu ou une route plus large peut aider.' : 'Ça commence à bouchonner ici.', 5500, 'jam');
 }
-$('strip').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) goTo(cx(+b.dataset.go), cy(+b.dataset.go), 2); });
+$('b-jam').addEventListener('click', goWorstJam);
+$('b-freeze').addEventListener('click', () => { toggleFreeze(); save(); refreshUI(); });
+function chip(type, icon, title, sub, pg, go, act) { // go : case de la carte où un clic emmène la caméra ; act : action déclenchée par un clic
+  const btn = go >= 0 || !!act, tag = act ? 'button type="button" data-act="' + act + '"' : go >= 0 ? 'button type="button" data-go="' + go + '"' : 'div';
+  return '<' + tag + ' class="chip glass t-' + type + '"><div class="bd">' + ic(icon) + '</div><div><b>' + title + '</b><span class="num">' + sub + '</span></div>' + (pg != null ? '<i class="pg" style="width:' + Math.round(pg * 100) + '%"></i>' : '') + '</' + (btn ? 'button' : 'div') + '>';
+}
+$('strip').addEventListener('click', e => {
+  const a = e.target.closest('[data-act]'), b = e.target.closest('[data-go]');
+  if (a) { if (a.dataset.act === 'unfreeze') { toggleFreeze(false); save(); refreshUI(); } else if (a.dataset.act === 'report') { repChip = null; openSheet('rep', S.rep.length - 1); } }
+  else if (b) goTo(cx(+b.dataset.go), cy(+b.dataset.go), 2);
+});
 let stripSig = '';
 function renderStrip() {
   const out = [], m = S.mission;
@@ -2649,6 +3157,10 @@ function renderStrip() {
     out.push(chip('goal', 'target', MISSIONS[m.id].text(m.goal), sub, pr, m.id === 'connect' && u0 ? u0.c : -1));
   }
   if (god()) out.push(chip('build', 'gear', 'Mode dieu', 'Tout est gratuit, pas d’entretien'));
+  if (S.fz.on) out.push(chip('event', 'block', 'Urbanisme gelé · malus −' + Math.round(fzMalus() * 100) + ' %', 'Depuis ' + Math.max(1, Math.round(S.fz.t / 60)) + ' min · clique pour reprendre', null, -1, 'unfreeze'));
+  if (repChip && performance.now() < repChip.until) out.push(chip('info', 'report', 'Rapport du jour ' + repChip.day, 'Clique pour le lire', null, -1, 'report'));
+  const offT = tunnels.find(t => !t.on); if (offT) out.push(chip('alert', 'tunnel', 'Tunnel hors service', 'Un portail n’est plus relié à une route', null, offT.a));
+  if (wornN >= 3) out.push(chip('event', 'wrench', wornN + ' tronçons très usés', 'Clique pour voir le pire, puis outil Réparer (R)', null, worstWear));
   if (broke) out.push(chip('alert', 'coin', 'Caisse vide', 'L’entretien n’est plus payé : tout roule 25 % moins vite'));
   else if (!god() && netPerMin() < 0 && nConn > 0) out.push(chip('alert', 'down', 'Tu perds ' + fmt(-netPerMin()) + ' € par minute', 'Le réseau coûte plus qu’il ne rapporte : regarde le calque Coûts'));
   if (ev.jam) out.push(chip('alert', 'jam', 'Bouchon persistant', 'Voir sur la carte', null, ev.jam.cell));
@@ -2689,8 +3201,11 @@ function refreshUI() {
     r.c.textContent = max ? 'Max' : god() ? 'Gratuit' : fmt(cost) + ' €';
     r.b.classList.toggle('ok', ok); r.b.classList.toggle('max', max); r.b.setAttribute('aria-disabled', ok ? 'false' : 'true');
   }
-  const costs = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU };
+  const costs = { r1: ROADS[1].cost, r2: ROADS[2].cost, r3: ROADS[3].cost, r4: ROADS[4].cost, rond: ROND, feu: FEU, tun: TUN_CELL };
   for (const b of $('dock').querySelectorAll('.tool[data-t]')) { const c = costs[b.dataset.t]; b.querySelector('small').textContent = c ? fmt(price(c)) + ' €' : ''; }
+  { let hot = false; for (let i = 0; i < N; i++) if (R[i] && heat[i] > .75) { hot = true; break; } $('b-jam').classList.toggle('hot', hot); }
+  $('b-freeze').classList.toggle('on', S.fz.on);
+  $('b-freeze').title = S.fz.on ? 'Reprendre l’urbanisme (G) : malus actuel −' + Math.round(fzMalus() * 100) + ' %' : 'Geler l’arrivée de bâtiments pendant une crise (G) : malus sur les impôts et les trajets';
   $('b-save').classList.toggle('warn', !saveOK);
   renderStrip();
   const alert = ev.amb || ev.gold || ev.jam || nUn > 0;
@@ -2739,6 +3254,7 @@ function applyState(next) {
   S = next; S.seen = Date.now();
   tripsWin = 0; nCars = 0; floats.length = 0; fx.length = 0; undoStack.length = 0; plan = null; act = null; dragging = null; windowInc = 0; broke = false; resetEv();
   loadGrid(); resetCam(); netDirty = true; rebuildNet();
+  if (!S.dr) S.dr = makeDr(); repChip = null;
   if (!S.mission || !MISSIONS[S.mission.id]) newMission();
   setShop(S.shop); save(); refreshUI();
 }
@@ -2844,7 +3360,7 @@ function step(dt) {
   const prev = S.clock, seBefore = season();
   S.clock += dt * 24 / DAY;
   if (S.clock >= 24) {
-    S.clock -= 24; S.day++;
+    S.clock -= 24; S.day++; endDay();
     if (season() !== seBefore) { // changement de saison
       const se = season(), txt = ['La ville attire davantage : les nouveaux bâtiments arrivent plus vite.', 'Les habitants sortent plus : davantage de trajets.', 'Les averses se multiplient.', 'Tout roule un peu moins vite, et la neige peut tomber.'][se];
       toast('event', 'Voici ' + (se === 1 || se === 2 ? 'l’' : 'le ') + SEASONS[se].name, txt, 7000, SEASONS[se].ic);
@@ -2855,8 +3371,12 @@ function step(dt) {
   stepRails(dt);
   stepTrips(dt);
   stepCars(dt);
+  stepTunnels(dt);
   stepGrowth(dt);
   stepEvents(dt);
+  if (S.fz.on) { S.fz.t += dt; if (S.dr) S.dr.fz += dt; } else if (S.fz.t > 0) S.fz.t = Math.max(0, S.fz.t - dt * .5); // le malus du gel retombe doucement quand on dégèle
+  crewT += dt; if (crewT > 8) { crewT = 0; if (S.lv.crews > 0) crewWork(S.lv.crews); }
+  wearT += dt; if (wearT > 20) { wearT = 0; if (wearMoved) { netDirty = true; wearMoved = false; } } // les itinéraires tiennent compte de l'usure
   if (taxMin > 0) { const t = taxMin / 60 * dt; S.money += t; S.total += t; S.st.total += t; S.st.tax += t; } // impôts locaux des bâtiments reliés
   if (!god() && (upkeepMin > 0 || S.debt > 0)) { // entretien du réseau et intérêts, prélevés en continu
     const keep = upkeepMin / 60 * dt, int = interestMin() / 60 * dt;
@@ -2869,7 +3389,7 @@ function step(dt) {
   if (secT >= 1) {
     S.rate += (windowInc / secT - S.rate) * 0.06; windowInc = 0; secT = 0;
     if (S.rate > S.st.bestRate) S.st.bestRate = S.rate;
-    checkAch(); watchJams();
+    checkAch(); watchJams(); taxMin = taxBase * (1 - fzMalus());
     let fm = 1; for (let q = 0; q < flow.length; q++) if (flow[q] > fm) fm = flow[q]; flowMax = fm;
     // Filet de sécurité : sans aucune maison reliée ni de quoi construire, la mairie avance de quoi tracer un chemin.
     if (!god() && S.money < 40 && !B.some(b => b.h && b.conn)) { S.money = 40; toast('info', 'Coup de pouce de la mairie', 'Ta caisse est remontée à 40 € pour relier une première maison.', 6000, 'coin'); }
@@ -2908,7 +3428,7 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('pagehide', save);
 window.addEventListener('resize', () => { resize(); if (sheet === 'fin') drawFin(); });
 
-loadGrid(); rebuildNet(); resize(); resetCam(); creditAway();
+loadGrid(); rebuildNet(); if (!S.dr) S.dr = makeDr(); resize(); resetCam(); creditAway();
 if (!S.mission || !MISSIONS[S.mission.id]) newMission();
 setShop(S.shop);
 syncSpeed(); setTool('main'); save(); refreshUI();
@@ -2922,7 +3442,7 @@ window.__feuVert = { get S() { return S; }, get B() { return B; }, get R() { ret
   get deg() { return deg; }, get jn() { return jn; }, get E() { return E; }, get heat() { return heat; }, get flow() { return flow; }, get COLS() { return COLS; }, get ROWS() { return ROWS; }, get rails() { return rails; }, get closed() { return closed; },
   get nCars() { return nCars; }, get edgeMarks() { return edgeMarks; }, view, resize, get nConn() { return nConn; }, get nUn() { return nUn; }, get upkeep() { return upkeepMin; }, get tax() { return taxMin; }, get net() { return netPerMin(); }, borrow, repay, get plan() { return plan; }, get undoN() { return undoStack.length; }, get layer() { return layer; },
   ev, live, ND, C, step, paint, erase, setJunction, setOneWay, clearOneWay, line, grow, rebuildNet, applyState, fresh, normalize, chooseNext, startEvent, restartCity, fitTop, edgeBez, undoLast, beginAct, endAct, setLayer, goTo, lvOf, cap, cityGoal, season,
-  redraw() { bgDirty = true; }, sample, view: () => ({ sc, ox, oy }), cam, zoomAt, panBy, resetCam, refreshUI, setTool, carPose, ringPose, APP_VERSION };
+  redraw() { bgDirty = true; }, get WEAR() { return WEAR; }, get TP() { return TP; }, get TUNP() { return TUNP; }, get tunnels() { return tunnels; }, tunnelCheck, buildTunnel, removeTunnel, tunnelHit, repairCell, crewWork, repairCost, toggleFreeze, endDay, maxTun, computeZones, get nDist() { return nDist; }, get wornN() { return wornN; }, stepTunnels, get AX() { return AX; }, get AY() { return AY; }, ROAD_FEEL, sample, view: () => ({ sc, ox, oy }), cam, zoomAt, panBy, resetCam, refreshUI, setTool, carPose, ringPose, APP_VERSION };
 })();
 </script>
 </body>
